@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AspMobileQuizOverWifi</title>
+    <link href="~/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="wrapper">
+        
+        <header>
+            <div id="nav">
+                <nav>
+                    <ul>
+                        <li class="logoli">
+                            <a class="logo" href="@Url.Action("Index", "Home", null)">MOBILE QUIZ<br /><span class="logosmall">over wi-fi</span></a>
+                        </li>
+                        <li>
+                            <a class="buttonli" href="@Url.Action("Quizzes", "Home", null)">Quizzes</a>
+                        </li>
+                        <li>
+                            <a class="buttonli" href="@Url.Action("Account", "Home", null)">Account</a>
+                        </li>
+                        <li class="rightflex">
+                            <a href="@Url.Action("LogIn", "Home", null)">Log In</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        
+        <div id="main">
+            <main>
+                @RenderBody()
+            </main>
+        </div>
+     
+   
+            <footer>
+                <div id="footer">
+                &copy; 2020 - MobileQuizOverWifi - Aaron Clark - Johnathan Deleeuw - Tyler Hammerseng - Haday Yang
+                    </div>
+            </footer>
+  
+      
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        @RenderSection("Scripts", required: false)
+    </div>
+</body>
+</html>

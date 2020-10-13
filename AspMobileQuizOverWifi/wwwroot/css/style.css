@@ -1,0 +1,154 @@
+﻿body {
+    background: white;
+    margin: 0;
+    font-family: Verdana, sans-serif;
+    color: #2f0000;
+}
+
+#wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+header {
+    background: #810000;
+}
+
+nav {
+    box-sizing: border-box;
+    margin: 0 auto;
+    width: 85%;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 3px;
+}
+
+#nav {
+    
+}
+
+nav a {
+    color: #fff2e6;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-size: 100%;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.logo {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 2em;
+    line-height: 70%;
+    color: #fff2e6; /* beige */
+}
+
+.logoli::before {
+    content: url(../image/check.png);
+}
+
+.logosmall {
+    display: inline-block;
+    color: #b7aea0;
+    font-variant: small-caps;
+}
+
+.logo:hover {
+    text-decoration: none;
+}
+
+nav ul {
+    min-height: 100px;
+    display: inline-flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+    nav ul li {
+        align-self: center;
+        margin-right: 25px;
+    }
+
+.buttonli {
+
+}
+
+.rightflex {
+    margin-left: auto;
+   /* align-self: flex-start;*/
+    margin-right: 0;
+}
+
+
+
+main {
+    min-height: 90vh;
+    padding-top: 10px;
+}
+
+h1 {
+    margin: 0;
+}
+
+#main {
+    width: 85%;
+    margin: 0px auto;
+}
+
+footer {
+    color: #fff2e6;
+    background-color: #810000;
+}
+
+footer a {
+    color: #fff2e6;
+
+}
+
+footer a:hover {
+    text-decoration: underline;
+
+}
+
+#footer {
+    padding-top: 20px;
+    padding-bottom: 5px;
+    display: flex;
+    font-size: 0.8em;
+    width: 85%;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+
+@media only screen and (max-width: 680px) {
+    nav {
+        width: 100%;
+        padding-bottom: 1.5vh;
+    }
+    .logo {
+        margin-bottom: 1.5vh;
+    }
+       nav ul {
+                  display: inline-block;
+              }
+              nav ul li {
+                  display: block;
+                  text-align: center;
+                  width: 100%;
+                  padding: 3px 0;
+               
+              }
+
+                nav ul li:active {
+                    text-decoration: underline;
+                }
+}

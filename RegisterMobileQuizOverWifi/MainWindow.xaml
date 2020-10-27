@@ -10,6 +10,7 @@
         <TextBox x:Name="UserNameTextBox" HorizontalAlignment="Left" Margin="292,92,0,0" Text="Insert Username here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus"/>
         <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Margin="292,115,0,0" Text="Insert Password here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus"/>
         <Button x:Name="RegisterButton" Content="Register" HorizontalAlignment="Left" Margin="292,154,0,0" VerticalAlignment="Top" Width="120" Click="RegisterButton_Click"/>
+        <CheckBox x:Name="AdminCheckbox" Content="Is Admin" HorizontalAlignment="Left" Margin="292,138,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

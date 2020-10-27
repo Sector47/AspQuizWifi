@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.SQLite;
 
 namespace RegisterMobileQuizOverWifi
 {
@@ -35,8 +36,21 @@ namespace RegisterMobileQuizOverWifi
         {
             // create our sql query string using the text from the textboxes.
             string username = UserNameTextBox.Text;
-            string password = PasswordTextBox.Text;            
-            string sql = "INSERT INTO LOGIN (USER_NAME, PASSWORD, ISADMIN) VALUES('" + username + "', '" + password + "', 1)";
+            string password = PasswordTextBox.Text;
+            string sql = "";
+            // create our sql based on whether admin checkbox is checked
+            if (AdminCheckbox.IsChecked.HasValue && AdminCheckbox.IsChecked.Value)
+            {
+                sql = "INSERT INTO Logins (User_Name, Password, isAdmin) VALUES('" + username + "', '" + password + "', 1)";
+            }
+            else
+            {
+                sql = "INSERT INTO Logins (User_Name, Password, isAdmin) VALUES('" + username + "', '" + password + "', 0)";
+            }
+            
+            
+
+
             // Create an instance of our databasecreator class
             DatabaseCreator creator = new DatabaseCreator();
             // DEV show messsage box with before Select * from LOGIN

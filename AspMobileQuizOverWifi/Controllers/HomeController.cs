@@ -48,8 +48,10 @@ namespace AspMobileQuizOverWifi.Controllers
             bool loginStatus = databaseCreator.loginDB(username, password);
             if (loginStatus)
             {
-                ViewData["Username"] = username;
+                ViewData["Username"] = "You are logged in as " + username;
                 ViewData["Password"] = password;
+                // Send them back to the home page logged in
+                // TODO Create a cookie instead of the viewdata password part
                 return View("Index");
             }
             // if not logged in, return to the login view with viewdata of an error

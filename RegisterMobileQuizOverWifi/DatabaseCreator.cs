@@ -26,8 +26,10 @@ namespace RegisterMobileQuizOverWifi
         private string dbLocationLocal = "Data Source = " + System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 @"MobileQuizOverWifi\MobileQuiz.db");
+        // TODO instead of making the dblocationlocal on startup each time, we make it once add it to a config file and then read the config file. This allows asp.net to get the user appdata folder as it is logged in as system/applicationpool and not the user.
+        // DEV "Data Source = C:\\Users\\      Username goes here    \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
         // String location of the database server
-        private string dbLocationNetwork = "Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";
+        private string dbLocationNetwork = "";//"Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";
 
         public void initDatabase()
         {   
@@ -271,28 +273,56 @@ namespace RegisterMobileQuizOverWifi
         }
         public bool loginDB(string username, string password)
         {
-            // connect to our database
-            SqlConnection databaseConnection;
-            databaseConnection = new SqlConnection(dbLocationNetwork);
-            databaseConnection.Open();
-
-            // build our sql command
             string sql = "SELECT User_name, Password FROM Logins WHERE User_name = '" + username + "'";
-            SqlCommand command = new SqlCommand(sql, databaseConnection);
-
-            // read the results
-            SqlDataReader dataReader = command.ExecuteReader();
-
-            while (dataReader.Read())
+            try
             {
-                // check if password matches saved password
-                if (dataReader.GetValue(1).ToString() == password)
-                {
-                    return true;
-                }
-            }
+                // attempt to connect to our database
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
 
-            return false;
+                // build our sql command                
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+
+                // read the results
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    // check if password matches saved password
+                    if (dataReader.GetValue(1).ToString() == password)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch
+            {
+                // if can't connect we go to sqlite
+                // TODO make this catch only expected exceptions and instead check config file
+                SQLiteConnection sqliteConnection;
+                // Connect to database using data connection
+                sqliteConnection = new SQLiteConnection(dbLocationLocal);
+                sqliteConnection.Open();
+                SQLiteCommand liteCmd = sqliteConnection.CreateCommand();
+                liteCmd.CommandText = sql;
+                SQLiteDataReader liteCmdReader = liteCmd.ExecuteReader();
+
+                // In order to check for existing usernames we use a datareader to loop through sql select statement results TODO turn this into a sql query, I already wrote this before i thought to use sql to ask for existing rows
+                // If it already exists we return null, else we add it to the table
+                while (liteCmdReader.Read())
+                {
+                    // check if password matches saved password
+                    if (liteCmdReader.GetValue(1).ToString() == password)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
     }
 }

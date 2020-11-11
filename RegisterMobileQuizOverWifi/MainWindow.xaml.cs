@@ -54,11 +54,11 @@ namespace RegisterMobileQuizOverWifi
             // Create an instance of our databasecreator class
             DatabaseCreator creator = new DatabaseCreator();
             // DEV show messsage box with before Select * from LOGIN
-            MessageBox.Show(creator.readDB());
+            MessageBox.Show("Before \n" + creator.readDB());
             // call the addUserDB method to have the DatabaseCreator class deal with adding our new user to the database
             creator.addUserDB(sql, username, password);
             // DEV show message box with after Select * from LOGIN
-            MessageBox.Show(creator.readDB());
+            MessageBox.Show("After \n" + creator.readDB());
         }
 
         // On focus, empty the text box and remove the gotfocus handler

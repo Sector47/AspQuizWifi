@@ -23,13 +23,19 @@ namespace RegisterMobileQuizOverWifi
     public class DatabaseCreator
     {
         // String location of the database locally
-        private string dbLocationLocal = "Data Source = " + System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                @"MobileQuizOverWifi\MobileQuiz.db");
+        // DEVCONFIG
+        private string dbLocationLocal = ""; // For local replace "" with  "Data Source = C:\\Users\\       USERNAME HERE           \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
+        
+        // Below code will be used if we use a config file
+        // "Data Source = " + System.IO.Path.Combine(
+                //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                //@"MobileQuizOverWifi\MobileQuiz.db");
         // TODO instead of making the dblocationlocal on startup each time, we make it once add it to a config file and then read the config file. This allows asp.net to get the user appdata folder as it is logged in as system/applicationpool and not the user.
         // DEV "Data Source = C:\\Users\\      Username goes here    \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
+        
         // String location of the database server
-        private string dbLocationNetwork = "";//"Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";
+        // DEVCONFIG
+        private string dbLocationNetwork = "Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";// For local db make this empty "" and make dbLocationLocal not with your username
 
         public void initDatabase()
         {   
@@ -211,7 +217,7 @@ namespace RegisterMobileQuizOverWifi
                 SqlConnection databaseConnection;
                 databaseConnection = new SqlConnection(dbLocationNetwork);
                 databaseConnection.Open();
-                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                SqlCommand command = new SqlCommand(sqlSelect, databaseConnection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 // In order to check for existing usernames we use a datareader to loop through sql select statement results TODO turn this into a sql query, I already wrote this before i thought to use sql to ask for existing rows
                 // If it already exists we return null, else we add it to the table
@@ -229,6 +235,9 @@ namespace RegisterMobileQuizOverWifi
                 }
                 else
                 {
+                    databaseConnection.Close();
+                    databaseConnection = new SqlConnection(dbLocationNetwork);
+                    databaseConnection.Open();
                     command = new SqlCommand(sql, databaseConnection);
                     command.ExecuteNonQuery();
                     readDB();

@@ -1,0 +1,595 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MobileQuizDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ANSWER">
+          <Key>
+            <PropertyRef Name="ANS_ID" />
+          </Key>
+          <Property Name="ANS_ID" Type="int" Nullable="false" />
+          <Property Name="QUE_ID" Type="int" />
+          <Property Name="COURSE_QUI_ID" Type="int" />
+          <Property Name="DESCRIPTION" Type="varchar" MaxLength="250" />
+          <Property Name="TYPE" Type="varchar" MaxLength="25" />
+          <Property Name="CORRECT_ANS" Type="bit" />
+        </EntityType>
+        <EntityType Name="COURSE">
+          <Key>
+            <PropertyRef Name="COURSE_ID" />
+          </Key>
+          <Property Name="COURSE_ID" Type="int" Nullable="false" />
+          <Property Name="COU_NAME" Type="varchar" MaxLength="45" />
+          <Property Name="COU_SEM" Type="varchar" MaxLength="45" />
+          <Property Name="COU_YEAR" Type="int" />
+          <Property Name="COU_START_DATE" Type="date" />
+          <Property Name="COU_END_DATE" Type="date" />
+        </EntityType>
+        <EntityType Name="COURSE_QUIZ">
+          <Key>
+            <PropertyRef Name="COURSE_QUI_ID" />
+          </Key>
+          <Property Name="QUI_ID" Type="int" />
+          <Property Name="COURSE_ID" Type="int" />
+          <Property Name="COURSE_QUI_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LOGIN">
+          <Key>
+            <PropertyRef Name="USER_NAME" />
+          </Key>
+          <Property Name="USER_NAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PASSWORD" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ISADMIN" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QUESTION">
+          <Key>
+            <PropertyRef Name="QUE_ID" />
+          </Key>
+          <Property Name="QUE_ID" Type="int" Nullable="false" />
+          <Property Name="QUI_ID" Type="int" Nullable="false" />
+          <Property Name="QUE_QUESTION" Type="varchar" MaxLength="50" />
+          <Property Name="QUE_ANSWER" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="QUIZ">
+          <Key>
+            <PropertyRef Name="QUI_ID" />
+          </Key>
+          <Property Name="QUI_ID" Type="int" Nullable="false" />
+          <Property Name="QUI_NAME" Type="varchar" MaxLength="45" />
+          <Property Name="QUI_NOTES" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="RESPONSE">
+          <Key>
+            <PropertyRef Name="RESPONSE_ID" />
+          </Key>
+          <Property Name="RESPONSE_ID" Type="int" Nullable="false" />
+          <Property Name="QUE_ID" Type="int" />
+          <Property Name="FEEDBACK" Type="varchar" MaxLength="250" />
+          <Property Name="USER_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="ROSTER">
+          <Key>
+            <PropertyRef Name="COURSE_ID" />
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="COURSE_ID" Type="int" Nullable="false" />
+          <Property Name="USER_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="USER_ID" Type="int" Nullable="false" />
+          <Property Name="F_NAME" Type="varchar" MaxLength="15" />
+          <Property Name="L_NAME" Type="varchar" MaxLength="25" />
+          <Property Name="IS_INSTRUCTOR" Type="bit" />
+          <Property Name="USERNAME" Type="varchar" MaxLength="25" />
+          <Property Name="PASSWORD" Type="varchar" MaxLength="25" />
+          <Property Name="SESSION_ID" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <Association Name="FK__ANSWER__COURSE_Q__619B8048">
+          <End Role="COURSE_QUIZ" Type="Self.COURSE_QUIZ" Multiplicity="0..1" />
+          <End Role="ANSWER" Type="Self.ANSWER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSE_QUIZ">
+              <PropertyRef Name="COURSE_QUI_ID" />
+            </Principal>
+            <Dependent Role="ANSWER">
+              <PropertyRef Name="COURSE_QUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ANSWER__QUE_ID__60A75C0F">
+          <End Role="QUESTION" Type="Self.QUESTION" Multiplicity="0..1" />
+          <End Role="ANSWER" Type="Self.ANSWER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUESTION">
+              <PropertyRef Name="QUE_ID" />
+            </Principal>
+            <Dependent Role="ANSWER">
+              <PropertyRef Name="QUE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__COURSE_QU__COURS__5EBF139D">
+          <End Role="COURSE" Type="Self.COURSE" Multiplicity="0..1" />
+          <End Role="COURSE_QUIZ" Type="Self.COURSE_QUIZ" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSE">
+              <PropertyRef Name="COURSE_ID" />
+            </Principal>
+            <Dependent Role="COURSE_QUIZ">
+              <PropertyRef Name="COURSE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__COURSE_QU__QUI_I__5DCAEF64">
+          <End Role="QUIZ" Type="Self.QUIZ" Multiplicity="0..1" />
+          <End Role="COURSE_QUIZ" Type="Self.COURSE_QUIZ" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUIZ">
+              <PropertyRef Name="QUI_ID" />
+            </Principal>
+            <Dependent Role="COURSE_QUIZ">
+              <PropertyRef Name="QUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__QUESTION__QUI_ID__3C69FB99">
+          <End Role="QUIZ" Type="Self.QUIZ" Multiplicity="1" />
+          <End Role="QUESTION" Type="Self.QUESTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUIZ">
+              <PropertyRef Name="QUI_ID" />
+            </Principal>
+            <Dependent Role="QUESTION">
+              <PropertyRef Name="QUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RESPONSE__QUE_ID__656C112C">
+          <End Role="QUESTION" Type="Self.QUESTION" Multiplicity="0..1" />
+          <End Role="RESPONSE" Type="Self.RESPONSE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUESTION">
+              <PropertyRef Name="QUE_ID" />
+            </Principal>
+            <Dependent Role="RESPONSE">
+              <PropertyRef Name="QUE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RESPONSE__USER_I__68487DD7">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="RESPONSE" Type="Self.RESPONSE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="RESPONSE">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ROSTER__COURSE_I__35BCFE0A">
+          <End Role="COURSE" Type="Self.COURSE" Multiplicity="1" />
+          <End Role="ROSTER" Type="Self.ROSTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSE">
+              <PropertyRef Name="COURSE_ID" />
+            </Principal>
+            <Dependent Role="ROSTER">
+              <PropertyRef Name="COURSE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ROSTER__USER_ID__6A30C649">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="ROSTER" Type="Self.ROSTER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="ROSTER">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MobileQuizDBModelStoreContainer">
+          <EntitySet Name="ANSWER" EntityType="Self.ANSWER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="COURSE" EntityType="Self.COURSE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="COURSE_QUIZ" EntityType="Self.COURSE_QUIZ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LOGIN" EntityType="Self.LOGIN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QUESTION" EntityType="Self.QUESTION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QUIZ" EntityType="Self.QUIZ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RESPONSE" EntityType="Self.RESPONSE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ROSTER" EntityType="Self.ROSTER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER" EntityType="Self.USER" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ANSWER__COURSE_Q__619B8048" Association="Self.FK__ANSWER__COURSE_Q__619B8048">
+            <End Role="COURSE_QUIZ" EntitySet="COURSE_QUIZ" />
+            <End Role="ANSWER" EntitySet="ANSWER" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ANSWER__QUE_ID__60A75C0F" Association="Self.FK__ANSWER__QUE_ID__60A75C0F">
+            <End Role="QUESTION" EntitySet="QUESTION" />
+            <End Role="ANSWER" EntitySet="ANSWER" />
+          </AssociationSet>
+          <AssociationSet Name="FK__COURSE_QU__COURS__5EBF139D" Association="Self.FK__COURSE_QU__COURS__5EBF139D">
+            <End Role="COURSE" EntitySet="COURSE" />
+            <End Role="COURSE_QUIZ" EntitySet="COURSE_QUIZ" />
+          </AssociationSet>
+          <AssociationSet Name="FK__COURSE_QU__QUI_I__5DCAEF64" Association="Self.FK__COURSE_QU__QUI_I__5DCAEF64">
+            <End Role="QUIZ" EntitySet="QUIZ" />
+            <End Role="COURSE_QUIZ" EntitySet="COURSE_QUIZ" />
+          </AssociationSet>
+          <AssociationSet Name="FK__QUESTION__QUI_ID__3C69FB99" Association="Self.FK__QUESTION__QUI_ID__3C69FB99">
+            <End Role="QUIZ" EntitySet="QUIZ" />
+            <End Role="QUESTION" EntitySet="QUESTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RESPONSE__QUE_ID__656C112C" Association="Self.FK__RESPONSE__QUE_ID__656C112C">
+            <End Role="QUESTION" EntitySet="QUESTION" />
+            <End Role="RESPONSE" EntitySet="RESPONSE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RESPONSE__USER_I__68487DD7" Association="Self.FK__RESPONSE__USER_I__68487DD7">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="RESPONSE" EntitySet="RESPONSE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ROSTER__COURSE_I__35BCFE0A" Association="Self.FK__ROSTER__COURSE_I__35BCFE0A">
+            <End Role="COURSE" EntitySet="COURSE" />
+            <End Role="ROSTER" EntitySet="ROSTER" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ROSTER__USER_ID__6A30C649" Association="Self.FK__ROSTER__USER_ID__6A30C649">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ROSTER" EntitySet="ROSTER" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MobileQuizDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ANSWER">
+          <Key>
+            <PropertyRef Name="ANS_ID" />
+          </Key>
+          <Property Name="ANS_ID" Type="Int32" Nullable="false" />
+          <Property Name="QUE_ID" Type="Int32" />
+          <Property Name="COURSE_QUI_ID" Type="Int32" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="TYPE" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="CORRECT_ANS" Type="Boolean" />
+          <NavigationProperty Name="COURSE_QUIZ" Relationship="Self.FK__ANSWER__COURSE_Q__619B8048" FromRole="ANSWER" ToRole="COURSE_QUIZ" />
+          <NavigationProperty Name="QUESTION" Relationship="Self.FK__ANSWER__QUE_ID__60A75C0F" FromRole="ANSWER" ToRole="QUESTION" />
+        </EntityType>
+        <EntityType Name="COURSE">
+          <Key>
+            <PropertyRef Name="COURSE_ID" />
+          </Key>
+          <Property Name="COURSE_ID" Type="Int32" Nullable="false" />
+          <Property Name="COU_NAME" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="COU_SEM" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="COU_YEAR" Type="Int32" />
+          <Property Name="COU_START_DATE" Type="DateTime" Precision="0" />
+          <Property Name="COU_END_DATE" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="COURSE_QUIZ" Relationship="Self.FK__COURSE_QU__COURS__5EBF139D" FromRole="COURSE" ToRole="COURSE_QUIZ" />
+          <NavigationProperty Name="USERs" Relationship="Self.ROSTER" FromRole="COURSE" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="COURSE_QUIZ">
+          <Key>
+            <PropertyRef Name="COURSE_QUI_ID" />
+          </Key>
+          <Property Name="QUI_ID" Type="Int32" />
+          <Property Name="COURSE_ID" Type="Int32" />
+          <Property Name="COURSE_QUI_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ANSWERs" Relationship="Self.FK__ANSWER__COURSE_Q__619B8048" FromRole="COURSE_QUIZ" ToRole="ANSWER" />
+          <NavigationProperty Name="COURSE" Relationship="Self.FK__COURSE_QU__COURS__5EBF139D" FromRole="COURSE_QUIZ" ToRole="COURSE" />
+          <NavigationProperty Name="QUIZ" Relationship="Self.FK__COURSE_QU__QUI_I__5DCAEF64" FromRole="COURSE_QUIZ" ToRole="QUIZ" />
+        </EntityType>
+        <EntityType Name="LOGIN">
+          <Key>
+            <PropertyRef Name="USER_NAME" />
+          </Key>
+          <Property Name="USER_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ISADMIN" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QUESTION">
+          <Key>
+            <PropertyRef Name="QUE_ID" />
+          </Key>
+          <Property Name="QUE_ID" Type="Int32" Nullable="false" />
+          <Property Name="QUI_ID" Type="Int32" Nullable="false" />
+          <Property Name="QUE_QUESTION" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="QUE_ANSWER" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ANSWERs" Relationship="Self.FK__ANSWER__QUE_ID__60A75C0F" FromRole="QUESTION" ToRole="ANSWER" />
+          <NavigationProperty Name="QUIZ" Relationship="Self.FK__QUESTION__QUI_ID__3C69FB99" FromRole="QUESTION" ToRole="QUIZ" />
+          <NavigationProperty Name="RESPONSEs" Relationship="Self.FK__RESPONSE__QUE_ID__656C112C" FromRole="QUESTION" ToRole="RESPONSE" />
+        </EntityType>
+        <EntityType Name="QUIZ">
+          <Key>
+            <PropertyRef Name="QUI_ID" />
+          </Key>
+          <Property Name="QUI_ID" Type="Int32" Nullable="false" />
+          <Property Name="QUI_NAME" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="QUI_NOTES" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="COURSE_QUIZ" Relationship="Self.FK__COURSE_QU__QUI_I__5DCAEF64" FromRole="QUIZ" ToRole="COURSE_QUIZ" />
+          <NavigationProperty Name="QUESTIONs" Relationship="Self.FK__QUESTION__QUI_ID__3C69FB99" FromRole="QUIZ" ToRole="QUESTION" />
+        </EntityType>
+        <EntityType Name="RESPONSE">
+          <Key>
+            <PropertyRef Name="RESPONSE_ID" />
+          </Key>
+          <Property Name="RESPONSE_ID" Type="Int32" Nullable="false" />
+          <Property Name="QUE_ID" Type="Int32" />
+          <Property Name="FEEDBACK" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="USER_ID" Type="Int32" />
+          <NavigationProperty Name="QUESTION" Relationship="Self.FK__RESPONSE__QUE_ID__656C112C" FromRole="RESPONSE" ToRole="QUESTION" />
+          <NavigationProperty Name="USER" Relationship="Self.FK__RESPONSE__USER_I__68487DD7" FromRole="RESPONSE" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="USER_ID" />
+          </Key>
+          <Property Name="USER_ID" Type="Int32" Nullable="false" />
+          <Property Name="F_NAME" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="L_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="IS_INSTRUCTOR" Type="Boolean" />
+          <Property Name="USERNAME" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="SESSION_ID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="RESPONSEs" Relationship="Self.FK__RESPONSE__USER_I__68487DD7" FromRole="USER" ToRole="RESPONSE" />
+          <NavigationProperty Name="COURSEs" Relationship="Self.ROSTER" FromRole="USER" ToRole="COURSE" />
+        </EntityType>
+        <Association Name="FK__ANSWER__COURSE_Q__619B8048">
+          <End Role="COURSE_QUIZ" Type="Self.COURSE_QUIZ" Multiplicity="0..1" />
+          <End Role="ANSWER" Type="Self.ANSWER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSE_QUIZ">
+              <PropertyRef Name="COURSE_QUI_ID" />
+            </Principal>
+            <Dependent Role="ANSWER">
+              <PropertyRef Name="COURSE_QUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ANSWER__QUE_ID__60A75C0F">
+          <End Role="QUESTION" Type="Self.QUESTION" Multiplicity="0..1" />
+          <End Role="ANSWER" Type="Self.ANSWER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUESTION">
+              <PropertyRef Name="QUE_ID" />
+            </Principal>
+            <Dependent Role="ANSWER">
+              <PropertyRef Name="QUE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__COURSE_QU__COURS__5EBF139D">
+          <End Role="COURSE" Type="Self.COURSE" Multiplicity="0..1" />
+          <End Role="COURSE_QUIZ" Type="Self.COURSE_QUIZ" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSE">
+              <PropertyRef Name="COURSE_ID" />
+            </Principal>
+            <Dependent Role="COURSE_QUIZ">
+              <PropertyRef Name="COURSE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__COURSE_QU__QUI_I__5DCAEF64">
+          <End Role="QUIZ" Type="Self.QUIZ" Multiplicity="0..1" />
+          <End Role="COURSE_QUIZ" Type="Self.COURSE_QUIZ" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUIZ">
+              <PropertyRef Name="QUI_ID" />
+            </Principal>
+            <Dependent Role="COURSE_QUIZ">
+              <PropertyRef Name="QUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__QUESTION__QUI_ID__3C69FB99">
+          <End Role="QUIZ" Type="Self.QUIZ" Multiplicity="1" />
+          <End Role="QUESTION" Type="Self.QUESTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUIZ">
+              <PropertyRef Name="QUI_ID" />
+            </Principal>
+            <Dependent Role="QUESTION">
+              <PropertyRef Name="QUI_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RESPONSE__QUE_ID__656C112C">
+          <End Role="QUESTION" Type="Self.QUESTION" Multiplicity="0..1" />
+          <End Role="RESPONSE" Type="Self.RESPONSE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUESTION">
+              <PropertyRef Name="QUE_ID" />
+            </Principal>
+            <Dependent Role="RESPONSE">
+              <PropertyRef Name="QUE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RESPONSE__USER_I__68487DD7">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="RESPONSE" Type="Self.RESPONSE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="RESPONSE">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ROSTER">
+          <End Role="COURSE" Type="Self.COURSE" Multiplicity="*" />
+          <End Role="USER" Type="Self.USER" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="MobileQuizEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ANSWERs" EntityType="Self.ANSWER" />
+          <EntitySet Name="COURSEs" EntityType="Self.COURSE" />
+          <EntitySet Name="COURSE_QUIZ" EntityType="Self.COURSE_QUIZ" />
+          <EntitySet Name="LOGINs" EntityType="Self.LOGIN" />
+          <EntitySet Name="QUESTIONs" EntityType="Self.QUESTION" />
+          <EntitySet Name="QUIZs" EntityType="Self.QUIZ" />
+          <EntitySet Name="RESPONSEs" EntityType="Self.RESPONSE" />
+          <EntitySet Name="USERs" EntityType="Self.USER" />
+          <AssociationSet Name="FK__ANSWER__COURSE_Q__619B8048" Association="Self.FK__ANSWER__COURSE_Q__619B8048">
+            <End Role="COURSE_QUIZ" EntitySet="COURSE_QUIZ" />
+            <End Role="ANSWER" EntitySet="ANSWERs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ANSWER__QUE_ID__60A75C0F" Association="Self.FK__ANSWER__QUE_ID__60A75C0F">
+            <End Role="QUESTION" EntitySet="QUESTIONs" />
+            <End Role="ANSWER" EntitySet="ANSWERs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__COURSE_QU__COURS__5EBF139D" Association="Self.FK__COURSE_QU__COURS__5EBF139D">
+            <End Role="COURSE" EntitySet="COURSEs" />
+            <End Role="COURSE_QUIZ" EntitySet="COURSE_QUIZ" />
+          </AssociationSet>
+          <AssociationSet Name="FK__COURSE_QU__QUI_I__5DCAEF64" Association="Self.FK__COURSE_QU__QUI_I__5DCAEF64">
+            <End Role="QUIZ" EntitySet="QUIZs" />
+            <End Role="COURSE_QUIZ" EntitySet="COURSE_QUIZ" />
+          </AssociationSet>
+          <AssociationSet Name="FK__QUESTION__QUI_ID__3C69FB99" Association="Self.FK__QUESTION__QUI_ID__3C69FB99">
+            <End Role="QUIZ" EntitySet="QUIZs" />
+            <End Role="QUESTION" EntitySet="QUESTIONs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RESPONSE__QUE_ID__656C112C" Association="Self.FK__RESPONSE__QUE_ID__656C112C">
+            <End Role="QUESTION" EntitySet="QUESTIONs" />
+            <End Role="RESPONSE" EntitySet="RESPONSEs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RESPONSE__USER_I__68487DD7" Association="Self.FK__RESPONSE__USER_I__68487DD7">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="RESPONSE" EntitySet="RESPONSEs" />
+          </AssociationSet>
+          <AssociationSet Name="ROSTER" Association="Self.ROSTER">
+            <End Role="COURSE" EntitySet="COURSEs" />
+            <End Role="USER" EntitySet="USERs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MobileQuizDBModelStoreContainer" CdmEntityContainer="MobileQuizEntities">
+          <EntitySetMapping Name="ANSWERs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.ANSWER">
+              <MappingFragment StoreEntitySet="ANSWER">
+                <ScalarProperty Name="ANS_ID" ColumnName="ANS_ID" />
+                <ScalarProperty Name="QUE_ID" ColumnName="QUE_ID" />
+                <ScalarProperty Name="COURSE_QUI_ID" ColumnName="COURSE_QUI_ID" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="CORRECT_ANS" ColumnName="CORRECT_ANS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="COURSEs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.COURSE">
+              <MappingFragment StoreEntitySet="COURSE">
+                <ScalarProperty Name="COURSE_ID" ColumnName="COURSE_ID" />
+                <ScalarProperty Name="COU_NAME" ColumnName="COU_NAME" />
+                <ScalarProperty Name="COU_SEM" ColumnName="COU_SEM" />
+                <ScalarProperty Name="COU_YEAR" ColumnName="COU_YEAR" />
+                <ScalarProperty Name="COU_START_DATE" ColumnName="COU_START_DATE" />
+                <ScalarProperty Name="COU_END_DATE" ColumnName="COU_END_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="COURSE_QUIZ">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.COURSE_QUIZ">
+              <MappingFragment StoreEntitySet="COURSE_QUIZ">
+                <ScalarProperty Name="QUI_ID" ColumnName="QUI_ID" />
+                <ScalarProperty Name="COURSE_ID" ColumnName="COURSE_ID" />
+                <ScalarProperty Name="COURSE_QUI_ID" ColumnName="COURSE_QUI_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LOGINs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.LOGIN">
+              <MappingFragment StoreEntitySet="LOGIN">
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="ISADMIN" ColumnName="ISADMIN" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QUESTIONs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.QUESTION">
+              <MappingFragment StoreEntitySet="QUESTION">
+                <ScalarProperty Name="QUE_ID" ColumnName="QUE_ID" />
+                <ScalarProperty Name="QUI_ID" ColumnName="QUI_ID" />
+                <ScalarProperty Name="QUE_QUESTION" ColumnName="QUE_QUESTION" />
+                <ScalarProperty Name="QUE_ANSWER" ColumnName="QUE_ANSWER" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QUIZs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.QUIZ">
+              <MappingFragment StoreEntitySet="QUIZ">
+                <ScalarProperty Name="QUI_ID" ColumnName="QUI_ID" />
+                <ScalarProperty Name="QUI_NAME" ColumnName="QUI_NAME" />
+                <ScalarProperty Name="QUI_NOTES" ColumnName="QUI_NOTES" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RESPONSEs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.RESPONSE">
+              <MappingFragment StoreEntitySet="RESPONSE">
+                <ScalarProperty Name="RESPONSE_ID" ColumnName="RESPONSE_ID" />
+                <ScalarProperty Name="QUE_ID" ColumnName="QUE_ID" />
+                <ScalarProperty Name="FEEDBACK" ColumnName="FEEDBACK" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USERs">
+            <EntityTypeMapping TypeName="MobileQuizDBModel.USER">
+              <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="F_NAME" ColumnName="F_NAME" />
+                <ScalarProperty Name="L_NAME" ColumnName="L_NAME" />
+                <ScalarProperty Name="IS_INSTRUCTOR" ColumnName="IS_INSTRUCTOR" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="SESSION_ID" ColumnName="SESSION_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ROSTER" TypeName="MobileQuizDBModel.ROSTER" StoreEntitySet="ROSTER">
+            <EndProperty Name="COURSE">
+              <ScalarProperty Name="COURSE_ID" ColumnName="COURSE_ID" />
+            </EndProperty>
+            <EndProperty Name="USER">
+              <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

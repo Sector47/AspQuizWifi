@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Quiz";
+    Random rng = new Random();
+
+}
+
+<div class="text-center">
+    <h1 class="display-4">Quiz</h1>
+    <form>
+        @{
+            // mimics the loading of a quiz question
+            int num = rng.Next(1, 4);
+            if (num == 1)
+            {
+                @Html.Partial("_MultipleChoiceRadio")
+            }
+            else if (num == 2)
+            {
+                @Html.Partial("_MultipleChoiceCheck")
+            }
+            else if (num == 3)
+            {
+                @Html.Partial("_ShortAnswer")
+            }
+            else
+            {
+                @Html.Partial("_FillInBlank")
+            }
+        }
+        <div class="submit"><input type="submit" value="Submit"></div>
+    </form>
+
+    <p>Enter quiz ID.</p>
+    <p>Quiz question ??/??.</p>
+    <p>Show quiz question(s). // Receive the first quiz quesion type, display it acccordingly. Go to next quiz question.</p>
+    <p>Last question, submit. Submit quiz.</p>
+    <p>See quiz grades.</p>
+</div>

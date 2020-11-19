@@ -1,16 +1,9 @@
-﻿@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+﻿@using (Html.BeginForm("LogInAttempt", "Home", FormMethod.Post))
 {
     <form id="loginForm" method="post" asp-controller="Home" asp-action="LoginAttempt">
-        Username:<br />
-        <input type="text" name="Username" value="" /><br />
-        Password:<br />
-        <input type="text" name="Password" value="" /><br />
-        <input type="submit" value="Login" class="submit" />
-        <p>@ViewData["Error"]</p>
-
-        <p><label>Username:</label> <input name="TextBox1" id="TextBox1" type="text">  </p>
-        <p><label>Password:</label> <input name="TextBox1" id="TextBox1" type="text">  </p>
-
+        <p>@ViewBag.Error</p>
+        <p><label>Username:</label> <input name="Username" type="text">  </p>
+        <p><label>Password:</label> <input name="Password" type="text">  </p>
         <p class="submit"><input type="submit" value="LogIn" />
     </form>
 

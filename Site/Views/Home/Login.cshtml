@@ -13,28 +13,6 @@
 <p>Use this page to log in.</p>
 
 
-ALL THE LOGINS FROMDB
 
-@{ foreach (LOGIN l in Model)
-    {
-        <p>@l.USER_NAME</p>
-        <p>@l.PASSWORD</p>
-        <p>@l.ISADMIN</p> }
-    <b>ID:</b> @ViewBag.ID
-    <br />
-    <b>Name:</b> @ViewBag.Name
-    <br />
-}
 
-@using (Html.BeginForm("Login", "Home", FormMethod.Post))
-{
-    <form id="loginForm" method="post" asp-controller="Home" asp-action="LoginAttempt">
-        Username:<br />
-        <input type="text" name="Username" value="" /><br />
-        Password:<br />
-        <input type="text" name="Password" value="" /><br />
-        <input type="submit" value="Login" class="submit" />
-        <p>@ViewData["Error"]</p>
-
-        <p class="submit"><input type="submit" value="LogIn" />
-    </form>}
+@Html.Partial("_AccountLogin")

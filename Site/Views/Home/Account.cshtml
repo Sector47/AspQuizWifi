@@ -2,3 +2,14 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Account features here.</p>
+
+@using (Html.BeginForm("ChangePassword", "Home", FormMethod.Post))
+{
+    <form id="PasswordChange" method="post">
+        <p>@ViewBag.PasswordChange</p>
+        <p><label>Current Password:</label> <input name="CurrentPassword" type="text"></p>
+        <p><label>New Password:</label> <input name="NewPassword" type="text"></p>
+        <p><label>Confirm New Password:</label><input name="ConfirmNewPassword" type="text"></p>
+        <p class="submit"><input type="submit" value="Change Password" />
+    </form>
+}

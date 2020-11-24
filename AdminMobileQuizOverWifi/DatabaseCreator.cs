@@ -301,6 +301,7 @@ namespace AdminMobileQuizOverWifi
                 while (dataReader.Read())
                 {
                     // check if password matches saved password
+                    // TODO check if it matches encrypted hash instead of passing the password through.
                     if (dataReader.GetValue(1).ToString() == password)
                     {
                         sql = "UPDATE Logins " +
@@ -343,6 +344,27 @@ namespace AdminMobileQuizOverWifi
 
                 return false;
             }
+        }
+        public bool CheckPasswordDB(string currentPassword)
+        {
+            return false;
+        }
+        public void UpdatePasswordDB(string username, string NewPassword)
+        {
+            string sql = "UPDATE Logins SET password = '" + NewPassword + "' WHERE User_Name = '" + username + "';";
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                command.ExecuteNonQuery();
+            }
+            catch (System.Exception e)
+            {
+
+            }
+            
         }
     }
 }

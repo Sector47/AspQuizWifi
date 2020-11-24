@@ -14,43 +14,42 @@ namespace Site.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.ID = "You are logged in with sessionid: " + HttpContext.Session.SessionID;
             return View();
         }
 
         public ActionResult Quizzes()
         {
-            ViewBag.Message = "Your application description page.";
+            if (System.Web.HttpContext.Current.Session["UserID"] != null && System.Web.HttpContext.Current.Session["UserID"].ToString() != "")
+            {
+                ViewBag.Message = "Your application description page.";
+                return View();
+            }
 
-            return View();
+            ViewData["Title"] = "You must log in first in order to view the quizzes page";
+            return View("LogIn");
         }
 
         public ActionResult Account()
         {
-            ViewBag.Message = "Your contact page.";
+            if(System.Web.HttpContext.Current.Session["UserID"] != null && System.Web.HttpContext.Current.Session["UserID"].ToString() != "")
+            {
+                ViewBag.Message = "Your contact page.";
+                return View();
+            }
 
-            return View();
+            ViewData["Title"] = "You must log in first in order to view the account page";
+            return View("LogIn");  
         }
 
         public ActionResult LogIn()
         {
-            ViewBag.ID = "You are logged in with sessionid: " + HttpContext.Session.SessionID;
-            Session["started"] = "true";
-
-            // Heidi's login stuff, can be removed once Johnathan's is added
-            // sends all the logins to the form
-
-            List<LOGIN> result = new List<LOGIN>();
-            var allLogins = db.LOGINs.ToList();
-            result = allLogins;
-
-
-            return View(result);
+            ViewData["Title"] = "Log In";
+            return View();
         }
         
         public ActionResult LogOut()
         {
-            // TODO Call sql request to remove sessionId from logged in user
+            // TODO Call sql request to remove sessionId and all cookies from logged in user
             Session.Clear();
             Session.Abandon();
             return View("Index");
@@ -66,26 +65,68 @@ namespace Site.Controllers
             DatabaseCreator databaseCreator = new DatabaseCreator();
             // attempt to login with passed through data.
             bool loginStatus = databaseCreator.loginDB(username, password, session);
+
+            // If login attempt was successful, display message that they are logged in. Send them back to the home page
             if (loginStatus)
             {
+                // Set the session id to an accessible userid as well as a cookie for the name
+                HttpContext.Session["UserID"] = HttpContext.Session.SessionID;
+                HttpContext.Session["UserName"] = username;
 
-                //HttpContext.Session.SetString("LoggedIn", "true");
-                ViewBag.ID = "You are logged in as " + username + " with sessionid: " + HttpContext.Session.SessionID;
-                ViewData["Password"] = password;
                 // Send them back to the home page logged in
-                // TODO Create a cookie instead of the viewdata password part
                 return View("Index");
             }
             // if not logged in, return to the login view with viewdata of an error
             // TODO Parse the type of error based on the sql return value.
             ViewBag.Error = "There was an error";
-            // Heidi's login stuff, can be removed once Johnathan's is added
-            // sends all the logins to the form
-
-            List<LOGIN> result = new List<LOGIN>();
-            var allLogins = db.LOGINs.ToList();
-            result = allLogins;
             return View("LogIn");
+        }
+
+        public ActionResult ChangePassword(string currentPassword, string newPassword, string confirmNewPassword)
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+
+            if (currentPassword != "" && databaseCreator.CheckPasswordDB(currentPassword))
+            {
+                ViewBag.PasswordChange = "Your current password was incorrect.";
+                return View("Account");
+            }
+            else if(currentPassword == "")
+            {
+                ViewBag.PasswordChange = "Current password cannot be blank";
+                return View("Account");
+            }
+            else 
+            {
+                if(newPassword != "" && confirmNewPassword != "")
+                {
+                    if (newPassword == confirmNewPassword)
+                    {
+                        if(newPassword != currentPassword)
+                        {
+                            databaseCreator.UpdatePasswordDB(HttpContext.Session["UserName"].ToString(), newPassword);
+                            ViewBag.PasswordChange = "Your password was successfully changed.";
+                        }
+                        else
+                        {
+                            ViewBag.PasswordChange = "Your new password cannot be the same as your current password.";
+                            return View("Account");
+                        }                                            
+                    }
+                    else
+                    {
+                        ViewBag.PasswordChange = "Your new password and confirmation did not match.";
+                        return View("Account");
+                    }
+                }
+                else
+                {
+                    ViewBag.PasswordChange = "Your new password or confirmation cannot be blank.";
+                    return View("Account");
+                }              
+            }
+
+            return View("Account");
         }
     }
 }

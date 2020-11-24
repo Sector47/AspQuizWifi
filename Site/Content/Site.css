@@ -79,10 +79,17 @@ nav ul {
 .buttonli {
 }
 
+.name {
+    color: #fff2e6;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
 .rightflex {
     margin-left: auto;
     /* align-self: flex-start;*/
     margin-right: 0;
+    color: #fff2e6;
 }
 
 

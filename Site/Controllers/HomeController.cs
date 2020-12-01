@@ -21,8 +21,9 @@ namespace Site.Controllers
         {
             if (System.Web.HttpContext.Current.Session["UserID"] != null && System.Web.HttpContext.Current.Session["UserID"].ToString() != "")
             {
-                ViewBag.Message = "Your application description page.";
-                return View();
+                DatabaseCreator databaseCreator = new DatabaseCreator();
+
+                return View("Quizzes", databaseCreator.getQuizzes(HttpContext.Session["User_ID"].ToString()));
             }
 
             ViewData["Title"] = "You must log in first in order to view the quizzes page";
@@ -49,10 +50,17 @@ namespace Site.Controllers
         
         public ActionResult LogOut()
         {
-            // TODO Call sql request to remove sessionId and all cookies from logged in user
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            databaseCreator.removeSesssionDB(HttpContext.Session.SessionID);
+            // remove sessionId and all cookies from logged in user
             Session.Clear();
             Session.Abandon();
             return View("Index");
+        }
+
+        public ActionResult GoToQuiz(int quizID)
+        {
+            return View("Quiz", quizID);
         }
 
 
@@ -72,6 +80,7 @@ namespace Site.Controllers
                 // Set the session id to an accessible userid as well as a cookie for the name
                 HttpContext.Session["UserID"] = HttpContext.Session.SessionID;
                 HttpContext.Session["UserName"] = username;
+                HttpContext.Session["User_ID"] = 11;
 
                 // Send them back to the home page logged in
                 return View("Index");

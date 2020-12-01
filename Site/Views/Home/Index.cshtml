@@ -1,8 +1,8 @@
 ﻿@{ ViewData["Title"] = "Home Page"; }
 
 <div class="text-center">
-
     <h1 class="display-4">Displaying all our possible quiz question types.</h1>
+    @{ViewBag.Count = 0; }
     @Html.Partial("_MultipleChoiceRadio")
     @Html.Partial("_MultipleChoiceCheck")
     @Html.Partial("_ShortAnswer")

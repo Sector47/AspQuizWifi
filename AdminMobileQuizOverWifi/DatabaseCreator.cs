@@ -47,7 +47,7 @@ namespace AdminMobileQuizOverWifi
             {
                 databaseConnection = new SqlConnection(dbLocationNetwork);
                 // Check for existing database dbdev26
-                string sql = "Select * from information_schema.tables";
+                string sql = "SELECT * FROM information_schema.tables";
                 databaseConnection.Open();
                 command = new SqlCommand(sql, databaseConnection);
 
@@ -92,9 +92,9 @@ namespace AdminMobileQuizOverWifi
                     Console.WriteLine(sqliteConnection.ConnectionString);
                     var SqLitePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"RegisterMobileQuizOverWifi\MobileQuizDb.db"));
                     Console.WriteLine(SqLitePath);
-                    string sql = "CREATE TABLE Logins (User_Name VARCHAR(50) NOT NULL PRIMARY KEY," +
-                                "Password VARCHAR(50) NOT NULL, isAdmin BIT NOT NULL," +
-                                "sessionid CHAR(24))";
+                    string sql = "CREATE TABLE User (USER_ID INT NOT NULL PRIMARY KEY," +
+                                "F_NAME VARCHAR(255) NOT NULL, L_NAME VARCHAR(255) NOT NULL, USERNAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(25) NOT NULL," +
+                                "SESSION_ID CHAR(24) NULL, IS_INSTRUCTOR BIT NOT NULL);";
                     SQLiteCommand liteCmd = sqliteConnection.CreateCommand();
                     liteCmd.CommandText = sql;
                     liteCmd.ExecuteNonQuery();
@@ -138,9 +138,9 @@ namespace AdminMobileQuizOverWifi
                 databaseConnection.Open();
                 // Create our sql string and pass it through to the database as a query
                 // TODO this is where we could add our sql for the initial creation of all of our tables.
-                string sql = "CREATE TABLE Logins (User_Name VARCHAR(50) NOT NULL PRIMARY KEY," +
-                                "Password VARCHAR(50) NOT NULL, isAdmin BIT NOT NULL," +
-                                "sessionid CHAR(24))";
+                string sql = "CREATE TABLE User (USER_ID INT NOT NULL PRIMARY KEY," +
+                                "F_NAME VARCHAR(255) NOT NULL, L_NAME VARCHAR(255) NOT NULL, USERNAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(25) NOT NULL," +
+                                "SESSION_ID CHAR(24) NULL, IS_INSTRUCTOR BIT NOT NULL);";
                 command = new SqlCommand(sql, databaseConnection);
                 command.ExecuteNonQuery();
                 // DEV? Display confirmation message that tables were added succesfully
@@ -173,7 +173,7 @@ namespace AdminMobileQuizOverWifi
             // Create an output string to display our data with
             string output = "This is the current data in LOGIN table\n\nUsername - Password - IsAdmin\n";
             // Connect to database using data connection TODO Make all of these database connection opennings to a method
-            string sql = "SELECT User_Name, Password, isAdmin, sessionid FROM Logins";
+            string sql = "SELECT F_NAME, L_NAME, USERNAME, PASSWORD, IS_INSTRUCTOR, SESSION_ID FROM USERS";
             // DEV Create our sql query string for displaying the LOGIN table
             try
             {
@@ -184,7 +184,7 @@ namespace AdminMobileQuizOverWifi
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    output = output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2) + "\n";
+                    output = output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2) + dataReader.GetValue(4) + " - " + dataReader.GetValue(5) + "\n";
                 }
             }
             catch (System.Exception e)
@@ -212,7 +212,7 @@ namespace AdminMobileQuizOverWifi
         {
             // TODO check for vaild entry ie: no spaces in username/password, not too long or short etc...
             // First check if username already exists.
-            string sqlSelect = "SELECT User_Name FROM Logins WHERE User_Name = '" + username + "'";
+            string sqlSelect = "SELECT USERNAME FROM USERS WHERE USERNAME = '" + username + "'";
             bool alreadyExists = false;
             try
             {
@@ -284,7 +284,7 @@ namespace AdminMobileQuizOverWifi
         }
         public bool loginDB(string username, string password, string session)
         {
-            string sql = "SELECT User_name, Password FROM Logins WHERE User_name = '" + username + "'";
+            string sql = "SELECT USERNAME, PASSWORD FROM USERS WHERE USERNAME = '" + username + "'";
             try
             {
                 // attempt to connect to our database
@@ -304,9 +304,9 @@ namespace AdminMobileQuizOverWifi
                     // TODO check if it matches encrypted hash instead of passing the password through.
                     if (dataReader.GetValue(1).ToString() == password)
                     {
-                        sql = "UPDATE Logins " +
-                              "SET sessionid = '" + session + "'" +
-                              "WHERE User_name = '" + username + "';";
+                        sql = "UPDATE USERS " +
+                              "SET SESSION_ID = '" + session + "'" +
+                              "WHERE USERNAME = '" + username + "';";
 
                         databaseConnection.Close();
                         databaseConnection = new SqlConnection(dbLocationNetwork);
@@ -351,7 +351,7 @@ namespace AdminMobileQuizOverWifi
         }
         public void UpdatePasswordDB(string username, string NewPassword)
         {
-            string sql = "UPDATE Logins SET password = '" + NewPassword + "' WHERE User_Name = '" + username + "';";
+            string sql = "UPDATE USERS SET PASSWORD = '" + NewPassword + "' WHERE USERNAME = '" + username + "';";
             try
             {
                 SqlConnection databaseConnection;
@@ -366,5 +366,101 @@ namespace AdminMobileQuizOverWifi
             }
             
         }
+
+        public void removeSesssionDB(string session)
+        {
+            string sql = "UPDATE USERS SET SESSION_ID = NULL WHERE SESSION_ID = '" + session + "';";
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                command.ExecuteNonQuery();
+            }
+            catch (System.Exception e)
+            {
+                // TODO use local database
+            }
+        }
+
+        public string[,] getQuizzes(string user_id)
+        {
+            int quizCount = countTableDB("QUIZ");
+            int rosterCount = countTableDB("ROSTER");
+            string[] courseList = new string[rosterCount];
+            string[,] results = new string[quizCount,4];
+            // First we get the courses the user is a part of
+            string sql = "SELECT COURSE_ID FROM ROSTER WHERE USER_ID = '" + user_id + "'";
+            
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                int i = 0;
+                while (dataReader.Read())
+                {
+                    courseList[i] = dataReader.GetValue(0).ToString();
+                    i++;
+                }
+                databaseConnection.Close();
+            }
+            catch (System.Exception e)
+            {
+            }
+            foreach(string s in courseList)
+            {
+                sql = "SELECT QUIZ.QUI_ID, QUIZ.QUI_NAME, QUIZ.QUI_NOTES FROM QUIZ, COURSE_QUIZ WHERE QUIZ.QUI_ID = COURSE_QUIZ.QUI_ID AND COURSE_QUIZ.COURSE_ID = " + s;
+                try
+                {
+                    SqlConnection databaseConnection;
+                    databaseConnection = new SqlConnection(dbLocationNetwork);
+                    databaseConnection.Open();
+                    SqlCommand command = new SqlCommand(sql, databaseConnection);
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    int i = 0;
+                    while (dataReader.Read())
+                    {
+                        results[i, 0] = dataReader.GetValue(0).ToString();
+                        results[i, 1] = dataReader.GetValue(1).ToString();
+                        results[i, 2] = dataReader.GetValue(2).ToString();
+                        i++;
+                    }
+                    databaseConnection.Close();
+                }
+                catch (System.Exception e)
+                {
+                }
+            }
+            // Then we get the quizzes for each of those courses. We return this in a 2 dimensional array example row in the array: Qui_id 3 Qui_name PROGQUIZ1 Qui_Notes First Unit Quiz  Course_id 2  3,2,PROGQUIZ1,First Unit Quiz
+
+            //"SELECT QUI_ID, QUI_NAME, QUI_NOTES FROM QUIZ WHERE "
+            // TODO Check if quiz is already completed.   
+            
+            return results;
+        }
+
+        public int countTableDB(string tableName)
+        {
+            int count = 0;
+            string sql = "SELECT COUNT(*) FROM " + tableName;
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                count = Convert.ToInt32(command.ExecuteScalar());
+            }
+            catch (System.Exception e)
+            {
+                // TODO use local database
+            }
+            return count;
+        }
+
     }
 }

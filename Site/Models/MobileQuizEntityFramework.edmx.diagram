@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7fa4cf9db9f148fc8ac1ad0a605623b2" Name="Diagram1" ZoomLevel="47">
+      <Diagram DiagramId="7fa4cf9db9f148fc8ac1ad0a605623b2" Name="Diagram1" ZoomLevel="81">
         <EntityTypeShape EntityType="MobileQuizDBModel.ANSWER" Width="1.5" PointX="5.25" PointY="2.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MobileQuizDBModel.COURSE" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MobileQuizDBModel.COURSE_QUIZ" Width="1.5" PointX="3" PointY="3" IsExpanded="true" />

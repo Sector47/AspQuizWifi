@@ -1,0 +1,10 @@
+﻿@{
+    string[] modelArray = Model;
+    int quizID = Convert.ToInt32(modelArray[0]);
+    string quizName = modelArray[1];
+    string quizNotes = modelArray[2];
+}
+<h2><a href="@Url.Action("GoToQuiz", "Home", new {quizID = quizID})">@quizName</a></h2>
+<p>QuizID: @quizID</p>
+<p>Quiz Notes: @quizNotes</p>
+

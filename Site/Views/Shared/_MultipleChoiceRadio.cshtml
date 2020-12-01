@@ -1,25 +1,24 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
+﻿@{
+    string radioGroup = "radioButtonGroup" + ViewBag.Count.ToString();
+}
 <h2>Multiple choice radio</h2>
 
 <div>
     <div class="question">An example multiple choice question with radio buttons goes here.</div>
     <div>
-        <input type="radio" name="" id="" value="A" />
+        <input type="radio" name="@radioGroup" id="" value="A" />
         <label for="">A) Answer A</label>
     </div>
     <div>
-        <input type="radio" name="" id="" value="B" />
+        <input type="radio" name="@radioGroup" id="" value="B" />
         <label for="">A) Answer B</label>
     </div>
     <div>
-        <input type="radio" name="" id="" value="C" />
+        <input type="radio" name="@radioGroup" id="" value="C" />
         <label for="">A) Answer C</label>
     </div>
     <div>
-        <input type="radio" name="" id="" value="D" />
+        <input type="radio" name="@radioGroup" id="" value="D" />
         <label for="">A) Answer D</label>
     </div>
 </div>

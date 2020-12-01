@@ -200,6 +200,7 @@
     <Content Include="Models\MobileQuizEntityFramework.edmx.diagram">
       <DependentUpon>MobileQuizEntityFramework.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -231,6 +232,8 @@
     <Content Include="Views\Shared\_MultipleChoiceCheck.cshtml" />
     <Content Include="Views\Shared\_ShortAnswer.cshtml" />
     <Content Include="Views\Shared\_MultipleChoiceRadio.cshtml" />
+    <Content Include="Views\Shared\_Quiz.cshtml" />
+    <Content Include="Views\Home\Quiz.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

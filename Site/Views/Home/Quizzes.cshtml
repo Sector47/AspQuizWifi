@@ -1,33 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Quiz";
-    Random rng = new Random();
-
+    ViewData["Title"] = "Quizzes";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Quiz</h1>
+    <h1 class="display-4">Quizzes</h1>
     <form>
         @{
-            // mimics the loading of a quiz question
-            int num = rng.Next(1, 4);
-            if (num == 1)
+            string[,] quiz2dArray = Model as string[,];
+
+            for (int i = 0; i < (quiz2dArray.Length / 3) - 1 && quiz2dArray[i,0] != null; i ++)
             {
-                @Html.Partial("_MultipleChoiceRadio")
-            }
-            else if (num == 2)
-            {
-                @Html.Partial("_MultipleChoiceCheck")
-            }
-            else if (num == 3)
-            {
-                @Html.Partial("_ShortAnswer")
-            }
-            else
-            {
-                @Html.Partial("_FillInBlank")
+                string[] quizArray = { quiz2dArray[i, 0], quiz2dArray[i, 1], quiz2dArray[i,2] };
+                @Html.Partial("_Quiz", quizArray);
             }
         }
-        <div class="submit"><input type="submit" value="Submit"></div>
     </form>
 
     <p>Enter quiz ID.</p>

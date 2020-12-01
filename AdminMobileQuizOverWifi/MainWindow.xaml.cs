@@ -41,11 +41,11 @@ namespace AdminMobileQuizOverWifi
             // create our sql based on whether admin checkbox is checked
             if (AdminCheckbox.IsChecked.HasValue && AdminCheckbox.IsChecked.Value)
             {
-                sql = "INSERT INTO Logins (User_Name, Password, isAdmin) VALUES('" + username + "', '" + password + "', 1)";
+                sql = "INSERT INTO USERS (USERNAME, PASSWORD, IS_INSTRUCTOR) VALUES('" + username + "', '" + password + "', 1)";
             }
             else
             {
-                sql = "INSERT INTO Logins (User_Name, Password, isAdmin) VALUES('" + username + "', '" + password + "', 0)";
+                sql = "INSERT INTO USERS (USERNAME, PASSWORD, IS_INSTRUCTOR) VALUES('" + username + "', '" + password + "', 0)";
             }
 
 

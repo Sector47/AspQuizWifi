@@ -384,7 +384,7 @@ namespace AdminMobileQuizOverWifi
             }
         }
 
-        public string[,] getQuizzes(string user_id)
+        public string[,] getQuizzesDB(int user_id)
         {
             int quizCount = countTableDB("QUIZ");
             int rosterCount = countTableDB("ROSTER");
@@ -442,6 +442,35 @@ namespace AdminMobileQuizOverWifi
             
             return results;
         }
+        public string[,] getQuizzesInstructorDB(int user_id)
+        {
+            int quizCount = countTableDB("QUIZ");
+            string[,] results = new string[quizCount, 4];
+            string sql = "SELECT QUI_ID, QUI_NAME, QUI_NOTES FROM QUIZ";
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                int i = 0;
+                while (dataReader.Read())
+                {
+                    results[i, 0] = dataReader.GetValue(0).ToString();
+                    results[i, 1] = dataReader.GetValue(1).ToString();
+                    results[i, 2] = dataReader.GetValue(2).ToString();
+                    i++;
+                }
+                databaseConnection.Close();
+            }
+            catch (System.Exception e)
+            {
+            }
+            // Then we get the quizzes for each of those courses. We return this in a 2 dimensional array example row in the array: Qui_id 3 Qui_name PROGQUIZ1 Qui_Notes First Unit Quiz  Course_id 2  3,2,PROGQUIZ1,First Unit Quiz
+            return results;
+
+        }
 
         public int countTableDB(string tableName)
         {
@@ -462,5 +491,57 @@ namespace AdminMobileQuizOverWifi
             return count;
         }
 
+        public int getUserIDDB(string username)
+        {
+            string sql = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + username + "'";
+            try
+            {
+                // attempt to connect to our database
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+
+                // build our sql command                
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+
+                // read the results
+                // No need to iterate through datareader as we only expect one return value, so we can executescalar instead
+                return Convert.ToInt32(command.ExecuteScalar());
+            }
+            catch (System.Exception e)
+            {
+
+            }
+            return 0;
+        }
+
+        public bool isInstructorDB(int user_id)
+        {
+            string sql = "SELECT IS_INSTRUCTOR FROM USERS WHERE USER_ID = '" + user_id + "'";
+            try
+            {
+                // attempt to connect to our database
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+
+                // build our sql command                
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+
+                // read the results
+                // No need to iterate through datareader as we only expect one return value, so we can executescalar instead
+                if (Convert.ToInt32(command.ExecuteScalar()) == 1)
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (System.Exception e)
+            {
+
+            }
+            return false;
+        }
     }
 }

@@ -19,12 +19,24 @@ namespace Site.Controllers
 
         public ActionResult Quizzes()
         {
-            if (System.Web.HttpContext.Current.Session["UserID"] != null && System.Web.HttpContext.Current.Session["UserID"].ToString() != "")
+            if (loggedIn())
             {
                 DatabaseCreator databaseCreator = new DatabaseCreator();
 
-                return View("Quizzes", databaseCreator.getQuizzes(HttpContext.Session["User_ID"].ToString()));
+                if (isInstructor())
+                {
+                    return View("Quizzes", databaseCreator.getQuizzesInstructorDB(getLoggedInUserID()));
+                }
+                else
+                {
+                    return View("Quizzes", databaseCreator.getQuizzesDB(getLoggedInUserID()));
+                }
+                
+
+                
             }
+                
+
 
             ViewData["Title"] = "You must log in first in order to view the quizzes page";
             return View("LogIn");
@@ -32,7 +44,7 @@ namespace Site.Controllers
 
         public ActionResult Account()
         {
-            if(System.Web.HttpContext.Current.Session["UserID"] != null && System.Web.HttpContext.Current.Session["UserID"].ToString() != "")
+            if(System.Web.HttpContext.Current.Session["UserSessionID"] != null && System.Web.HttpContext.Current.Session["UserSessionID"].ToString() != "")
             {
                 ViewBag.Message = "Your contact page.";
                 return View();
@@ -63,6 +75,29 @@ namespace Site.Controllers
             return View("Quiz", quizID);
         }
 
+        public int getLoggedInUserID()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
+        }
+
+        public bool loggedIn()
+        {
+            if(HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public bool isInstructor()
+        {
+            //TODO check if logged in user is admin
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.isInstructorDB(getLoggedInUserID());
+        }
+
 
         // LOGIN 
         [HttpPost]
@@ -78,9 +113,9 @@ namespace Site.Controllers
             if (loginStatus)
             {
                 // Set the session id to an accessible userid as well as a cookie for the name
-                HttpContext.Session["UserID"] = HttpContext.Session.SessionID;
+                HttpContext.Session["UserSessionID"] = HttpContext.Session.SessionID;
                 HttpContext.Session["UserName"] = username;
-                HttpContext.Session["User_ID"] = 11;
+                HttpContext.Session["User_ID"] = databaseCreator.getUserIDDB(username);
 
                 // Send them back to the home page logged in
                 return View("Index");

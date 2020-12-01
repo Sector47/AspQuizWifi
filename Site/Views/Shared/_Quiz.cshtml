@@ -4,7 +4,8 @@
     string quizName = modelArray[1];
     string quizNotes = modelArray[2];
 }
-<h2><a href="@Url.Action("GoToQuiz", "Home", new {quizID = quizID})">@quizName</a></h2>
-<p>QuizID: @quizID</p>
+<h2><a href="@Url.Action("GoToQuiz", "Home", new {quizID = quizID})">@quizName</a> #@quizID</h2>
 <p>Quiz Notes: @quizNotes</p>
+<hr />
+
 

@@ -23,12 +23,12 @@
                             <a class="buttonli" href="@Url.Action("Account", "Home", null)">Account</a>
                         </li>
                         <!--Display login or logout depending on if the user is logged in-->
-                        @if (System.Web.HttpContext.Current.Session["UserID"] != null && System.Web.HttpContext.Current.Session["UserID"].ToString() != "")
+                        @if (System.Web.HttpContext.Current.Session["UserSessionID"] != null && System.Web.HttpContext.Current.Session["UserSessionID"].ToString() != "")
                         {
                             <li class="rightflex">
                                 <!--TODO remove UserID display, this is just used for DEV-->
 
-                                Logged in as: <span class="name">@System.Web.HttpContext.Current.Session["UserName"]<br /> @System.Web.HttpContext.Current.Session["UserID"]</span><br/>
+                                Logged in as: <span class="name">@System.Web.HttpContext.Current.Session["UserName"]<br /> @System.Web.HttpContext.Current.Session["UserSessionID"]</span><br/>
                                 <a href="@Url.Action("LogOut", "Home", null)">Log Out</a>
                             </li>
                         }

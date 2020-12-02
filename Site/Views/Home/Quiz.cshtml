@@ -1,5 +1,19 @@
 ﻿@{
+
     ViewData["Title"] = "Quiz";
-    // TODO Populate with questions.
 }
-<h1>@Model.ToString()</h1>
+<h1>@ViewBag.QuizName</h1>
+<!--    foreach QuestionData q in Model(which is an instantiated QuestionData.cs object) we start to build html to display the questions
+        TODO Make this page display a single question instead of all of them. Have a button for next question/ previous question appropriate based on if it is the first/last question. Have a submit button that sends the ResponseList of responses to the controller.
+-->
+@foreach (var q in Model)
+{
+    if (q.que_ID != null)
+    {
+        <p>Question ID: @q.que_ID</p>
+        <p>Question Description: @q.que_question</p>
+        <p>Question Type ID: @q.type_ID</p>
+        <hr />
+    }
+}
+

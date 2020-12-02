@@ -22,9 +22,10 @@ namespace AdminMobileQuizOverWifi
     public class DatabaseCreator
     {
         // String location of the database locally
-        // DEVCONFIG
+        ////
+        //// This will probably be removed, if we have time we can reimplement a local db alternative.
+        ////
         private string dbLocationLocal = ""; // For local replace "" with  "Data Source = C:\\Users\\       USERNAME HERE           \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
-
         // Below code will be used if we use a config file
         // "Data Source = " + System.IO.Path.Combine(
         //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -32,10 +33,13 @@ namespace AdminMobileQuizOverWifi
         // TODO instead of making the dblocationlocal on startup each time, we make it once add it to a config file and then read the config file. This allows asp.net to get the user appdata folder as it is logged in as system/applicationpool and not the user.
         // DEV "Data Source = C:\\Users\\      Username goes here    \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
 
+
         // String location of the database server
-        // DEVCONFIG
         private string dbLocationNetwork = "Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";// For local db make this empty "" and make dbLocationLocal not with your username
 
+        /// <summary>
+        /// This method will create our initial database if it can't find any tables on the connected database(SELECT * FROM information_schema.tables)
+        /// </summary>
         public void initDatabase()
         {
             // TODO check for a SQL Server at this location, if not use sqllite
@@ -168,6 +172,9 @@ namespace AdminMobileQuizOverWifi
                 }
             }
         }
+
+        // REMOVE readDB just returns an output string of the information in the USERS table. This is used by the local program to display changes after adding a user.
+        // it is no longer necessary to have and was just an easy way to test database changes.
         public string readDB()
         {
             // Create an output string to display our data with
@@ -208,6 +215,15 @@ namespace AdminMobileQuizOverWifi
 
             return output;
         }
+
+        /// <summary>
+        /// This method will take a username and password, Optionally f_name, l_name, etc and add them to the users table. TODO The string sql should be moved from mainwindowxaml.cs to this method to allow
+        /// the asp.net to also utilize this method
+        /// </summary>
+        /// <param name="sql">the sql query of INSERT INTO USERS (USERNAME,.... this should be moved from mainwindowxaml.cs to here</param>
+        /// <param name="username"> The username to be added</param>
+        /// <param name="password"> The password to be added</param>
+        /// <returns> TODO Remove Return Statements and make it void, or make it return a string with the system exception. </returns>
         public string addUserDB(string sql, string username, string password)
         {
             // TODO check for vaild entry ie: no spaces in username/password, not too long or short etc...
@@ -282,36 +298,44 @@ namespace AdminMobileQuizOverWifi
                 return null;
             }
         }
+
+        /// <summary>
+        /// Logs in the given username if the password matches the stored password
+        /// </summary>
+        /// <param name="username">The username attempting to login</param>
+        /// <param name="password">The password of the user attempting to login</param>
+        /// <param name="session">The sessionid of the browser attempting to login. This will be stored in the db to know if a user is already logged in.</param>
+        /// <returns></returns>
         public bool loginDB(string username, string password, string session)
         {
             string sql = "SELECT USERNAME, PASSWORD FROM USERS WHERE USERNAME = '" + username + "'";
             try
             {
                 // attempt to connect to our database
-                SqlConnection databaseConnection;
-                databaseConnection = new SqlConnection(dbLocationNetwork);
-                databaseConnection.Open();
+                //SqlConnection databaseConnection;
+                //databaseConnection = new SqlConnection(dbLocationNetwork);
+                //databaseConnection.Open();
 
                 // build our sql command                
-                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                //SqlCommand command = new SqlCommand(sql, databaseConnection);
 
                 // read the results
-                SqlDataReader dataReader = command.ExecuteReader();
+                SqlDataReader dataReader = GetDataReader(sql);
 
                 while (dataReader.Read())
                 {
-                    // check if password matches saved password
+                    // First we check if password matches saved password
                     // TODO check if it matches encrypted hash instead of passing the password through.
                     if (dataReader.GetValue(1).ToString() == password)
                     {
+                        // Since password matched, we can update their loginstatus
                         sql = "UPDATE USERS " +
                               "SET SESSION_ID = '" + session + "'" +
                               "WHERE USERNAME = '" + username + "';";
 
-                        databaseConnection.Close();
-                        databaseConnection = new SqlConnection(dbLocationNetwork);
+                        SqlConnection databaseConnection = new SqlConnection(dbLocationNetwork);
                         databaseConnection.Open();
-                        command = new SqlCommand(sql, databaseConnection);
+                        SqlCommand command = new SqlCommand(sql, databaseConnection);
                         command.ExecuteNonQuery();
                         return true;
                     }
@@ -345,10 +369,26 @@ namespace AdminMobileQuizOverWifi
                 return false;
             }
         }
-        public bool CheckPasswordDB(string currentPassword)
+
+        /// <summary>
+        /// Will check if the user_id password matches the one stored. 
+        /// TODO once this is finished change loginDB to use this method instead and require user_id
+        /// </summary>
+        /// <param name="user_ID"> The id of the user that we are checking if the password matches for</param>
+        /// <param name="currentPassword"> The password we are checking against the stored value</param>
+        /// <returns>A boolean that verifys whether the password matched or not</returns>
+        public bool CheckPasswordDB(int user_ID ,string currentPassword)
         {
+            // TODO
+            return true;
             return false;
         }
+
+        /// <summary>
+        /// This method updates the Users table for a given user with a new password
+        /// </summary>
+        /// <param name="username">The username to update the password for</param>
+        /// <param name="NewPassword"> The new password to update their password with</param>
         public void UpdatePasswordDB(string username, string NewPassword)
         {
             string sql = "UPDATE USERS SET PASSWORD = '" + NewPassword + "' WHERE USERNAME = '" + username + "';";
@@ -367,6 +407,10 @@ namespace AdminMobileQuizOverWifi
             
         }
 
+        /// <summary>
+        /// Will remove the sessionid from the db. This means the user is no longer logged in according to the server
+        /// </summary>
+        /// <param name="session">The session id to clear.</param>
         public void removeSesssionDB(string session)
         {
             string sql = "UPDATE USERS SET SESSION_ID = NULL WHERE SESSION_ID = '" + session + "';";
@@ -384,65 +428,72 @@ namespace AdminMobileQuizOverWifi
             }
         }
 
+        /// <summary>
+        /// Returns a 2d array of quizzes that a given user_id would be a part of.
+        /// </summary>
+        /// <param name="user_id"> The user_id that we want to return quizzes for</param>
+        /// <returns>A 2d array of quiz rows.</returns>
         public string[,] getQuizzesDB(int user_id)
         {
+            // To size the array we count how many quizzes exist
             int quizCount = countTableDB("QUIZ");
-            int rosterCount = countTableDB("ROSTER");
-            string[] courseList = new string[rosterCount];
+            // make a list to hold the courses that the user is in
+            List<string> courseList = new List<string>();
+            // the string array to hold our results that we will return
             string[,] results = new string[quizCount,4];
             // First we get the courses the user is a part of
             string sql = "SELECT COURSE_ID FROM ROSTER WHERE USER_ID = '" + user_id + "'";
             
             try
             {
-                SqlConnection databaseConnection;
-                databaseConnection = new SqlConnection(dbLocationNetwork);
-                databaseConnection.Open();
-                SqlCommand command = new SqlCommand(sql, databaseConnection);
-                SqlDataReader dataReader = command.ExecuteReader();
+                SqlDataReader dataReader = GetDataReader(sql);
                 int i = 0;
                 while (dataReader.Read())
                 {
-                    courseList[i] = dataReader.GetValue(0).ToString();
+                    courseList.Add(dataReader.GetValue(0).ToString());
                     i++;
                 }
-                databaseConnection.Close();
+                dataReader.Close();                
             }
             catch (System.Exception e)
             {
             }
-            foreach(string s in courseList)
+            // After we get the list of courses the user is in, we get the quiz rows that matches that course_quiz using a join.
+            if(courseList != null)
             {
-                sql = "SELECT QUIZ.QUI_ID, QUIZ.QUI_NAME, QUIZ.QUI_NOTES FROM QUIZ, COURSE_QUIZ WHERE QUIZ.QUI_ID = COURSE_QUIZ.QUI_ID AND COURSE_QUIZ.COURSE_ID = " + s;
-                try
+                foreach (string s in courseList)
                 {
-                    SqlConnection databaseConnection;
-                    databaseConnection = new SqlConnection(dbLocationNetwork);
-                    databaseConnection.Open();
-                    SqlCommand command = new SqlCommand(sql, databaseConnection);
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    int i = 0;
-                    while (dataReader.Read())
+                    sql = "SELECT QUIZ.QUI_ID, QUIZ.QUI_NAME, QUIZ.QUI_NOTES FROM QUIZ, COURSE_QUIZ WHERE QUIZ.QUI_ID = COURSE_QUIZ.QUI_ID AND COURSE_QUIZ.COURSE_ID = " + s;
+                    try
                     {
-                        results[i, 0] = dataReader.GetValue(0).ToString();
-                        results[i, 1] = dataReader.GetValue(1).ToString();
-                        results[i, 2] = dataReader.GetValue(2).ToString();
-                        i++;
+                        SqlDataReader dataReader = GetDataReader(sql);
+                        int i = 0;
+                        while (dataReader.Read())
+                        {
+                            results[i, 0] = dataReader.GetValue(0).ToString();
+                            results[i, 1] = dataReader.GetValue(1).ToString();
+                            results[i, 2] = dataReader.GetValue(2).ToString();
+                            i++;
+                        }
+                        dataReader.Close();
                     }
-                    databaseConnection.Close();
-                }
-                catch (System.Exception e)
-                {
+                    catch (System.Exception e)
+                    {
+                    }
+
                 }
             }
-            // Then we get the quizzes for each of those courses. We return this in a 2 dimensional array example row in the array: Qui_id 3 Qui_name PROGQUIZ1 Qui_Notes First Unit Quiz  Course_id 2  3,2,PROGQUIZ1,First Unit Quiz
-
-            //"SELECT QUI_ID, QUI_NAME, QUI_NOTES FROM QUIZ WHERE "
-            // TODO Check if quiz is already completed.   
+            
+            // TODO Check if quiz is already completed. Using the Grades table. if that quiz is already completed remove it from our array  
             
             return results;
         }
-        public string[,] getQuizzesInstructorDB(int user_id)
+
+        /// <summary>
+        /// This is the same as getQuizzesDB except it doesn't need a specified user as it will just return all quizzes
+        /// </summary>
+        /// <returns>A 2d array of quiz rows.</returns>
+        public string[,] getQuizzesInstructorDB()
         {
             int quizCount = countTableDB("QUIZ");
             string[,] results = new string[quizCount, 4];
@@ -472,6 +523,11 @@ namespace AdminMobileQuizOverWifi
 
         }
 
+        /// <summary>
+        /// Counts a given tables number of rows
+        /// </summary>
+        /// <param name="tableName">The table to be counted</param>
+        /// <returns> An integer representing the number of rows counted </returns>
         public int countTableDB(string tableName)
         {
             int count = 0;
@@ -491,6 +547,11 @@ namespace AdminMobileQuizOverWifi
             return count;
         }
 
+        /// <summary>
+        /// Gets a user_id for a given username
+        /// </summary>
+        /// <param name="username"> The username to search for the user_id of</param>
+        /// <returns>An integer representing the user_id</returns>
         public int getUserIDDB(string username)
         {
             string sql = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + username + "'";
@@ -515,6 +576,11 @@ namespace AdminMobileQuizOverWifi
             return 0;
         }
 
+        /// <summary>
+        /// Returns whether a given user_id is an instructor
+        /// </summary>
+        /// <param name="user_id">The user_id to be checked for access level</param>
+        /// <returns>A boolean of whether the given user was an instructor</returns>
         public bool isInstructorDB(int user_id)
         {
             string sql = "SELECT IS_INSTRUCTOR FROM USERS WHERE USER_ID = '" + user_id + "'";
@@ -542,6 +608,141 @@ namespace AdminMobileQuizOverWifi
 
             }
             return false;
+        }
+
+        /// <summary>
+        /// Counts the number of questions for a given quiz_id
+        /// </summary>
+        /// <param name="quiz_ID">The id of the quiz to be counted</param>
+        /// <returns>An integer representing the number of questions counted in the given quiz</returns>
+        public int countQuestionsDB(int quiz_ID)
+        {
+            int count = 0;
+            string sql = "SELECT COUNT(*) FROM QUIZ WHERE QUI_ID ='" + quiz_ID + "'";
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                count = Convert.ToInt32(command.ExecuteScalar());
+            }
+            catch (System.Exception e)
+            {
+                // TODO use local database
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Gets a list of the question_ids for a given quiz_id
+        /// </summary>
+        /// <param name="quiz_ID">The id of the quiz to be searched for question_ids</param>
+        /// <returns>A list of the question_ids that were part of the given quiz</returns>
+        public List<int> getQuestionIDsDB(int quiz_ID)
+        {
+            List<int> results = new List<int>();
+       
+            string sql = "SELECT QUE_ID FROM QUESTION WHERE QUI_ID = '" + quiz_ID + "'";
+            try
+            {
+                SqlDataReader dataReader = GetDataReader(sql);
+                int i = 0;
+                while (dataReader.Read())
+                {
+                    results.Add(Convert.ToInt32(dataReader.GetValue(0)));
+                    i++;
+                }
+                dataReader.Close();
+            }
+            catch (System.Exception e)
+            {
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Gets a 2d string array of the rows of questions for a given quiz_id
+        /// </summary>
+        /// <param name="quiz_id"> The id of the quiz to be searched for the question data</param>
+        /// <returns> A 2d string array holding the question rows as data.</returns>
+        public string[,] getQuestionDataDB(int quiz_id)
+        {
+            int questionCount = countTableDB("QUESTION");
+            string[,] results = new string[questionCount, 3];
+            string sql = "SELECT QUE_ID, QUE_QUESTION, TYPE_ID FROM QUESTION WHERE QUI_ID = '" + quiz_id+ "'";
+            try
+            {
+
+                SqlDataReader dataReader = GetDataReader(sql);
+                int i = 0;
+                while (dataReader.Read())
+                {
+                    results[i, 0] = dataReader.GetValue(0).ToString();
+                    results[i, 1] = dataReader.GetValue(1).ToString();
+                    results[i, 2] = dataReader.GetValue(2).ToString();
+                    i++;
+                }
+                dataReader.Close();
+            }
+            catch (System.Exception e)
+            {
+            }
+            // Then we get the quizzes for each of those courses. We return this in a 2 dimensional array example row in the array: Qui_id 3 Qui_name PROGQUIZ1 Qui_Notes First Unit Quiz  Course_id 2  3,2,PROGQUIZ1,First Unit Quiz
+            return results;
+        }
+
+        /// <summary>
+        /// Gets a 2d string array of the rows of answers for each question_id in a questionIDList
+        /// </summary>
+        /// <param name="questionIDList"> The list of question_ids to get the answers for</param>
+        /// <returns> A 2d string array holding the answer rows as data.</returns>
+        public string[,] getAnswerDataDB(List<int> questionIDList)
+        {
+            int questionCount = countTableDB("QUESTION");
+            string[,] results = new string[questionCount, 3];
+            string sql = "SELECT ANS_ID, QUE_ID, DESCRIPTION FROM ANSWER WHERE ";
+            foreach (int i in questionIDList)
+            {
+                // Skip adding "OR" if first time
+                if (i == questionIDList.First())
+                    sql += "QUE_ID = '" + i + "'";
+                else
+                    sql += " OR QUE_ID = '" + i + "'";
+            }
+            try
+            {
+                SqlDataReader dataReader = GetDataReader(sql);
+                int i = 0;
+                while (dataReader.Read())
+                {
+                    results[i, 0] = dataReader.GetValue(0).ToString();
+                    results[i, 1] = dataReader.GetValue(1).ToString();
+                    results[i, 2] = dataReader.GetValue(2).ToString();
+                    i++;
+                }
+                dataReader.Close();
+            }
+            catch (System.Exception e)
+            {
+            }
+            // Then we get the quizzes for each of those courses. We return this in a 2 dimensional array example row in the array: Qui_id 3 Qui_name PROGQUIZ1 Qui_Notes First Unit Quiz  Course_id 2  3,2,PROGQUIZ1,First Unit Quiz
+            return results;
+        }
+
+        /// <summary>
+        /// Returns a SqlDataReader object to be used by DatabaseCreator.cs to connect to the database and be able to read the results of a given sql select statement
+        /// </summary>
+        /// <param name="sql"> The sql select query to return the object for reading of</param>
+        /// <returns> A SqlDataReader object for a given sql command</returns>
+        private SqlDataReader GetDataReader(string sql)
+        {
+            SqlConnection databaseConnection;
+            databaseConnection = new SqlConnection(dbLocationNetwork);
+            databaseConnection.Open();
+            SqlCommand command = new SqlCommand(sql, databaseConnection);
+            SqlDataReader dataReader = command.ExecuteReader();
+            return dataReader;
         }
     }
 }

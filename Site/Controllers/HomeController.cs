@@ -8,7 +8,7 @@ namespace Site.Controllers
 {
     public class HomeController : Controller
     {
-        // connection to DB
+        // connection to DB Entity Framework
 
         private MobileQuizEntities db = new MobileQuizEntities();
 
@@ -19,37 +19,38 @@ namespace Site.Controllers
 
         public ActionResult Quizzes()
         {
+            // Check if the user is logged in
             if (loggedIn())
-            {
+            {                
                 DatabaseCreator databaseCreator = new DatabaseCreator();
 
+                // if the user is logged into the instructor, have the quizzes page get the data from getQuizzesInstructorDB() which returns all quizzes
                 if (isInstructor())
                 {
-                    return View("Quizzes", databaseCreator.getQuizzesInstructorDB(getLoggedInUserID()));
+                    return View("Quizzes", databaseCreator.getQuizzesInstructorDB());
                 }
+                // Else return the quizzes from getQuizzesDB based on the logged in user's id.
                 else
                 {
                     return View("Quizzes", databaseCreator.getQuizzesDB(getLoggedInUserID()));
-                }
-                
-
-                
+                }      
             }
-                
 
-
+            // If not logged in send them to the login page with a message that they need to log in in order to view the quizzes page
             ViewData["Title"] = "You must log in first in order to view the quizzes page";
             return View("LogIn");
         }
 
         public ActionResult Account()
         {
-            if(System.Web.HttpContext.Current.Session["UserSessionID"] != null && System.Web.HttpContext.Current.Session["UserSessionID"].ToString() != "")
+            // Check if the user is logged in
+            if (loggedIn())
             {
                 ViewBag.Message = "Your contact page.";
                 return View();
             }
 
+            // If not logged in send them to the login page with a message that they need to log in in order to view the account page
             ViewData["Title"] = "You must log in first in order to view the account page";
             return View("LogIn");  
         }
@@ -60,27 +61,77 @@ namespace Site.Controllers
             return View();
         }
         
+        // Method to logout the current session's user
         public ActionResult LogOut()
         {
+            // Clear the sessionid stored on the database
             DatabaseCreator databaseCreator = new DatabaseCreator();
             databaseCreator.removeSesssionDB(HttpContext.Session.SessionID);
             // remove sessionId and all cookies from logged in user
             Session.Clear();
             Session.Abandon();
+            // return them to the home page.
             return View("Index");
         }
 
         public ActionResult GoToQuiz(int quizID)
         {
-            return View("Quiz", quizID);
+            // When loading a quiz we need to pass through the question data including question descriptions and possible answers
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+
+            // Make our list to hold our questiondata objects we will create
+            List<QuestionData> questionDataList = new List<QuestionData>();
+            // Grab the string 2d arrays of the questions and answers for the given quizID
+            string[,] questionDataArray = databaseCreator.getQuestionDataDB(quizID);
+            // for getting answer data we need to know all the questionIDs for that quiz, so we make a list of them to pass through.
+            List<int> questionIDList = databaseCreator.getQuestionIDsDB(quizID);
+            string[,] answerData = databaseCreator.getAnswerDataDB(questionIDList);
+            // after we have the data we need we can create our questionData object for each item 
+            // loop through our questionData 2d array
+            for(int i = 0; i < questionDataArray.GetLength(0); i++)
+            {
+                // make our temporary ans_ID list to be able to add it to our question data object
+                List<int> tempAns_IDList = new List<int>();
+                for(int j = 0; j < answerData.GetLength(0); j++)
+                {
+                    if (answerData[j, 1] == questionDataArray[i, 0])
+                        tempAns_IDList.Add(System.Convert.ToInt32(answerData[j, 0]));
+                }
+
+                // make our temporary description list to be able to add it to our question data object
+                List<string> tempDescriptionList = new List<string>();
+                for (int k = 0; k < answerData.GetLength(0); k++)
+                {
+                    if (answerData[k, 1] == questionDataArray[i, 0])
+                        tempDescriptionList.Add(answerData[k, 2]);
+                }
+
+                // Create our questionData object and add it to the QuestionDataList
+                questionDataList.Add(new QuestionData
+                {
+                    que_ID = questionDataArray[i, 0],
+                    que_question = questionDataArray[i, 1],
+                    type_ID = questionDataArray[i, 2],
+                    ans_IDList = tempAns_IDList,
+                    descriptionList = tempDescriptionList
+                });
+            }
+
+            // TODO This should be quiz name not id
+            ViewBag.QuizName = quizID;
+            // pass our new question data object to the quiz view.
+            return View("Quiz", questionDataList);
         }
 
+        // Using the cookie for UserName we retrieve that userID
         public int getLoggedInUserID()
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
             return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
         }
 
+        // return true or false depending on if the user is logged in. We check this by seeing if the cookie for session id is empty or null.
+        // TODO make this confirm against the server if that session id was not timed out yet.
         public bool loggedIn()
         {
             if(HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
@@ -91,9 +142,9 @@ namespace Site.Controllers
                 return false;
         }
 
+        // Check if the current user is an instructor.
         public bool isInstructor()
         {
-            //TODO check if logged in user is admin
             DatabaseCreator databaseCreator = new DatabaseCreator();
             return databaseCreator.isInstructorDB(getLoggedInUserID());
         }
@@ -103,6 +154,7 @@ namespace Site.Controllers
         [HttpPost]
         public ActionResult LogInAttempt(string username, string password)
         {
+            // Get the browser's generated sesssion id
             string session = HttpContext.Session.SessionID;
             // Create our asp database object to send through login attempt
             DatabaseCreator databaseCreator = new DatabaseCreator();
@@ -126,28 +178,38 @@ namespace Site.Controllers
             return View("LogIn");
         }
 
+        // Change the password of the current user. 
+        // TODO Overloaded method to allower userid entry as well to be used by instructor on the config page.
         public ActionResult ChangePassword(string currentPassword, string newPassword, string confirmNewPassword)
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
 
-            if (currentPassword != "" && databaseCreator.CheckPasswordDB(currentPassword))
+            // Make sure they entered a password in current password and that is their current password in the db for the given user id
+            if (currentPassword != "" && !databaseCreator.CheckPasswordDB( getLoggedInUserID(), currentPassword))
             {
                 ViewBag.PasswordChange = "Your current password was incorrect.";
                 return View("Account");
             }
+            // If the password is empty we tell them it can't be blank
             else if(currentPassword == "")
             {
                 ViewBag.PasswordChange = "Current password cannot be blank";
                 return View("Account");
             }
+            // If their password was correct then we start to verify the new password
+            // TODO verify the length is fine and that no special characters exist.
             else 
             {
+                // Check that neither are blank
                 if(newPassword != "" && confirmNewPassword != "")
                 {
+                    // check that they match
                     if (newPassword == confirmNewPassword)
                     {
+                        // make sure the new password is not the same as the old password
                         if(newPassword != currentPassword)
                         {
+                            // Call our UpdatePasswordDB method with the username of the current user and a newPassword string
                             databaseCreator.UpdatePasswordDB(HttpContext.Session["UserName"].ToString(), newPassword);
                             ViewBag.PasswordChange = "Your password was successfully changed.";
                         }
@@ -169,7 +231,7 @@ namespace Site.Controllers
                     return View("Account");
                 }              
             }
-
+            // return to account page after, The ViewBag.PasswordChange will hold the message depending on whether it was succesful or not.
             return View("Account");
         }
     }

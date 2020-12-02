@@ -165,6 +165,7 @@
     <Compile Include="Models\QUESTION.cs">
       <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\QuestionData.cs" />
     <Compile Include="Models\QUIZ.cs">
       <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
     </Compile>

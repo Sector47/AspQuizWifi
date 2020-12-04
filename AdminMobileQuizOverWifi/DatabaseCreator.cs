@@ -45,10 +45,11 @@ namespace AdminMobileQuizOverWifi
             // TODO check for a SQL Server at this location, if not use sqllite
             SqlConnection databaseConnection;
             SQLiteConnection sqliteConnection;
-            sqliteConnection = new SQLiteConnection(dbLocationLocal);
+            
             SqlCommand command;
             try
             {
+
                 databaseConnection = new SqlConnection(dbLocationNetwork);
                 // Check for existing database dbdev26
                 string sql = "SELECT * FROM information_schema.tables";
@@ -80,6 +81,7 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
+                sqliteConnection = new SQLiteConnection(dbLocationLocal);
                 // if database can't connect we use sqllite instead
                 try
                 {
@@ -127,7 +129,7 @@ namespace AdminMobileQuizOverWifi
                 {
 
                 }
-
+                sqliteConnection = new SQLiteConnection(dbLocationLocal);
                 if (sqliteConnection.State == ConnectionState.Open)
                 {
                     sqliteConnection.Close();

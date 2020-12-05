@@ -17,6 +17,26 @@ namespace Site.Controllers
             return View();
         }
 
+        public ActionResult ModifyUsers()
+        {
+            return View();
+        }
+
+        public ActionResult ModifyQuizzes()
+        {
+            return View();
+        }
+
+        public ActionResult ModifyCourses()
+        {
+            return View();
+        }
+
+        public ActionResult ModifyGrades()
+        {
+            return View();
+        }
+
         public ActionResult Quizzes()
         {
             // Check if the user is logged in

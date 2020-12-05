@@ -21,9 +21,9 @@ namespace Site.Models
             this.QUESTIONs = new HashSet<QUESTION>();
         }
     
-        public int QUI_ID { get; set; }
         public string QUI_NAME { get; set; }
         public string QUI_NOTES { get; set; }
+        public int QUI_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<COURSE_QUIZ> COURSE_QUIZ { get; set; }

@@ -17,18 +17,21 @@ namespace Site.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public USER()
         {
+            this.GRADEs = new HashSet<GRADE>();
             this.RESPONSEs = new HashSet<RESPONSE>();
             this.COURSEs = new HashSet<COURSE>();
         }
     
-        public int USER_ID { get; set; }
         public string F_NAME { get; set; }
         public string L_NAME { get; set; }
-        public Nullable<bool> IS_INSTRUCTOR { get; set; }
+        public bool IS_INSTRUCTOR { get; set; }
         public string USERNAME { get; set; }
         public string PASSWORD { get; set; }
         public string SESSION_ID { get; set; }
+        public int USER_ID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GRADE> GRADEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESPONSE> RESPONSEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

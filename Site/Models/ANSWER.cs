@@ -14,14 +14,11 @@ namespace Site.Models
     
     public partial class ANSWER
     {
-        public int ANS_ID { get; set; }
-        public Nullable<int> QUE_ID { get; set; }
-        public Nullable<int> COURSE_QUI_ID { get; set; }
+        public int QUE_ID { get; set; }
         public string DESCRIPTION { get; set; }
-        public string TYPE { get; set; }
-        public Nullable<bool> CORRECT_ANS { get; set; }
+        public bool CORRECT_ANS { get; set; }
+        public int ANS_ID { get; set; }
     
-        public virtual COURSE_QUIZ COURSE_QUIZ { get; set; }
         public virtual QUESTION QUESTION { get; set; }
     }
 }

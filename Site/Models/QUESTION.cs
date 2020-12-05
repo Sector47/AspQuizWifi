@@ -21,15 +21,17 @@ namespace Site.Models
             this.RESPONSEs = new HashSet<RESPONSE>();
         }
     
-        public int QUE_ID { get; set; }
         public int QUI_ID { get; set; }
         public string QUE_QUESTION { get; set; }
-        public string QUE_ANSWER { get; set; }
+        public string TYPE_ID { get; set; }
+        public int QUE_ID { get; set; }
+        public string QUESTION_ANSWER { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ANSWER> ANSWERs { get; set; }
-        public virtual QUIZ QUIZ { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESPONSE> RESPONSEs { get; set; }
+        public virtual TYPE TYPE { get; set; }
+        public virtual QUIZ QUIZ { get; set; }
     }
 }

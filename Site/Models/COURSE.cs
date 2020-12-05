@@ -18,19 +18,19 @@ namespace Site.Models
         public COURSE()
         {
             this.COURSE_QUIZ = new HashSet<COURSE_QUIZ>();
-            this.USERs = new HashSet<USER>();
+            this.USERS = new HashSet<USER>();
         }
     
-        public int COURSE_ID { get; set; }
         public string COU_NAME { get; set; }
         public string COU_SEM { get; set; }
         public Nullable<int> COU_YEAR { get; set; }
         public Nullable<System.DateTime> COU_START_DATE { get; set; }
         public Nullable<System.DateTime> COU_END_DATE { get; set; }
+        public int COURSE_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<COURSE_QUIZ> COURSE_QUIZ { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<USER> USERs { get; set; }
+        public virtual ICollection<USER> USERS { get; set; }
     }
 }

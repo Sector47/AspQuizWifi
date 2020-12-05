@@ -9,8 +9,7 @@ namespace Site.Controllers
     public class HomeController : Controller
     {
         // connection to DB Entity Framework
-
-        private MobileQuizEntities db = new MobileQuizEntities();
+        private MobileQuizWifiDBEntities db = new MobileQuizWifiDBEntities();
 
         public ActionResult Index()
         {

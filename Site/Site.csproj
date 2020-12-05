@@ -142,44 +142,47 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ANSWER.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSE.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSE_QUIZ.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\LOGIN.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+    <Compile Include="Models\GRADE.cs">
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MobileQuizEntityFramework.Context.cs">
+    <Compile Include="Models\MobileQuizWifiEntityFramework.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MobileQuizEntityFramework.Context.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MobileQuizEntityFramework.cs">
+    <Compile Include="Models\MobileQuizWifiEntityFramework.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MobileQuizEntityFramework.Designer.cs">
+    <Compile Include="Models\MobileQuizWifiEntityFramework.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MobileQuizEntityFramework.edmx</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\QUESTION.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\QuestionData.cs" />
     <Compile Include="Models\QUIZ.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RESPONSE.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TYPE.cs">
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\USER.cs">
-      <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -188,24 +191,24 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\MobileQuizEntityFramework.Context.tt">
+    <Content Include="Models\MobileQuizWifiEntityFramework.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>MobileQuizEntityFramework.Context.cs</LastGenOutput>
-      <DependentUpon>MobileQuizEntityFramework.edmx</DependentUpon>
+      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
+      <LastGenOutput>MobileQuizWifiEntityFramework.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\MobileQuizEntityFramework.tt">
+    <Content Include="Models\MobileQuizWifiEntityFramework.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MobileQuizEntityFramework.edmx</DependentUpon>
-      <LastGenOutput>MobileQuizEntityFramework.cs</LastGenOutput>
+      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
+      <LastGenOutput>MobileQuizWifiEntityFramework.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\MobileQuizEntityFramework.edmx">
+    <EntityDeploy Include="Models\MobileQuizWifiEntityFramework.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MobileQuizEntityFramework.Designer.cs</LastGenOutput>
+      <LastGenOutput>MobileQuizWifiEntityFramework.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\MobileQuizEntityFramework.edmx.diagram">
-      <DependentUpon>MobileQuizEntityFramework.edmx</DependentUpon>
+    <Content Include="Models\MobileQuizWifiEntityFramework.edmx.diagram">
+      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />

@@ -12,10 +12,14 @@ namespace Site.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class LOGIN
+    public partial class GRADE
     {
-        public string USER_NAME { get; set; }
-        public string PASSWORD { get; set; }
-        public bool ISADMIN { get; set; }
+        public int GRA_ID { get; set; }
+        public int USER_ID { get; set; }
+        public int COURSE_QUI_ID { get; set; }
+        public int GRA_GRADE { get; set; }
+    
+        public virtual COURSE_QUIZ COURSE_QUIZ { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

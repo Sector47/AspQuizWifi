@@ -13,10 +13,10 @@ namespace Site.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class MobileQuizEntities : DbContext
+    public partial class MobileQuizWifiDBEntities : DbContext
     {
-        public MobileQuizEntities()
-            : base("name=MobileQuizEntities")
+        public MobileQuizWifiDBEntities()
+            : base("name=MobileQuizWifiDBEntities")
         {
         }
     
@@ -28,10 +28,11 @@ namespace Site.Models
         public virtual DbSet<ANSWER> ANSWERs { get; set; }
         public virtual DbSet<COURSE> COURSEs { get; set; }
         public virtual DbSet<COURSE_QUIZ> COURSE_QUIZ { get; set; }
-        public virtual DbSet<LOGIN> LOGINs { get; set; }
+        public virtual DbSet<GRADE> GRADEs { get; set; }
         public virtual DbSet<QUESTION> QUESTIONs { get; set; }
         public virtual DbSet<QUIZ> QUIZs { get; set; }
         public virtual DbSet<RESPONSE> RESPONSEs { get; set; }
-        public virtual DbSet<USER> USERs { get; set; }
+        public virtual DbSet<TYPE> TYPEs { get; set; }
+        public virtual DbSet<USER> USERS { get; set; }
     }
 }

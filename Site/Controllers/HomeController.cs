@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AdminMobileQuizOverWifi;
+using Site.Models;
 
 namespace Site.Controllers
 {
@@ -40,7 +41,7 @@ namespace Site.Controllers
         {
             // Check if the user is logged in
             if (loggedIn())
-            {                
+            {
                 DatabaseCreator databaseCreator = new DatabaseCreator();
 
                 // if the user is logged into the instructor, have the quizzes page get the data from getQuizzesInstructorDB() which returns all quizzes
@@ -52,7 +53,7 @@ namespace Site.Controllers
                 else
                 {
                     return View("Quizzes", databaseCreator.getQuizzesDB(getLoggedInUserID()));
-                }      
+                }
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the quizzes page
@@ -71,7 +72,7 @@ namespace Site.Controllers
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the account page
             ViewData["Title"] = "You must log in first in order to view the account page";
-            return View("LogIn");  
+            return View("LogIn");
         }
 
         public ActionResult LogIn()
@@ -79,7 +80,7 @@ namespace Site.Controllers
             ViewData["Title"] = "Log In";
             return View();
         }
-        
+
         // Method to logout the current session's user
         public ActionResult LogOut()
         {
@@ -107,11 +108,11 @@ namespace Site.Controllers
             string[,] answerData = databaseCreator.getAnswerDataDB(questionIDList);
             // after we have the data we need we can create our questionData object for each item 
             // loop through our questionData 2d array
-            for(int i = 0; i < questionDataArray.GetLength(0); i++)
+            for (int i = 0; i < questionDataArray.GetLength(0); i++)
             {
                 // make our temporary ans_ID list to be able to add it to our question data object
                 List<int> tempAns_IDList = new List<int>();
-                for(int j = 0; j < answerData.GetLength(0); j++)
+                for (int j = 0; j < answerData.GetLength(0); j++)
                 {
                     if (answerData[j, 1] == questionDataArray[i, 0])
                         tempAns_IDList.Add(System.Convert.ToInt32(answerData[j, 0]));
@@ -153,7 +154,7 @@ namespace Site.Controllers
         // TODO make this confirm against the server if that session id was not timed out yet.
         public bool loggedIn()
         {
-            if(HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
             {
                 return true;
             }
@@ -204,29 +205,29 @@ namespace Site.Controllers
             DatabaseCreator databaseCreator = new DatabaseCreator();
 
             // Make sure they entered a password in current password and that is their current password in the db for the given user id
-            if (currentPassword != "" && !databaseCreator.CheckPasswordDB( getLoggedInUserID(), currentPassword))
+            if (currentPassword != "" && !databaseCreator.CheckPasswordDB(getLoggedInUserID(), currentPassword))
             {
                 ViewBag.PasswordChange = "Your current password was incorrect.";
                 return View("Account");
             }
             // If the password is empty we tell them it can't be blank
-            else if(currentPassword == "")
+            else if (currentPassword == "")
             {
                 ViewBag.PasswordChange = "Current password cannot be blank";
                 return View("Account");
             }
             // If their password was correct then we start to verify the new password
             // TODO verify the length is fine and that no special characters exist.
-            else 
+            else
             {
                 // Check that neither are blank
-                if(newPassword != "" && confirmNewPassword != "")
+                if (newPassword != "" && confirmNewPassword != "")
                 {
                     // check that they match
                     if (newPassword == confirmNewPassword)
                     {
                         // make sure the new password is not the same as the old password
-                        if(newPassword != currentPassword)
+                        if (newPassword != currentPassword)
                         {
                             // Call our UpdatePasswordDB method with the username of the current user and a newPassword string
                             databaseCreator.UpdatePasswordDB(HttpContext.Session["UserName"].ToString(), newPassword);
@@ -236,7 +237,7 @@ namespace Site.Controllers
                         {
                             ViewBag.PasswordChange = "Your new password cannot be the same as your current password.";
                             return View("Account");
-                        }                                            
+                        }
                     }
                     else
                     {
@@ -248,7 +249,7 @@ namespace Site.Controllers
                 {
                     ViewBag.PasswordChange = "Your new password or confirmation cannot be blank.";
                     return View("Account");
-                }              
+                }
             }
             // return to account page after, The ViewBag.PasswordChange will hold the message depending on whether it was succesful or not.
             return View("Account");

@@ -16,7 +16,8 @@
 
 <ul>
     <li><a href="@Url.Action("ModifyUsers", "Home", null)">Modify Users</a></li>
-    <li><a  href="@Url.Action("ModifyCourses", "Home", null)">Modify Courses</a></li>
+    <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses")</li>
+    @* <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses", new { id = userID })</li>*@
     <li><a href="@Url.Action("ModifyQuizzes", "Home", null)">Modify Quizzes</a></li>
     <li><a href="@Url.Action( "ModifyGrades", "Home", null)">Modify Grades</a></li>
     @*  <li>@Html.ActionLink("Modify Users", "ModifyUsers", "Home", new { @class = "" })</li>
@@ -26,7 +27,7 @@
         </li>
         <li>
             @Html.ActionLink("Modify Grades", "ModifyGrades", "Home", new { @class = "" })</li>*@
-    
+
 </ul>
 
 <!--

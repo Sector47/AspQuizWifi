@@ -1,25 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@{ 
+    // shuffled list of the provided answer list.
+    // Put our list of answers into a strongly typed list
+    List<int> tempList = Model.ans_IDList;
+    List<string> tempDescriptionList = Model.descriptionList;
+    // Create our random object and our list object to hold our ordered answers
+    Random random = new Random();
+    List<int> orderedAnswers = new List<int>();
+    List<string> orderedDescriptions = new List<string>();
 
-<h2>Multiple choice check</h2>
+    // Order our list randomly
+    int randomInt = random.Next();
+    orderedAnswers = tempList.OrderBy(x => randomInt).ToList();
+    orderedDescriptions = tempDescriptionList.OrderBy(x => randomInt).ToList();
+
+
+
+}
+
+<h2>@Model.que_question</h2>
 
 <div>
-    <div class="question">An example multiple choice question with check boxes goes here.</div>
-    <div>
-        <input type="checkbox" name="" id="" value="A" />
-        <label for="">A) Answer A</label>
-    </div>
-    <div>
-        <input type="checkbox" name="" id="" value="B" />
-        <label for="">A) Answer B</label>
-    </div>
-    <div>
-        <input type="checkbox" name="" id="" value="C" />
-        <label for="">A) Answer C</label>
-    </div>
-    <div>
-        <input type="checkbox" name="" id="" value="D" />
-        <label for="">A) Answer D</label>
-    </div>
+    <div class="question"></div>
+    @for (int i = 0; i < orderedAnswers.Count; i++)
+    {        
+        <div>
+            <input type="checkbox" name="" id="" value="A" />
+            <label for="">@Convert.ToChar(i + 65)) @orderedDescriptions[i]</label>
+        </div>
+    }
 </div>

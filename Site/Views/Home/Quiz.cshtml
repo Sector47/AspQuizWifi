@@ -1,5 +1,4 @@
 ﻿@{
-
     ViewData["Title"] = "Quiz";
 }
 <h1>@ViewBag.QuizName</h1>
@@ -10,10 +9,24 @@
 {
     if (q.que_ID != null)
     {
-        <p>Question ID: @q.que_ID</p>
-        <p>Question Description: @q.que_question</p>
-        <p>Question Type ID: @q.type_ID</p>
+        if (q.type_ID.Contains("MCR"))
+        {
+            @Html.Partial("_MultipleChoiceRadio", q as Site.Models.QuestionData);
+        }
+        if (q.type_ID.Contains("SA"))
+        {
+            @Html.Partial("_ShortAnswer", q as Site.Models.QuestionData)
+        }
+        if (q.type_ID.Contains("FB"))
+        {
+            @Html.Partial("_FillInBlank", q as Site.Models.QuestionData)
+        }
+        if (q.type_ID.Contains("MCC"))
+        {
+            @Html.Partial("_MultipleChoiceCheck", q as Site.Models.QuestionData)
+        }
         <hr />
     }
+
 }
 

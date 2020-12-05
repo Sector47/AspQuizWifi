@@ -1,25 +1,29 @@
 ﻿@{
-    string radioGroup = "radioButtonGroup" + ViewBag.Count.ToString();
+    // shuffled list of the provided answer list.
+    // Put our list of answers into a strongly typed list
+    List<int> tempList = Model.ans_IDList;
+    List<string> tempDescriptionList = Model.descriptionList;
+    // Create our random object and our list object to hold our ordered answers
+    Random random = new Random();
+    List<int> orderedAnswers = new List<int>();
+    List<string> orderedDescriptions = new List<string>();
+
+    // Order our list randomly
+    int randomInt = random.Next();
+    orderedAnswers = tempList.OrderBy(x => randomInt).ToList();
+    orderedDescriptions = tempDescriptionList.OrderBy(x => randomInt).ToList();
 }
-<h2>Multiple choice radio</h2>
+<h2>@Model.que_question</h2>
 
 <div>
-    <div class="question">An example multiple choice question with radio buttons goes here.</div>
-    <div>
-        <input type="radio" name="@radioGroup" id="" value="A" />
-        <label for="">A) Answer A</label>
-    </div>
-    <div>
-        <input type="radio" name="@radioGroup" id="" value="B" />
-        <label for="">A) Answer B</label>
-    </div>
-    <div>
-        <input type="radio" name="@radioGroup" id="" value="C" />
-        <label for="">A) Answer C</label>
-    </div>
-    <div>
-        <input type="radio" name="@radioGroup" id="" value="D" />
-        <label for="">A) Answer D</label>
-    </div>
+    <div class="question">@Model.que_question</div>
+    @for (int i = 0; i < orderedAnswers.Count; i++)
+    {
+        //TODO fix radio group/id
+        <div>
+            <input type="radio" name="" id="" value="@Convert.ToChar(i + 65)" />
+            <label for="">@Convert.ToChar(i + 65)) @orderedDescriptions[i]</label>
+        </div>
+    }
 </div>
 

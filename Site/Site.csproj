@@ -139,6 +139,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModifyCoursesController.cs" />
+    <Compile Include="Controllers\ModifyQuizzesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -254,6 +255,10 @@
     <Content Include="Views\ModifyCourses\Create.cshtml" />
     <Content Include="Views\ModifyCourses\Delete.cshtml" />
     <Content Include="Views\ModifyCourses\Edit.cshtml" />
+    <Content Include="Views\ModifyQuizzes\Index.cshtml" />
+    <Content Include="Views\ModifyQuizzes\Create.cshtml" />
+    <Content Include="Views\ModifyQuizzes\Edit.cshtml" />
+    <Content Include="Views\ModifyQuizzes\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

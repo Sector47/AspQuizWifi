@@ -129,6 +129,42 @@ footer {
     justify-content: center;
 }
 
+table.coursetable {
+    font-family: verdana,arial,sans-serif;
+    font-size: 11px;
+    color: #333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+
+    table.coursetable th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #dedede;
+    }
+
+    table.coursetable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #ffffff;
+    }
+
+.col-md-10 {
+    padding: 15px;
+}
+
+.buttonStyle {
+    border: 1px solid #cfcfd1;
+    border-radius: 1px;
+    background-color: #7b7f80;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
 
 @media only screen and (max-width: 680px) {
     nav {

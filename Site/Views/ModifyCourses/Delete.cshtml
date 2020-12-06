@@ -1,0 +1,34 @@
+﻿@model Site.Models.COURSE
+
+@{
+    ViewData["Title"] = "ModifyCourses";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Remove Course</h2>
+
+<h2>Confirm Course Delete</h2>
+
+<h3>Are you sure you want to delete this Course?</h3>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Course ID: @Html.DisplayFor(model => model.COURSE_ID)</dt>
+        <dt>Name: @Html.DisplayFor(model => model.COU_NAME)</dt>
+        <dt>Year: @Html.DisplayFor(model => model.COU_YEAR)</dt>
+        <dt>Semester: @Html.DisplayFor(model => model.COU_SEM)</dt>
+     </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Yes, Delete Course" class="btn buttonStyle" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

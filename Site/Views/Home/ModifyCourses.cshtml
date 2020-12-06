@@ -1,4 +1,15 @@
-﻿
+﻿@using System.Globalization;
+@using Site.Models
+@model IEnumerable<COURSE>
 @{
     ViewData["Title"] = "ModifyCourses";
 }
+
+<h2>Courses</h2>
+<div>
+    <ul>
+        <li>@Html.ActionLink("Add Course", "Create", "ModifyCourses")</li>
+        <li>@Html.ActionLink("Delete Course", "Delete", "ModifyCourses")</li>
+        <li>@Html.ActionLink("Update Course", "Edit", "ModifyCourses")</li>
+    </ul>
+</div>

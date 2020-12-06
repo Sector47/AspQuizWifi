@@ -1,19 +1,49 @@
 ﻿@{
-
     ViewData["Title"] = "Quiz";
+    // make a count variable to make radio buttons work by incrementing their ids
+    int count = 0;
 }
 <h1>@ViewBag.QuizName</h1>
 <!--    foreach QuestionData q in Model(which is an instantiated QuestionData.cs object) we start to build html to display the questions
         TODO Make this page display a single question instead of all of them. Have a button for next question/ previous question appropriate based on if it is the first/last question. Have a submit button that sends the ResponseList of responses to the controller.
+
+    TODO Check if this quiz is already submitted.  IE A row in GRADE exists for this quiz
 -->
-@foreach (var q in Model)
+@if (Model is List<Site.Models.QuestionData>)
 {
-    if (q.que_ID != null)
+    using (Html.BeginForm("SubmitQuiz", "Home", FormMethod.Post))
     {
-        <p>Question ID: @q.que_ID</p>
-        <p>Question Description: @q.que_question</p>
-        <p>Question Type ID: @q.type_ID</p>
-        <hr />
+        foreach (var q in Model)
+        {
+            if (q.que_ID != null)
+            {
+                ViewBag.Que_ID = q.que_ID;
+                if (q.type_ID.Contains("MCR"))
+                {
+                    @Html.Partial("_MultipleChoiceRadio", q as Site.Models.QuestionData);
+                }
+                if (q.type_ID.Contains("SA"))
+                {
+                    @Html.Partial("_ShortAnswer", q as Site.Models.QuestionData)
+                }
+                if (q.type_ID.Contains("FB"))
+                {
+                    @Html.Partial("_FillInBlank", q as Site.Models.QuestionData)
+                }
+                if (q.type_ID.Contains("MCC"))
+                {
+                    @Html.Partial("_MultipleChoiceCheck", q as Site.Models.QuestionData)
+                }
+                <hr />
+            }
+        }
+        <p class="submit"><input type="submit" value="Submit Quiz" /></p>
     }
 }
+else
+{
+    <p>Your score was @Model</p>
+}
+
+
 

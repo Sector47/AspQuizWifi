@@ -182,6 +182,7 @@
     <Compile Include="Models\TYPE.cs">
       <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResponseData.cs" />
     <Compile Include="Models\USER.cs">
       <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
     </Compile>

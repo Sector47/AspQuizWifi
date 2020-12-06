@@ -136,9 +136,8 @@ namespace Site.Controllers
                     descriptionList = tempDescriptionList
                 });
             }
-
-            // TODO This should be quiz name not id
-            ViewBag.QuizName = quizID;
+            ViewBag.QuizName = databaseCreator.getQuizNameDB(quizID);
+            ViewBag.Quiz_ID = quizID;
             // pass our new question data object to the quiz view.
             return View("Quiz", questionDataList);
         }
@@ -173,7 +172,7 @@ namespace Site.Controllers
         // LOGIN 
         [HttpPost]
         public ActionResult LogInAttempt(string username, string password)
-        {
+        {            
             // Get the browser's generated sesssion id
             string session = HttpContext.Session.SessionID;
             // Create our asp database object to send through login attempt
@@ -196,6 +195,29 @@ namespace Site.Controllers
             // TODO Parse the type of error based on the sql return value.
             ViewBag.Error = "There was an error";
             return View("LogIn");
+        }
+
+        [HttpPost]
+        public ActionResult SubmitQuiz(string qui_ID)
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+
+            string name = Request.Form["1"];
+            string two = Request.Form["2"];
+            string three = Request.Form["3"];
+            string four = Request.Form["4"];
+            string five = Request.Form["5"];
+            string six = Request.Form["6"];
+            string seven = Request.Form["7"];
+
+
+
+            //ViewBag.QuizName = databaseCreator.getQuizNameDB(quiz_ID);
+            // TODO calculate grade
+            // TODO update grade table
+            string grade = "10/10";
+            ViewBag.Grade = grade;
+            return View("Quiz");
         }
 
         // Change the password of the current user. 

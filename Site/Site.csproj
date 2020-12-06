@@ -178,6 +178,7 @@
     <Compile Include="Models\RESPONSE.cs">
       <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResponseData.cs" />
     <Compile Include="Models\USER.cs">
       <DependentUpon>MobileQuizEntityFramework.tt</DependentUpon>
     </Compile>

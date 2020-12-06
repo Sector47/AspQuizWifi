@@ -21,7 +21,7 @@ namespace Site.Controllers
         {
             // Check if the user is logged in
             if (loggedIn())
-            {                
+            {
                 DatabaseCreator databaseCreator = new DatabaseCreator();
 
                 // if the user is logged into the instructor, have the quizzes page get the data from getQuizzesInstructorDB() which returns all quizzes
@@ -33,7 +33,7 @@ namespace Site.Controllers
                 else
                 {
                     return View("Quizzes", databaseCreator.getQuizzesDB(getLoggedInUserID()));
-                }      
+                }
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the quizzes page
@@ -52,7 +52,7 @@ namespace Site.Controllers
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the account page
             ViewData["Title"] = "You must log in first in order to view the account page";
-            return View("LogIn");  
+            return View("LogIn");
         }
 
         public ActionResult LogIn()
@@ -60,7 +60,7 @@ namespace Site.Controllers
             ViewData["Title"] = "Log In";
             return View();
         }
-        
+
         // Method to logout the current session's user
         public ActionResult LogOut()
         {
@@ -88,11 +88,11 @@ namespace Site.Controllers
             string[,] answerData = databaseCreator.getAnswerDataDB(questionIDList);
             // after we have the data we need we can create our questionData object for each item 
             // loop through our questionData 2d array
-            for(int i = 0; i < questionDataArray.GetLength(0); i++)
+            for (int i = 0; i < questionDataArray.GetLength(0); i++)
             {
                 // make our temporary ans_ID list to be able to add it to our question data object
                 List<int> tempAns_IDList = new List<int>();
-                for(int j = 0; j < answerData.GetLength(0); j++)
+                for (int j = 0; j < answerData.GetLength(0); j++)
                 {
                     if (answerData[j, 1] == questionDataArray[i, 0])
                         tempAns_IDList.Add(System.Convert.ToInt32(answerData[j, 0]));
@@ -116,9 +116,8 @@ namespace Site.Controllers
                     descriptionList = tempDescriptionList
                 });
             }
-
-            // TODO This should be quiz name not id
-            ViewBag.QuizName = quizID;
+            ViewBag.QuizName = databaseCreator.getQuizNameDB(quizID);
+            ViewBag.Quiz_ID = quizID;
             // pass our new question data object to the quiz view.
             return View("Quiz", questionDataList);
         }
@@ -134,7 +133,7 @@ namespace Site.Controllers
         // TODO make this confirm against the server if that session id was not timed out yet.
         public bool loggedIn()
         {
-            if(HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
             {
                 return true;
             }
@@ -153,7 +152,7 @@ namespace Site.Controllers
         // LOGIN 
         [HttpPost]
         public ActionResult LogInAttempt(string username, string password)
-        {
+        {            
             // Get the browser's generated sesssion id
             string session = HttpContext.Session.SessionID;
             // Create our asp database object to send through login attempt
@@ -176,6 +175,29 @@ namespace Site.Controllers
             // TODO Parse the type of error based on the sql return value.
             ViewBag.Error = "There was an error";
             return View("LogIn");
+        }
+
+        [HttpPost]
+        public ActionResult SubmitQuiz(string qui_ID)
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+
+            string name = Request.Form["1"];
+            string two = Request.Form["2"];
+            string three = Request.Form["3"];
+            string four = Request.Form["4"];
+            string five = Request.Form["5"];
+            string six = Request.Form["6"];
+            string seven = Request.Form["7"];
+
+
+
+            //ViewBag.QuizName = databaseCreator.getQuizNameDB(quiz_ID);
+            // TODO calculate grade
+            // TODO update grade table
+            string grade = "10/10";
+            ViewBag.Grade = grade;
+            return View("Quiz");
         }
 
         // Change the password of the current user. 

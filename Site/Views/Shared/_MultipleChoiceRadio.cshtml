@@ -8,22 +8,28 @@
     List<int> orderedAnswers = new List<int>();
     List<string> orderedDescriptions = new List<string>();
 
-    // Order our list randomly
-    int randomInt = random.Next();
-    orderedAnswers = tempList.OrderBy(x => randomInt).ToList();
-    orderedDescriptions = tempDescriptionList.OrderBy(x => randomInt).ToList();
-}
-<h2>@Model.que_question</h2>
+    // Order our list randomly matching each other.
+    // To do this we join our lists (Zip) and then after we are done randomizing the order we split them again.
+    // zip our lists together
+    var zippedLists = tempList.Zip(tempDescriptionList, (tempListItem, tempDescriptionListItem) => new { tempListItem, tempDescriptionListItem });
 
+    // randomized the zipped lists
+    var randomizedZippedLists = zippedLists.OrderBy(x => random.Next()).ToList();
+
+    orderedAnswers = randomizedZippedLists.Select(listItem => listItem.tempListItem).ToList();
+    orderedDescriptions = randomizedZippedLists.Select(listItem => listItem.tempDescriptionListItem).ToList();
+}
 <div>
     <div class="question">@Model.que_question</div>
     @for (int i = 0; i < orderedAnswers.Count; i++)
     {
-        //TODO fix radio group/id
-        <div>
-            <input type="radio" name="" id="" value="@Convert.ToChar(i + 65)" />
-            <label for="">@Convert.ToChar(i + 65)) @orderedDescriptions[i]</label>
-        </div>
+<div>
+    <!--Convert.ToChar(i + 65) converts the numeric value to an alphabetic value. ToChar(1 + 65) == a -->
+    <label>
+        <input type="radio" name="@Model.que_ID" id="@orderedAnswers[i]" value="@Convert.ToChar(i + 65)" />
+        @Convert.ToChar(i + 65)) @orderedDescriptions[i]
+    </label>
+</div>
     }
 </div>
 

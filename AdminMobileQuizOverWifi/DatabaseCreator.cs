@@ -636,6 +636,26 @@ namespace AdminMobileQuizOverWifi
             return count;
         }
 
+        public string getQuizNameDB(int quiz_ID)
+        {
+            string result = "";
+            string sql = "SELECT QUI_NAME FROM QUIZ WHERE QUI_ID ='" + quiz_ID + "'";
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                result = command.ExecuteScalar().ToString();
+            }
+            catch (System.Exception e)
+            {
+
+            }
+            return result;
+        }
+
+
         /// <summary>
         /// Gets a list of the question_ids for a given quiz_id
         /// </summary>

@@ -13,7 +13,8 @@
         <p class="submit"><input type="submit" value="Change Password" />
     </form>
 }
-
+@if(Model)
+{
 <ul>
     <li><a href="@Url.Action("ModifyUsers", "Home", null)">Modify Users</a></li>
     <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses")</li>
@@ -29,6 +30,8 @@
             @Html.ActionLink("Modify Grades", "ModifyGrades", "Home", new { @class = "" })</li>*@
 
 </ul>
+}
+
 
 <!--
 -->

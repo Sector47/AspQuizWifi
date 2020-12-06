@@ -19,22 +19,42 @@ namespace Site.Controllers
 
         public ActionResult ModifyUsers()
         {
-            return View();
+            if (isInstructor())
+            {
+                return View();
+            }
+            ViewData["Title"] = "You must be logged in as an instructor to view the Users page";
+            return View("LogIn");
         }
 
         public ActionResult ModifyQuizzes()
         {
-            return View();
+            if (isInstructor())
+            {
+                return View();
+            }
+            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
+            return View("LogIn");
         }
 
         public ActionResult ModifyCourses()
         {
-            return View();
+            if (isInstructor())
+            {
+                return View();
+            }
+            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Courses page";
+            return View("LogIn");
         }
 
         public ActionResult ModifyGrades()
         {
-            return View();
+            if (isInstructor())
+            {
+                return View();
+            }
+            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
+            return View("LogIn");
         }
 
         public ActionResult Quizzes()
@@ -67,7 +87,8 @@ namespace Site.Controllers
             if (loggedIn())
             {
                 ViewBag.Message = "Your contact page.";
-                return View();
+                return View("Account", isInstructor());
+
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the account page

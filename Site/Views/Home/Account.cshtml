@@ -7,7 +7,7 @@
 {
     <form id="PasswordChange" method="post">
         <p>@ViewBag.PasswordChange</p>
-        <p><label>Current Password:</label> <input name="CurrentPassword" type="text"></p>
+        <p><label>Current Password:</label> <input name="CurrentPassword" type="password"></p>
         <p><label>New Password:</label> <input name="NewPassword" type="text"></p>
         <p><label>Confirm New Password:</label><input name="ConfirmNewPassword" type="text"></p>
         <p class="submit"><input type="submit" value="Change Password" />
@@ -22,6 +22,8 @@
     <li>@Html.ActionLink("Modify Quizzes", "Index", "ModifyQuizzes")</li>
     @*<li><a href="@Url.Action("ModifyQuizzes", "Home", null)">Modify</a></li>*@
     <li><a href="@Url.Action( "ModifyGrades", "Home", null)">Modify Grades</a></li>
+
+
     @*  <li>@Html.ActionLink("Modify Users", "ModifyUsers", "Home", new { @class = "" })</li>
         <li>@Html.ActionLink("Modify Courses", "ModifyCourses", "Home", new { @class = "" })</li>
         <li>

@@ -262,6 +262,10 @@
     <Content Include="Views\ModifyUsers\Edit.cshtml" />
     <Content Include="Views\ModifyUsers\Create.cshtml" />
     <Content Include="Views\ModifyUsers\Delete.cshtml" />
+    <Content Include="Views\ModifyRoster\Index.cshtml" />
+    <Content Include="Views\ModifyRoster\Create.cshtml" />
+    <Content Include="Views\ModifyRoster\Delete.cshtml" />
+    <Content Include="Views\Home\LoggedOut.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AdminMobileQuizOverWifi;
-using Site.Models;
 
 namespace Site.Controllers
 {
@@ -14,15 +13,13 @@ namespace Site.Controllers
 
         public ActionResult Index()
         {
-            if (loggedIn())
-            {
-                ViewBag.Message = "Your contact page.";
-                return View("Account", isInstructor());
-
-            }
             return View();
         }
 
+        public ActionResult Permissions()
+        {
+            return View();
+        }
 
         public ActionResult ModifyQuizzes()
         {
@@ -74,7 +71,8 @@ namespace Site.Controllers
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the quizzes page
-            ViewData["Title"] = "You must log in first in order to view the quizzes page";
+            // ViewData["Title"] = "You must log in first in order to view the quizzes page";
+            ViewBag.Error = "You must log in first in order to view the Quizzes page.";
             return View("LogIn");
         }
 
@@ -89,7 +87,7 @@ namespace Site.Controllers
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the account page
-            ViewData["Title"] = "You must log in first in order to view the account page";
+            ViewBag.Error = "You must log in first in order to view the Account page";
             return View("LogIn");
         }
 
@@ -109,7 +107,7 @@ namespace Site.Controllers
             Session.Clear();
             Session.Abandon();
             // return them to the home page.
-            return View("Index");
+            return View("LoggedOut");
         }
 
         public ActionResult GoToQuiz(int quizID)
@@ -190,8 +188,8 @@ namespace Site.Controllers
 
         // LOGIN 
         [HttpPost]
-        public ActionResult LogInAttempt(string username, string password)
-        {            
+        public ActionResult LogIn(string username, string password)
+        {
             // Get the browser's generated sesssion id
             string session = HttpContext.Session.SessionID;
             // Create our asp database object to send through login attempt

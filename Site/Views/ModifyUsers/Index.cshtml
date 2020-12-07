@@ -3,17 +3,20 @@
 @model IEnumerable<USER>
 
 @{
-    ViewData["Title"] = "ModifyUsers";
+    ViewData["Title"] = "Modify Users";
 }
 
-
-<h2>Users</h2>
-
-<div>
-    <ul>
-        <li>@Html.ActionLink("Add User", "Create", "ModifyUsers")</li>
-    </ul>
-</div>
+@{
+    // checks for a model
+    if (Model != null)
+    {
+        // displays the users
+        <h2>Users</h2>
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Add User", "Create", "ModifyUsers")</li>
+            </ul>
+        </div>
 
         <table class="coursetable">
             <tr>
@@ -43,3 +46,10 @@
                 </tr>
             }
         </table>
+    }
+    else
+    {
+        // no model sent means user was not instructor, display permission message
+        <h2> @ViewBag.NotPermitted</h2>
+    }
+}

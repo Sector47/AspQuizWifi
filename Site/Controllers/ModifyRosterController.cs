@@ -1,10 +1,13 @@
-﻿using AdminMobileQuizOverWifi;
+﻿
+using AdminMobileQuizOverWifi;
 using Site.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+using System.Net;
 
 namespace Site.Controllers
 {
@@ -23,7 +26,7 @@ namespace Site.Controllers
             {
                 if (isInstructor())
                 {
-                    var rosters = db.ROSTERs;
+                    var rosters = db.ROSTERs.Include(r => r.USER).Include(r => r.COURSE);
                     return View(rosters.ToList());
                 }
                 else
@@ -38,6 +41,94 @@ namespace Site.Controllers
                 return View();
             }
             return View();
+        }
+
+        public ActionResult Create()
+        {
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+                    ViewBag.Permission = true;
+                    ViewBag.COURSE_ID = new SelectList(db.COURSEs, "COURSE_ID", "COU_NAME");
+                    ViewBag.USER_ID = new SelectList(db.USERS, "USER_ID", "USERNAME");
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Permission = false;
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Permission = false;
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "COURSE_ID, USER_ID")] ROSTER roster)
+        {
+            if (ModelState.IsValid)
+            {
+                db.ROSTERs.Add(roster);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.COURSE_ID = new SelectList(db.COURSEs, "COURSE_ID", "COU_NAME", roster.COURSE_ID);
+            ViewBag.USER_ID = new SelectList(db.USERS, "USER_ID", "USERNAME", roster.USER_ID);
+            return View(roster);
+        }
+
+
+        public ActionResult Delete(int? id)
+        {
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+
+                    ROSTER roster = db.ROSTERs.Find(id);
+                    if (roster == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    ViewBag.COURSE_ID = new SelectList(db.COURSEs, "COURSE_ID", "COU_NAME", roster.COURSE_ID);
+                    ViewBag.USER_ID = new SelectList(db.USERS, "USER_ID", "USERNAME", roster.USER_ID);
+                    return View(roster);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
+
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            ROSTER roster = db.ROSTERs.Find(id);
+            db.ROSTERs.Remove(roster);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // Login Check Stuff

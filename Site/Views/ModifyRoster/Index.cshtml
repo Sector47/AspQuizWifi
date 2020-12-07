@@ -6,7 +6,7 @@
         <h2>Rosters</h2>
         <div>
             <ul>
-                <li>@Html.ActionLink("Add Roster", "Create", "ModifyRosters")</li>
+                <li>@Html.ActionLink("Add Roster", "Create", "ModifyRoster")</li>
             </ul>
         </div>
 
@@ -22,8 +22,8 @@
             {
                 <tr>
                    <!--<td>@Html.DisplayFor(modelItem => roster.ROSTER_ID)</td>-->
-                    <td>@Html.DisplayFor(modelItem => roster.COURSE_ID)</td>
-                    <td>@Html.DisplayFor(modelItem => roster.USER_ID)</td>
+                    <td>@Html.DisplayFor(modelItem => roster.COURSE.COU_NAME)</td>
+                    <td>@Html.DisplayFor(modelItem => roster.USER.USERNAME)</td>
 
 
                     <td>
@@ -37,7 +37,6 @@
     }
     else
     {
-
         // no model sent means user was not instructor, display permission message
         <h2> @ViewBag.NotPermitted</h2>
     }

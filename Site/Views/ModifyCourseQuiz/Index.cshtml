@@ -1,0 +1,27 @@
+﻿@model Site.Models.COURSE_QUIZ
+@{
+    ViewBag.Title = "Assign Quiz to Course";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Assign Quiz to Course</h2>
+
+@using (Html.BeginForm("Index", "ModifyCourseQuiz", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <div class="col-md-10">
+
+            @Html.DropDownListFor(model => model.QuizSelected, Model.AllQuizOptions, "-- Select --")
+        </div>
+        <div class="col-md-10">
+
+            @Html.DropDownListFor(model => model.CourseSelected, Model.AllCourseOptions, "-- Select --")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+}

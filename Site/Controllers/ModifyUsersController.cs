@@ -13,7 +13,7 @@ namespace Site.Controllers
     public class ModifyUsersController : Controller
     {
         // DB Controller
-        private MobileQuizWifiDBEntities db = new MobileQuizWifiDBEntities();
+        private DBEntities db = new DBEntities();
 
         // not instructor msg
         string notInstructor = "You must be logged in as an instructor to view this page.";

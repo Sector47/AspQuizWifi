@@ -13,7 +13,7 @@ namespace Site.Controllers
     public class ModifyQuizzesController : Controller
     {
         // connection to DB Entity Framework
-        private MobileQuizWifiDBEntities db = new MobileQuizWifiDBEntities();
+        private DBEntities db = new DBEntities();
 
         // GET: ModifyQuizzes
         public ActionResult Index()

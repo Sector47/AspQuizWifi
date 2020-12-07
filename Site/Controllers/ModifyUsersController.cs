@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace Site.Controllers
 {
@@ -28,7 +29,7 @@ namespace Site.Controllers
             {
                 if (isInstructor())
                 {
-                    var users = db.USERS;
+                    var users = db.USERS.OrderBy(u => u.L_NAME);
                     return View(users.ToList());
                 }
                 else

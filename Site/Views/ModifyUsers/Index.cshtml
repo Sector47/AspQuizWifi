@@ -20,30 +20,30 @@
 
         <table class="coursetable">
             <tr>
-                <th>User ID</th>
-                <th>First Name</th>
+                <!--<th>User ID</th>-->
                 <th>Last Name</th>
-                <th>Is Instructor</th>
+                <th>First Name</th>
                 <th>Username</th>
                 <th>Password</th>
+                <th>Is Instructor</th>
                 <th></th>
             </tr>
 
             @foreach (var user in Model)
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => user.USER_ID)</td>
-                    <td>@Html.DisplayFor(modelItem => user.F_NAME)</td>
-                    <td>@Html.DisplayFor(modelItem => user.L_NAME)</td>
-                    <td>@Html.DisplayFor(modelItem => user.IS_INSTRUCTOR)</td>
-                    <td>@Html.DisplayFor(modelItem => user.USERNAME)</td>
-                    <td>@Html.DisplayFor(modelItem => user.PASSWORD)</td>
+        <tr>
+            <!--<td>@Html.DisplayFor(modelItem => user.USER_ID)</td>-->
+            <td>@Html.DisplayFor(modelItem => user.L_NAME)</td>
+            <td>@Html.DisplayFor(modelItem => user.F_NAME)</td>
+            <td>@Html.DisplayFor(modelItem => user.USERNAME)</td>
+            <td>@Html.DisplayFor(modelItem => user.PASSWORD)</td>
+            <td>@Html.DisplayFor(modelItem => user.IS_INSTRUCTOR)</td>
 
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = user.USER_ID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = user.USER_ID })
-                    </td>
-                </tr>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = user.USER_ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = user.USER_ID })
+            </td>
+        </tr>
             }
         </table>
     }

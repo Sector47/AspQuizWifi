@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Modify";
+}
+
+<h2>Modify</h2>
+
+@{ if (ViewBag.IsInstructor = false)
+    {
+        <h3>@ViewBag.Msg</h3>
+    }
+    else
+    {
+<ul>
+    <li>@Html.ActionLink("Modify Users", "Index", "ModifyUsers")</li>
+    <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses")</li>
+    <li>@Html.ActionLink("Modify Quizzes", "Index", "ModifyQuizzes")</li>
+    <!--<li>@Html.ActionLink("Modify Grades", "Index", "ModifyGrades")</li>-->
+    <li>@Html.ActionLink("Assign Quiz to Course", "Index", "ModifyCourseQuiz")</li>
+    <li>@Html.ActionLink("Assign Student to Course", "Index", "ModifyRoster")</li>
+</ul>
+    }
+}

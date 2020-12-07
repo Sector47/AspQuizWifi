@@ -10,45 +10,25 @@ namespace Site.Controllers
     {
         // connection to DB Entity Framework
         private DBEntities db = new DBEntities();
-
+        private string msg = "You must be logged in as an instructor to view this page.";
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Permissions()
-        {
-            return View();
-        }
-
-        public ActionResult ModifyQuizzes()
+        public ActionResult Modify()
         {
             if (isInstructor())
             {
                 return View();
             }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
-            return View("LogIn");
-        }
-
-        public ActionResult ModifyCourses()
-        {
-            if (isInstructor())
+            else
             {
+                ViewBag.IsInstructor = false;
+                ViewBag.Msg = msg;
                 return View();
             }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Courses page";
-            return View("LogIn");
-        }
 
-        public ActionResult ModifyGrades()
-        {
-            if (isInstructor())
-            {
-                return View();
-            }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
-            return View("LogIn");
         }
 
         public ActionResult Quizzes()
@@ -125,7 +105,7 @@ namespace Site.Controllers
             List<string[]> answerData = databaseCreator.getAnswerDataDB(questionIDList);
             // after we have the data we need we can create our questionData object for each item 
             // loop through our questionData 2d array
-            foreach(string[] q in questionList)
+            foreach (string[] q in questionList)
             {
                 // make our temporary ans_ID list to be able to add it to our question data object
                 List<int> tempAns_IDList = new List<int>();
@@ -142,24 +122,24 @@ namespace Site.Controllers
                         tempDescriptionList.Add(a[2]);
                     }
                 }
-                
+
 
 
                 // Create our questionData object and add it to the QuestionDataList if it isn't null
                 questionDataList.Add(new QuestionData
-                    {
-                        que_ID = q[0],
-                        que_question = q[1],
-                        type_ID = q[2],
-                        ans_IDList = tempAns_IDList,
-                        descriptionList = tempDescriptionList
-                    });
+                {
+                    que_ID = q[0],
+                    que_question = q[1],
+                    type_ID = q[2],
+                    ans_IDList = tempAns_IDList,
+                    descriptionList = tempDescriptionList
+                });
                 if (q[2].Contains("MCC"))
                 {
                     // Count starts at 1 as we always expect and answer to exist
                     // answers are structured as a,b,d so we count commas and add them to the original value of 1 and we get our total point value for mcc questions
                     int count = 1;
-                    foreach(char c in q[3])
+                    foreach (char c in q[3])
                     {
                         if (c == ',')
                             count++;
@@ -236,7 +216,7 @@ namespace Site.Controllers
                 HttpContext.Session["User_isInstructor"] = databaseCreator.isInstructorDB(databaseCreator.getUserIDDB(username));
 
                 // Send them back to the home page logged in
-                return View("Index");
+                return View("Index", isInstructor());
             }
             // if not logged in, return to the login view with viewdata of an error
             // TODO Parse the type of error based on the sql return value.

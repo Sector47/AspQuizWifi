@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using System.Net;
 using Site.Models;
-
+using AdminMobileQuizOverWifi;
 
 namespace Site.Controllers
 {
@@ -18,8 +18,28 @@ namespace Site.Controllers
         // GET: ModifyQuizzes
         public ActionResult Index()
         {
-            var qUIZs = db.QUIZs.Include(q => q.QUI_NAME);
-            return View(db.QUIZs.ToList());
+            if (isInstructor())
+            {
+                var qUIZs = db.QUIZs.Include(q => q.QUI_NAME);
+                return View(db.QUIZs.ToList());
+            }
+            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
+            return View("../Home/LogIn");
+           
+        }
+
+        // Check if the current user is an instructor.
+        public bool isInstructor()
+        {
+
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.isInstructorDB(getLoggedInUserID());
+        }
+
+        public int getLoggedInUserID()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
         }
 
         // GET: ManageQuizzes/Create

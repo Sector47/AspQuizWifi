@@ -16,7 +16,7 @@
 @if(Model)
 {
 <ul>
-    <li><a href="@Url.Action("ModifyUsers", "Home", null)">Modify Users</a></li>
+    <li>@Html.ActionLink("Modify Users", "Index", "ModifyUsers")</li>
     <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses")</li>
     @* <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses", new { id = userID })</li>*@
     <li>@Html.ActionLink("Modify Quizzes", "Index", "ModifyQuizzes")</li>

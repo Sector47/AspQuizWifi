@@ -15,21 +15,57 @@ namespace Site.Controllers
         // DB Controller
         private MobileQuizWifiDBEntities db = new MobileQuizWifiDBEntities();
 
+        // not instructor msg
+        string notInstructor = "You must be logged in as an instructor to view this page.";
+
+        // not logged in msg
+        string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
+
         // GET: ModifyUsers
         public ActionResult Index()
         {
-            if (isInstructor())
+            if (loggedIn())
             {
-                var users = db.USERS;
-                return View(users.ToList());
+                if (isInstructor())
+                {
+                    var users = db.USERS;
+                    return View(users.ToList());
+                }
+                else
+                {
+                    ViewBag.NotPermitted = notInstructor;
+                    return View();
+                }
             }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Users page";
-            return View("../Home/LogIn");
+            else
+            {
+                ViewBag.NotPermitted = notLoggedIn;
+                return View();
+            }
         }
 
         public ActionResult Create()
         {
-            return View();
+            if(loggedIn())
+            {
+                if (isInstructor())
+                {
+                    ViewBag.Permission = true;
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Permission = false;
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Permission = false;
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
         }
 
         [HttpPost]
@@ -42,23 +78,37 @@ namespace Site.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(user);
         }
 
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (loggedIn())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    USER user = db.USERS.Find(id);
+                    if (user == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(user);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
             }
-            USER user = db.USERS.Find(id);
-            if (user == null)
+            else
             {
-                return HttpNotFound();
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
             }
-
-            return View(user);
         }
 
         [HttpPost]
@@ -76,17 +126,35 @@ namespace Site.Controllers
 
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (loggedIn())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            USER user = db.USERS.Find(id);
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    USER user = db.USERS.Find(id);
 
-            if (user == null)
-            {
-                return HttpNotFound();
+                    if (user == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(user);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
             }
-            return View(user);
+            else
+            {
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
+
+
         }
 
         [HttpPost, ActionName("Delete")]
@@ -112,5 +180,16 @@ namespace Site.Controllers
             DatabaseCreator databaseCreator = new DatabaseCreator();
             return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
         }
+
+        public bool loggedIn()
+        {
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
     }
 }

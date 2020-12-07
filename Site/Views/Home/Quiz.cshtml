@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Quiz";
     // make a count variable to make radio buttons work by incrementing their ids
-    int count = 0;
+    int count = 1;
 }
 <h1>@ViewBag.QuizName</h1>
 <!--    foreach QuestionData q in Model(which is an instantiated QuestionData.cs object) we start to build html to display the questions
@@ -9,15 +9,18 @@
 
     TODO Check if this quiz is already submitted.  IE A row in GRADE exists for this quiz
 -->
+
+
 @if (Model is List<Site.Models.QuestionData>)
 {
-    using (Html.BeginForm("SubmitQuiz", "Home", FormMethod.Post))
+    using (Html.BeginForm("SubmitQuiz", "Home", new { qui_ID = ViewBag.Quiz_ID }, FormMethod.Post))
     {
+
         foreach (var q in Model)
         {
             if (q.que_ID != null)
             {
-                ViewBag.Que_ID = q.que_ID;
+                <p>Question @count / @Model.Count</p>
                 if (q.type_ID.Contains("MCR"))
                 {
                     @Html.Partial("_MultipleChoiceRadio", q as Site.Models.QuestionData);
@@ -35,7 +38,9 @@
                     @Html.Partial("_MultipleChoiceCheck", q as Site.Models.QuestionData)
                 }
                 <hr />
+                count++;
             }
+
         }
         <p class="submit"><input type="submit" value="Submit Quiz" /></p>
     }

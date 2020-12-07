@@ -4,11 +4,17 @@
     // From that array of strings we grab our relevant data of the quiz
     int quizID = Convert.ToInt32(modelArray[0]);
     string quizName = modelArray[1];
-    string quizNotes = modelArray[2];    
+    string quizNotes = modelArray[2];
 }
-<!--We then use that data we pulled from the model to display the quiz info and to create a link to the quiz-->
-<h2><a href="@Url.Action("GoToQuiz", "Home", new {quizID = quizID})">@quizName</a> #@quizID</h2>
-<p>Quiz Notes: @quizNotes</p>
-<hr />
+<!--We then use that data we pulled from the model to display the quiz info and to create a link to the quiz if the quiz isn't graded already. otherwise we display the grade for that quiz.-->
+@if (true)
+{
+    <h2><a href="@Url.Action("GoToQuiz", "Home", new {quizID = quizID})">@quizName</a> #@quizID</h2>
+    <p>Quiz Notes: @quizNotes</p>
+    <hr />
+}
+
+
+
 
 

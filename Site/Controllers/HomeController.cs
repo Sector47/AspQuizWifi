@@ -14,18 +14,15 @@ namespace Site.Controllers
 
         public ActionResult Index()
         {
+            if (loggedIn())
+            {
+                ViewBag.Message = "Your contact page.";
+                return View("Account", isInstructor());
+
+            }
             return View();
         }
 
-        public ActionResult ModifyUsers()
-        {
-            if (isInstructor())
-            {
-                return View();
-            }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Users page";
-            return View("LogIn");
-        }
 
         public ActionResult ModifyQuizzes()
         {
@@ -208,6 +205,7 @@ namespace Site.Controllers
                 HttpContext.Session["UserSessionID"] = HttpContext.Session.SessionID;
                 HttpContext.Session["UserName"] = username;
                 HttpContext.Session["User_ID"] = databaseCreator.getUserIDDB(username);
+                HttpContext.Session["User_isInstructor"] = databaseCreator.isInstructorDB(databaseCreator.getUserIDDB(username));
 
                 // Send them back to the home page logged in
                 return View("Index");

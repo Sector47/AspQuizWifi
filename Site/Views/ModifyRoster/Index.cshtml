@@ -1,0 +1,44 @@
+﻿@using Site.Models
+@model IEnumerable<ROSTER>
+
+@{ if (Model != null)
+    {
+        <h2>Rosters</h2>
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Add Roster", "Create", "ModifyRosters")</li>
+            </ul>
+        </div>
+
+        <table class="coursetable">
+            <tr>
+                <th>Roster ID</th>
+                <th>Course ID</th>
+                <th>User ID</th>
+                <th></th>
+            </tr>
+
+            @foreach (var roster in Model)
+            {
+                <tr>
+                   <!--<td>@Html.DisplayFor(modelItem => roster.ROSTER_ID)</td>-->
+                    <td>@Html.DisplayFor(modelItem => roster.COURSE_ID)</td>
+                    <td>@Html.DisplayFor(modelItem => roster.USER_ID)</td>
+
+
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = roster.ROSTER_ID}) |
+                        @Html.ActionLink("Delete", "Delete", new { id = roster.ROSTER_ID })
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+    else
+    {
+
+        // no model sent means user was not instructor, display permission message
+        <h2> @ViewBag.NotPermitted</h2>
+    }
+}

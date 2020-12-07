@@ -31,7 +31,6 @@ namespace Site.Controllers
         // Check if the current user is an instructor.
         public bool isInstructor()
         {
-
             DatabaseCreator databaseCreator = new DatabaseCreator();
             return databaseCreator.isInstructorDB(getLoggedInUserID());
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AdminMobileQuizOverWifi;
-using Site.Models;
 
 namespace Site.Controllers
 {
@@ -14,15 +13,13 @@ namespace Site.Controllers
 
         public ActionResult Index()
         {
-            if (loggedIn())
-            {
-                ViewBag.Message = "Your contact page.";
-                return View("Account", isInstructor());
-
-            }
             return View();
         }
 
+        public ActionResult Permissions()
+        {
+            return View();
+        }
 
         public ActionResult ModifyQuizzes()
         {
@@ -74,7 +71,8 @@ namespace Site.Controllers
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the quizzes page
-            ViewData["Title"] = "You must log in first in order to view the quizzes page";
+            // ViewData["Title"] = "You must log in first in order to view the quizzes page";
+            ViewBag.Error = "You must log in first in order to view the Quizzes page.";
             return View("LogIn");
         }
 
@@ -89,7 +87,7 @@ namespace Site.Controllers
             }
 
             // If not logged in send them to the login page with a message that they need to log in in order to view the account page
-            ViewData["Title"] = "You must log in first in order to view the account page";
+            ViewBag.Error = "You must log in first in order to view the Account page";
             return View("LogIn");
         }
 
@@ -109,56 +107,86 @@ namespace Site.Controllers
             Session.Clear();
             Session.Abandon();
             // return them to the home page.
-            return View("Index");
+            return View("LoggedOut");
         }
 
         public ActionResult GoToQuiz(int quizID)
         {
             // When loading a quiz we need to pass through the question data including question descriptions and possible answers
             DatabaseCreator databaseCreator = new DatabaseCreator();
-
+            int pointTotal = 0;
             // Make our list to hold our questiondata objects we will create
             List<QuestionData> questionDataList = new List<QuestionData>();
             // Grab the string 2d arrays of the questions and answers for the given quizID
-            string[,] questionDataArray = databaseCreator.getQuestionDataDB(quizID);
+            //SELECT QUE_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER FROM QUESTION WHERE QUI_ID =
+            List<string[]> questionList = databaseCreator.getQuestionDataDB(quizID);
             // for getting answer data we need to know all the questionIDs for that quiz, so we make a list of them to pass through.
             List<int> questionIDList = databaseCreator.getQuestionIDsDB(quizID);
-            string[,] answerData = databaseCreator.getAnswerDataDB(questionIDList);
+            List<string[]> answerData = databaseCreator.getAnswerDataDB(questionIDList);
             // after we have the data we need we can create our questionData object for each item 
             // loop through our questionData 2d array
-            for (int i = 0; i < questionDataArray.GetLength(0); i++)
+            foreach(string[] q in questionList)
             {
                 // make our temporary ans_ID list to be able to add it to our question data object
                 List<int> tempAns_IDList = new List<int>();
-                for (int j = 0; j < answerData.GetLength(0); j++)
-                {
-                    if (answerData[j, 1] == questionDataArray[i, 0])
-                        tempAns_IDList.Add(System.Convert.ToInt32(answerData[j, 0]));
-                }
 
                 // make our temporary description list to be able to add it to our question data object
                 List<string> tempDescriptionList = new List<string>();
-                for (int k = 0; k < answerData.GetLength(0); k++)
+                //"SELECT ANS_ID, QUE_ID, DESCRIPTION FROM ANSWER WHERE "; QUE_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER
+                // Loop through our list of answer data and place them into our temporary lists if they should be attached to the current question.(ans_id/fk match)
+                foreach (string[] a in answerData)
                 {
-                    if (answerData[k, 1] == questionDataArray[i, 0])
-                        tempDescriptionList.Add(answerData[k, 2]);
+                    if (a[1] == q[0])
+                    {
+                        tempAns_IDList.Add(System.Convert.ToInt32(a[0]));
+                        tempDescriptionList.Add(a[2]);
+                    }
                 }
+                
 
-                // Create our questionData object and add it to the QuestionDataList
+
+                // Create our questionData object and add it to the QuestionDataList if it isn't null
                 questionDataList.Add(new QuestionData
+                    {
+                        que_ID = q[0],
+                        que_question = q[1],
+                        type_ID = q[2],
+                        ans_IDList = tempAns_IDList,
+                        descriptionList = tempDescriptionList
+                    });
+                if (q[2].Contains("MCC"))
                 {
-                    que_ID = questionDataArray[i, 0],
-                    que_question = questionDataArray[i, 1],
-                    type_ID = questionDataArray[i, 2],
-                    ans_IDList = tempAns_IDList,
-                    descriptionList = tempDescriptionList
-                });
+                    // Count starts at 1 as we always expect and answer to exist
+                    // answers are structured as a,b,d so we count commas and add them to the original value of 1 and we get our total point value for mcc questions
+                    int count = 1;
+                    foreach(char c in q[3])
+                    {
+                        if (c == ',')
+                            count++;
+                    }
+                    pointTotal += count;
+                }
+                else
+                    pointTotal++;
             }
+
+
+            ViewBag.PointTotal = pointTotal;
             ViewBag.QuizName = databaseCreator.getQuizNameDB(quizID);
             ViewBag.Quiz_ID = quizID;
+            // Check if current user has completed the quiz already.
+            int courseQuizID = databaseCreator.getCourseQuizIDDB(quizID, getLoggedInUserID());
+            if (databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[0] != 0)
+            {
+                ViewBag.Completed = true;
+                ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[2];
+                return View("Quiz", databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[1]);
+            }
+
             // pass our new question data object to the quiz view.
             return View("Quiz", questionDataList);
         }
+
 
         // Using the cookie for UserName we retrieve that userID
         public int getLoggedInUserID()
@@ -189,8 +217,8 @@ namespace Site.Controllers
 
         // LOGIN 
         [HttpPost]
-        public ActionResult LogInAttempt(string username, string password)
-        {            
+        public ActionResult LogIn(string username, string password)
+        {
             // Get the browser's generated sesssion id
             string session = HttpContext.Session.SessionID;
             // Create our asp database object to send through login attempt
@@ -217,26 +245,25 @@ namespace Site.Controllers
         }
 
         [HttpPost]
-        public ActionResult SubmitQuiz(string qui_ID)
+        public ActionResult SubmitQuiz(int qui_ID)
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
-
-            string name = Request.Form["1"];
-            string two = Request.Form["2"];
-            string three = Request.Form["3"];
-            string four = Request.Form["4"];
-            string five = Request.Form["5"];
-            string six = Request.Form["6"];
-            string seven = Request.Form["7"];
+            List<string> responseList = new List<string>();
+            List<int> questionList = databaseCreator.getQuestionIDsDB(qui_ID);
 
 
+            foreach (int i in questionList)
+            {
+                responseList.Add(Request.Form[i.ToString()]);
+            }
 
+            int grade = databaseCreator.gradeQuizDB(qui_ID, responseList, getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()));
             //ViewBag.QuizName = databaseCreator.getQuizNameDB(quiz_ID);
             // TODO calculate grade
             // TODO update grade table
-            string grade = "10/10";
             ViewBag.Grade = grade;
-            return View("Quiz");
+            ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()))[2];
+            return View("Quiz", grade);
         }
 
         // Change the password of the current user. 

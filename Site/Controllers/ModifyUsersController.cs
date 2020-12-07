@@ -2,7 +2,9 @@
 using Site.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -13,31 +15,156 @@ namespace Site.Controllers
         // DB Controller
         private MobileQuizWifiDBEntities db = new MobileQuizWifiDBEntities();
 
+        // not instructor msg
+        string notInstructor = "You must be logged in as an instructor to view this page.";
+
+        // not logged in msg
+        string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
+
         // GET: ModifyUsers
         public ActionResult Index()
         {
-            if (isInstructor())
+            if (loggedIn())
             {
-                var users = db.USERS;
-                return View(users.ToList());
+                if (isInstructor())
+                {
+                    var users = db.USERS;
+                    return View(users.ToList());
+                }
+                else
+                {
+                    ViewBag.NotPermitted = notInstructor;
+                    return View();
+                }
             }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Users page";
-            return View("../Home/LogIn");
+            else
+            {
+                ViewBag.NotPermitted = notLoggedIn;
+                return View();
+            }
         }
 
         public ActionResult Create()
         {
-            return View();
+            if(loggedIn())
+            {
+                if (isInstructor())
+                {
+                    ViewBag.Permission = true;
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Permission = false;
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Permission = false;
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
         }
 
-        public ActionResult Edit()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "F_NAME, L_NAME, IS_INSTRUCTOR, USERNAME, PASSWORD")] USER user)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                db.USERS.Add(user);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(user);
         }
 
-        public ActionResult Delete()
+        public ActionResult Edit(int? id)
         {
-            return View();
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    USER user = db.USERS.Find(id);
+                    if (user == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(user);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "USER_ID, F_NAME, L_NAME, IS_INSTRUCTOR, USERNAME, PASSWORD")] USER user)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(user);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    USER user = db.USERS.Find(id);
+
+                    if (user == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(user);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
+
+
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            USER user = db.USERS.Find(id);
+            db.USERS.Remove(user);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // Check if the current user is an instructor.
@@ -53,5 +180,16 @@ namespace Site.Controllers
             DatabaseCreator databaseCreator = new DatabaseCreator();
             return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
         }
+
+        public bool loggedIn()
+        {
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
     }
 }

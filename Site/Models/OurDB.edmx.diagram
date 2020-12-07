@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="cc8340d148d7475e836bd48233122575" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="DBModel.ANSWER" Width="1.5" PointX="8.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.COURSE" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.COURSE_QUIZ" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.GRADE" Width="1.5" PointX="8.25" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.QUESTION" Width="1.5" PointX="6" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.QUIZ" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.RESPONSE" Width="1.5" PointX="8.25" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.TYPE" Width="1.5" PointX="3.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.USER" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="DBModel.FK__ANSWER__QUE_ID__5006DFF2" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_COURSE_QUIZ_COURSE" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK__GRADE__COURSE_QU__5F492382" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK__RESPONSE__COURSE__603D47BB" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_COURSE_QUIZ_QUIZ" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.USER_ID" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK__RESPONSE__QUE_ID__50FB042B" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_QUESTION_TYP" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_QUI_QUE" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.fk_user_Response" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.ROSTER" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

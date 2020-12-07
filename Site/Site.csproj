@@ -137,24 +137,41 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ModifyCourseQuizController.cs" />
     <Compile Include="Controllers\ModifyCoursesController.cs" />
     <Compile Include="Controllers\ModifyQuestionsController.cs" />
     <Compile Include="Controllers\ModifyQuizzesController.cs" />
+    <Compile Include="Controllers\ModifyRosterController.cs" />
     <Compile Include="Controllers\ModifyUsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ANSWER.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSE.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSE_QUIZ.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DBModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DBModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DBModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\GRADE.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MobileQuizWifiEntityFramework.Context.cs">
       <AutoGen>True</AutoGen>
@@ -172,21 +189,24 @@
       <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\QUESTION.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\QuestionData.cs" />
     <Compile Include="Models\QUIZ.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RESPONSE.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ROSTER.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TYPE.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResponseData.cs" />
     <Compile Include="Models\USER.cs">
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
+      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -195,6 +215,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Models\DBModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DBModel.edmx</DependentUpon>
+      <LastGenOutput>DBModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\DBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DBModel.edmx</DependentUpon>
+      <LastGenOutput>DBModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\MobileQuizWifiEntityFramework.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
@@ -213,6 +243,13 @@
     </EntityDeploy>
     <Content Include="Models\MobileQuizWifiEntityFramework.edmx.diagram">
       <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\DBModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>DBModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\DBModel.edmx.diagram">
+      <DependentUpon>DBModel.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -260,6 +297,7 @@
     <Content Include="Views\ModifyQuizzes\Create.cshtml" />
     <Content Include="Views\ModifyQuizzes\Edit.cshtml" />
     <Content Include="Views\ModifyQuizzes\Delete.cshtml" />
+    <Content Include="Views\ModifyCourseQuiz\Index.cshtml" />
     <Content Include="Views\ModifyUsers\Edit.cshtml" />
     <Content Include="Views\ModifyUsers\Create.cshtml" />
     <Content Include="Views\ModifyUsers\Delete.cshtml" />
@@ -267,6 +305,11 @@
     <Content Include="Views\ModifyQuestions\Create.cshtml" />
     <Content Include="Views\ModifyQuestions\Edit.cshtml" />
     <Content Include="Views\ModifyQuestions\Delete.cshtml" />
+    <Content Include="Views\ModifyRoster\Index.cshtml" />
+    <Content Include="Views\ModifyRoster\Create.cshtml" />
+    <Content Include="Views\ModifyRoster\Delete.cshtml" />
+    <Content Include="Views\Home\LoggedOut.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

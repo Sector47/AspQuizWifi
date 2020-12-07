@@ -18,11 +18,11 @@ namespace Site.Controllers
         // GET: ModifyCourses
         public ActionResult Index()
         {
-            var cOURSEs = db.COURSEs.Include(u => u.USERS);
+            var cOURSEs = db.COURSEs;
             return View(db.COURSEs.ToList());
         }
 
-        // GET: ManageColors/Create
+        // GET: ManageCourses/Create
         public ActionResult Create()
         {
             return View();

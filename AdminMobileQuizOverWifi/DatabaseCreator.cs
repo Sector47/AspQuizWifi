@@ -636,6 +636,28 @@ namespace AdminMobileQuizOverWifi
             return count;
         }
 
+        public int[] getGradeDB(int user_ID, int course_Quiz_ID)
+        {
+            // result is gra_ID, gra_grade, gra_needsgrading
+            int[] result = new int[3];
+            string sql = "SELECT GRA_ID, GRA_GRADE, GRA_NEEDSGRADING FROM GRADE WHERE COURSE_QUI_ID ='" + course_Quiz_ID + "' AND USER_ID = '" + user_ID + "'";
+            try
+            {
+                SqlDataReader dataReader = GetDataReader(sql);
+                while(dataReader.Read())
+                {
+                    result[0] = Convert.ToInt32(dataReader.GetValue(0));
+                    result[1] = Convert.ToInt32(dataReader.GetValue(1));
+                    result[2] = Convert.ToInt32(dataReader.GetValue(2));
+                }
+            }
+            catch (System.Exception e)
+            {
+
+            }
+            return result;
+        }
+
         public string getQuizNameDB(int quiz_ID)
         {
             string result = "";
@@ -669,11 +691,9 @@ namespace AdminMobileQuizOverWifi
             try
             {
                 SqlDataReader dataReader = GetDataReader(sql);
-                int i = 0;
                 while (dataReader.Read())
                 {
                     results.Add(Convert.ToInt32(dataReader.GetValue(0)));
-                    i++;
                 }
                 dataReader.Close();
             }
@@ -688,22 +708,17 @@ namespace AdminMobileQuizOverWifi
         /// </summary>
         /// <param name="quiz_id"> The id of the quiz to be searched for the question data</param>
         /// <returns> A 2d string array holding the question rows as data.</returns>
-        public string[,] getQuestionDataDB(int quiz_id)
+        public List<string[]> getQuestionDataDB(int quiz_id)
         {
-            int questionCount = countTableDB("QUESTION");
-            string[,] results = new string[questionCount, 3];
-            string sql = "SELECT QUE_ID, QUE_QUESTION, TYPE_ID FROM QUESTION WHERE QUI_ID = '" + quiz_id+ "'";
+            List<string[]> results = new List<string[]>();
+            string sql = "SELECT QUE_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER FROM QUESTION WHERE QUI_ID = '" + quiz_id+ "'";
             try
             {
 
                 SqlDataReader dataReader = GetDataReader(sql);
-                int i = 0;
                 while (dataReader.Read())
                 {
-                    results[i, 0] = dataReader.GetValue(0).ToString();
-                    results[i, 1] = dataReader.GetValue(1).ToString();
-                    results[i, 2] = dataReader.GetValue(2).ToString();
-                    i++;
+                    results.Add(new string[] { dataReader.GetValue(0).ToString(), dataReader.GetValue(1).ToString(), dataReader.GetValue(2).ToString(), dataReader.GetValue(3).ToString() });
                 }
                 dataReader.Close();
             }
@@ -715,14 +730,14 @@ namespace AdminMobileQuizOverWifi
         }
 
         /// <summary>
-        /// Gets a 2d string array of the rows of answers for each question_id in a questionIDList
+        /// Gets a List of the rows of answers for each question_id in a questionIDList
         /// </summary>
         /// <param name="questionIDList"> The list of question_ids to get the answers for</param>
-        /// <returns> A 2d string array holding the answer rows as data.</returns>
-        public string[,] getAnswerDataDB(List<int> questionIDList)
+        /// <returns> A List holding the answer rows as string arrays.</returns>
+        public List<string[]> getAnswerDataDB(List<int> questionIDList)
         {
-            int questionCount = countTableDB("QUESTION");
-            string[,] results = new string[questionCount, 3];
+
+            List<string[]> results = new List<string[]>();
             string sql = "SELECT ANS_ID, QUE_ID, DESCRIPTION FROM ANSWER WHERE ";
             foreach (int i in questionIDList)
             {
@@ -735,21 +750,212 @@ namespace AdminMobileQuizOverWifi
             try
             {
                 SqlDataReader dataReader = GetDataReader(sql);
-                int i = 0;
                 while (dataReader.Read())
                 {
-                    results[i, 0] = dataReader.GetValue(0).ToString();
-                    results[i, 1] = dataReader.GetValue(1).ToString();
-                    results[i, 2] = dataReader.GetValue(2).ToString();
-                    i++;
+                    string[] singleResult = new string[3];
+                    singleResult[0] = dataReader.GetValue(0).ToString();
+                    singleResult[1] = dataReader.GetValue(1).ToString();
+                    singleResult[2] = dataReader.GetValue(2).ToString();
+                    results.Add(singleResult);
                 }
                 dataReader.Close();
             }
             catch (System.Exception e)
             {
             }
-            // Then we get the quizzes for each of those courses. We return this in a 2 dimensional array example row in the array: Qui_id 3 Qui_name PROGQUIZ1 Qui_Notes First Unit Quiz  Course_id 2  3,2,PROGQUIZ1,First Unit Quiz
+            // Then we get the quizzes for each of those courses. We return this in a List of string arrays example row in the list: ans_id 1, que_id 2, description what is an apple?
             return results;
+        }
+
+        public List<string> getAnswersDB(int quiz_ID)
+        {
+
+            List<string> results = new List<string>();
+            string sql = "SELECT QUESTION_ANSWER FROM QUESTION WHERE QUI_ID ='" + quiz_ID +"';";
+
+            try
+            {
+
+                SqlDataReader dataReader = GetDataReader(sql);
+                while (dataReader.Read())
+                {
+                    results.Add(dataReader.GetValue(0).ToString());
+                }
+                dataReader.Close();
+
+            }
+            catch (System.Exception e)
+            {
+            }
+            // Then we get the quizzes for each of those courses. We return this in a List of string arrays example row in the list: ans_id 1, que_id 2, description what is an apple?
+            return results;
+        }
+
+        public int gradeQuizDB(int quiz_ID, List<string> responseList, int user_ID, int course_Quiz_ID)
+        {
+            bool markForInstructorGrading = false;
+            int grade = 0;
+            List<string[]> questionList = getQuestionDataDB(quiz_ID);
+            // List of {Que_ID, Response}
+            List<string[]> responseQuestionList = new List<string[]>();
+            List<string> answerList = getAnswersDB(quiz_ID);
+            string type_ID;
+            string correctAnswer;
+
+            int i = 0;
+            foreach (string[] q in questionList)
+            {
+                string response = responseList[i];
+                string que_ID = q[0];                
+                type_ID = q[2];
+                correctAnswer = q[3];
+
+                if (type_ID.Contains("MCR"))
+                {
+                    if (response == correctAnswer)
+                        grade++;
+                }
+                if (type_ID.Contains("SA"))
+                {
+                    // Short answers will have to be manually graded by instructor
+                    markForInstructorGrading = true;
+                }
+                if (type_ID.Contains("FB"))
+                {
+                    // Fill in the blanks can be attempted to auto grade, but mark them for grading if they don't match.
+                    if (response == correctAnswer)
+                        grade++;
+                    else
+                        markForInstructorGrading = true;
+                }
+                if (type_ID.Contains("MCC"))
+                {
+                    // Since multiple choice allows partial credit we will add a point for every correct char existing and subtract for every incorrect attempt(Example: Answer is ab, response was abc they would get 2 points - 1 points for a total of 1)
+                    // It is like checking if two strings are anagrams except their can't be duplicate characters so we don't need to remove the char from the charArray(string) we are checking against
+                    foreach (char c in correctAnswer)
+                    {
+                        if (response.Contains(c) && c != ',')
+                            grade++;
+                        else if(c != ',')
+                            grade--;
+                    }
+                }
+
+                responseQuestionList.Add(new string[] { que_ID, response });
+                i++;
+            }
+
+            AddResponseDB(user_ID, course_Quiz_ID, responseQuestionList);
+            AddGradeDB( user_ID, course_Quiz_ID, grade ,markForInstructorGrading);
+            return grade;
+        }
+
+        public void AddResponseDB(int user_ID, int course_Quiz_ID, List<string[]> responseQuestionList)
+        {
+
+            string sql = "INSERT INTO RESPONSE (QUE_ID, USER_ID, COURSE_QUI_ID, COMMENTS) VALUES";
+            foreach(string[] s in responseQuestionList)
+            {
+                if(responseQuestionList.Last() != s)
+                    sql += "('" + s[0] + "', '" + user_ID + "', '" + course_Quiz_ID + "', '" + s[1] + "'), ";
+                else
+                    sql += "('" + s[0] + "', '" + user_ID + "', '" + course_Quiz_ID + "', '" + s[1] + "');";
+            }
+            
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                command.ExecuteNonQuery();
+
+            }
+            catch (System.Exception e)
+            {
+
+            }
+        }
+
+        public void AddGradeDB(int user_ID, int course_Quiz_ID, int grade, bool markForGrading)
+        {
+            int mark = 0;
+            if (markForGrading)
+                mark = 1;
+
+            string sql = "INSERT INTO GRADE (USER_ID, COURSE_QUI_ID, GRA_GRADE, GRA_NEEDSGRADING) VALUES('" + user_ID + "', '" + course_Quiz_ID + "', '" + grade +"', '" + mark + "');";
+            try
+            {
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                command.ExecuteNonQuery();
+
+            }
+            catch (System.Exception e)
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// Gets the course_quizID for a given user's given quiz
+        /// </summary>
+        /// <param name="qui_ID">The quiz id that we are gettting the course_Quiz for</param>
+        /// <param name="user_ID">The user Id that will determine the specific course_quiz</param>
+        /// <returns></returns>
+        public int getCourseQuizIDDB(int quiz_ID, int user_ID)
+        {
+            int result = 0;
+            // Get all course id's that the user is in.
+            List<int> courseIDList = new List<int>();
+            string sql = "SELECT COURSE_ID FROM ROSTER WHERE USER_ID = '" + user_ID + "'";
+            try
+            {
+                SqlDataReader dataReader = GetDataReader(sql);
+
+                while (dataReader.Read())
+                {
+                    courseIDList.Add(Convert.ToInt32(dataReader.GetValue(0)));
+                }
+                dataReader.Close();
+            }
+            catch (System.Exception e)
+            {
+            }
+            
+            sql = "SELECT COURSE_QUI_ID FROM COURSE_QUIZ WHERE QUI_ID = '" + quiz_ID + "' AND (";
+            foreach (int i in courseIDList)
+            {
+                // Skip adding "OR" if first time
+                if (i == courseIDList.First())
+                    sql += "COURSE_ID = '" + i + "'";
+                else
+                    sql += " OR COURSE_ID = '" + i + "'";
+            }
+            sql += ");";
+            try
+            { 
+                // attempt to connect to our database
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+
+                // build our sql command                
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+
+                // No need to iterate through datareader as we only expect one return value, so we can executescalar instead
+                result = Convert.ToInt32(command.ExecuteScalar());
+                databaseConnection.Close();
+
+            }
+            catch (System.Exception e)
+            {
+            }
+
+            // Get the course_quiz id where qui_id and course_id.list
+            return result;
         }
 
         /// <summary>

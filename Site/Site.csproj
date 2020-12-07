@@ -138,6 +138,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModifyCoursesController.cs" />
+    <Compile Include="Controllers\ModifyQuestionsController.cs" />
     <Compile Include="Controllers\ModifyQuizzesController.cs" />
     <Compile Include="Controllers\ModifyUsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -262,6 +263,10 @@
     <Content Include="Views\ModifyUsers\Edit.cshtml" />
     <Content Include="Views\ModifyUsers\Create.cshtml" />
     <Content Include="Views\ModifyUsers\Delete.cshtml" />
+    <Content Include="Views\ModifyQuestions\Index.cshtml" />
+    <Content Include="Views\ModifyQuestions\Create.cshtml" />
+    <Content Include="Views\ModifyQuestions\Edit.cshtml" />
+    <Content Include="Views\ModifyQuestions\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

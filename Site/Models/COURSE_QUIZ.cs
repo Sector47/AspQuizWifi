@@ -11,7 +11,8 @@ namespace Site.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Web.Mvc;
+
     public partial class COURSE_QUIZ
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -30,6 +31,10 @@ namespace Site.Models
         public virtual ICollection<GRADE> GRADEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESPONSE> RESPONSEs { get; set; }
+        public IEnumerable<SelectListItem> AllQuizOptions { get; internal set; }
+        public IEnumerable<SelectListItem> AllCourseOptions { get; internal set; }
+        public string QuizSelected { get; set; }
+        public string CourseSelected { get; set; }
         public virtual QUIZ QUIZ { get; set; }
     }
 }

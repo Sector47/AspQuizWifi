@@ -22,7 +22,7 @@ namespace Site.Controllers
             return View(db.COURSEs.ToList());
         }
 
-        // GET: ManageColors/Create
+        // GET: ManageCourses/Create
         public ActionResult Create()
         {
             return View();

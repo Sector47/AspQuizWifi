@@ -1,0 +1,43 @@
+﻿@using System.Globalization;
+@using Site.Models
+@model IEnumerable<QUESTION>
+
+@{
+    ViewData["Title"] = "ModifyQuestions";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Questions</h2>
+<div>
+    <ul>
+        <li>@Html.ActionLink("Add Question", "Create", "ModifyQuestions")</li>
+    </ul>
+</div>
+
+<table class="coursetable">
+    <tr>
+        <th>Question ID</th>
+        <th>Question</th>
+        <th>Correct Answer</th>
+        <th>Type</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.QUE_ID)</td>
+            <td>@Html.DisplayFor(modelItem => item.QUE_QUESTION)</td>
+            <td>@Html.DisplayFor(modelItem => item.QUESTION_ANSWER)</td>
+            <td>@Html.DisplayFor(modelItem => item.TYPE_ID)</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new {id = item.QUE_ID}) |
+                @Html.ActionLink("Delete", "Delete", new {id = item.QUE_ID})
+            </td>
+        </tr>
+    }
+
+</table>

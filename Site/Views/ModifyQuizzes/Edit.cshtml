@@ -1,4 +1,5 @@
-﻿@model Site.Models.QUIZ
+﻿@using Site.Models
+@model Site.Models.QUIZ
 @{
     ViewData["Title"] = "ModifyQuizzes";
 }
@@ -43,4 +44,6 @@
 
 <div>
     @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Create Question", "Create", "ModifyQuestions")
+    @Html.ActionLink("Edit Questions", "Index", "ModifyQuestions")
 </div>

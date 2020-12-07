@@ -33,7 +33,9 @@
             <td>@Html.DisplayFor(modelItem => item.QUI_ID)</td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.QUI_ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.QUI_ID })
+                @Html.ActionLink("Delete", "Delete", new { id = item.QUI_ID }) | 
+                @Html.ActionLink("Edit Question", "Index", "ModifyQuestions")
+
             </td>
         </tr>
     }

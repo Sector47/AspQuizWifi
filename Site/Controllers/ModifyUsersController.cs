@@ -2,7 +2,9 @@
 using Site.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -30,14 +32,71 @@ namespace Site.Controllers
             return View();
         }
 
-        public ActionResult Edit()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "F_NAME, L_NAME, IS_INSTRUCTOR, USERNAME, PASSWORD")] USER user)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                db.USERS.Add(user);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(user);
         }
 
-        public ActionResult Delete()
+        public ActionResult Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            USER user = db.USERS.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "USER_ID, F_NAME, L_NAME, IS_INSTRUCTOR, USERNAME, PASSWORD")] USER user)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(user);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            USER user = db.USERS.Find(id);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            USER user = db.USERS.Find(id);
+            db.USERS.Remove(user);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // Check if the current user is an instructor.

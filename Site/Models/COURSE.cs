@@ -17,8 +17,8 @@ namespace Site.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public COURSE()
         {
+            this.ROSTERs = new HashSet<ROSTER>();
             this.COURSE_QUIZ = new HashSet<COURSE_QUIZ>();
-            this.USERS = new HashSet<USER>();
         }
     
         public string COU_NAME { get; set; }
@@ -29,8 +29,8 @@ namespace Site.Models
         public int COURSE_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<COURSE_QUIZ> COURSE_QUIZ { get; set; }
+        public virtual ICollection<ROSTER> ROSTERs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<USER> USERS { get; set; }
+        public virtual ICollection<COURSE_QUIZ> COURSE_QUIZ { get; set; }
     }
 }

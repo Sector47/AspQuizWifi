@@ -12,15 +12,13 @@ namespace Site.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GRADE
+    public partial class ROSTER
     {
-        public int GRA_ID { get; set; }
         public int USER_ID { get; set; }
-        public int COURSE_QUI_ID { get; set; }
-        public int GRA_GRADE { get; set; }
-        public bool GRA_NEEDSGRADING { get; set; }
+        public int COURSE_ID { get; set; }
+        public int ROSTER_ID { get; set; }
     
-        public virtual COURSE_QUIZ COURSE_QUIZ { get; set; }
+        public virtual COURSE COURSE { get; set; }
         public virtual USER USER { get; set; }
     }
 }

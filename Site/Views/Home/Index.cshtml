@@ -1,7 +1,23 @@
 ﻿@{ ViewData["Title"] = "Home Page"; }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to the home page.</h1>
-    @{ViewBag.Count = 0; 
-        }
+    @if(System.Web.HttpContext.Current.Session["UserSessionID"] != null && System.Web.HttpContext.Current.Session["UserSessionID"].ToString() != "")
+    {
+        <h3>Welcome to Mobile Quiz Over Wi-Fi, @System.Web.HttpContext.Current.Session["UserName"]</h3>
+
+        <ul>
+            <li><a href="@Url.Action("Account", "Home", null)">View Quizzes</a></li>
+            <li><a href="@Url.Action("Account", "Home", null)">Your Account</a></li>
+            @if(@System.Web.HttpContext.Current.Session["User_isInstructor"].ToString() == "True")
+            {
+            <li><a href="@Url.Action("Modify", "Home", null)">Modify</a></li>
+            }
+        </ul>
+    }
+    else
+    {
+        <h3>Welcome to Mobile Quiz Over Wifi.</h3>
+        <p>You are not logged in.</p>
+        <a href="@Url.Action("LogIn", "Home", null)">Log In</a>
+    }
 </div>

@@ -1,8 +1,8 @@
 ﻿@{ ViewData["Title"] = "Account"; }
 
-<p>Account features here.</p>
+<h2>Account</h2>
 
-
+<h3>Change Password</h3>
 @using (Html.BeginForm("ChangePassword", "Home", FormMethod.Post))
 {
     <form id="PasswordChange" method="post">
@@ -13,29 +13,11 @@
         <p class="submit"><input type="submit" value="Change Password" />
     </form>
 }
-@if(Model)
+
+@if (Model)
 {
-<ul>
-    <li>@Html.ActionLink("Modify Users", "Index", "ModifyUsers")</li>
-    <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses")</li>
-    @* <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses", new { id = userID })</li>*@
-    <li>@Html.ActionLink("Modify Quizzes", "Index", "ModifyQuizzes")</li>
-    <li>@Html.ActionLink("Assign Quiz to Course", "Index", "ModifyCourseQuiz")</li>
-    @*<li><a href="@Url.Action("ModifyQuizzes", "Home", null)">Modify</a></li>*@
-    <li><a href="@Url.Action( "ModifyGrades", "Home", null)">Modify Grades</a></li>
-
-
-    @*  <li>@Html.ActionLink("Modify Users", "ModifyUsers", "Home", new { @class = "" })</li>
-        <li>@Html.ActionLink("Modify Courses", "ModifyCourses", "Home", new { @class = "" })</li>
-        <li>
-            @Html.ActionLink("Modify Quizzes", "ModifyQuizzes", "Home", new { @class = "" })
-        </li>
-        <li>
-            @Html.ActionLink("Modify Grades", "ModifyGrades", "Home", new { @class = "" })</li>*@
-
-</ul>
+    <h3>Additional Account Features:</h3>
+    <ul>
+        <li>@Html.ActionLink("Modify", "Modify", "Home")</li>
+    </ul>
 }
-
-
-<!--
--->

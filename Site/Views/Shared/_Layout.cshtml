@@ -30,9 +30,7 @@
 
                             if (@System.Web.HttpContext.Current.Session["User_isInstructor"].ToString() == "True")
                             {
-                                <li>  <a class="buttonli" href="@Url.Action("Index", "ModifyUsers", null)">Users</a></li>
-                                <li>  <a class="buttonli" href="@Url.Action("Index", "ModifyCourses", null)">Courses</a></li>
-                                <li>  <a class="buttonli" href="@Url.Action("Index", "ModifyQuizzes", null)">Quizzes</a></li>
+                                <li>  <a class="buttonli" href="@Url.Action("Modify", "Home", null)">Modify</a></li>
                             }
 
                             <li class="rightflex">

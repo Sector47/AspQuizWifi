@@ -13,7 +13,6 @@ namespace Site.Models
 
         public List<int> ans_IDList { get; set; }
         public List<string> descriptionList { get; set; }
-        //public string[,] questionData { get; set; }
-        //public string[,] answerData { get; set; }
+
     }
 }

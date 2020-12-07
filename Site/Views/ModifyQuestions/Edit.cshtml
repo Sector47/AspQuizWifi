@@ -52,6 +52,6 @@
     </div>
 }
 <div>
-    @Html.ActionLink("Back to List", "Index")
-    @Html.ActionLink("Delete Question", "Delete")
+    @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new {id = Model.QUI_ID })
+    @Html.ActionLink("Delete Question", "Delete", new { id = Model.QUI_ID })
 </div>

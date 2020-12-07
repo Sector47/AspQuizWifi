@@ -137,7 +137,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ModifyCourseQuizController.cs" />
     <Compile Include="Controllers\ModifyCoursesController.cs" />
     <Compile Include="Controllers\ModifyQuestionsController.cs" />
     <Compile Include="Controllers\ModifyQuizzesController.cs" />
@@ -286,6 +285,9 @@
     <Content Include="Views\Shared\_Quiz.cshtml" />
     <Content Include="Views\Home\Quiz.cshtml" />
     <Content Include="Views\ModifyUsers\Index.cshtml" />
+    <Content Include="Views\Home\ModifyCourses.cshtml" />
+    <Content Include="Views\Home\ModifyGrades.cshtml" />
+    <Content Include="Views\Home\ModifyQuizzes.cshtml" />
     <Content Include="Views\ModifyCourses\Index.cshtml" />
     <Content Include="Views\ModifyCourses\Create.cshtml" />
     <Content Include="Views\ModifyCourses\Delete.cshtml" />
@@ -306,7 +308,6 @@
     <Content Include="Views\ModifyRoster\Create.cshtml" />
     <Content Include="Views\ModifyRoster\Delete.cshtml" />
     <Content Include="Views\Home\LoggedOut.cshtml" />
-    <Content Include="Views\Home\Modify.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

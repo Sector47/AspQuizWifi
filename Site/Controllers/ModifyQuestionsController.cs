@@ -13,18 +13,32 @@ namespace Site.Controllers
     public class ModifyQuestionsController : Controller
     {
         // connection to DB Entity Framework
-        private MobileQuizWifiDBEntities db = new MobileQuizWifiDBEntities();
+        private DBEntities db = new DBEntities();
 
         // GET: ModifyQuestions
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
-            if (isInstructor())
+            if (!isInstructor())
             {
-                var qUESTIONs = db.QUESTIONs.Include(q => q.QUE_QUESTION);
-                return View(db.QUESTIONs.ToList());
+                ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
+                return View("../Home/LogIn");
             }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
-            return View("../Home/LogIn");
+
+            var qUESTIONs = db.QUESTIONs.Include(q => q.QUE_ID);
+            if (id == null && ViewBag.QuizID == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            else if(ViewBag.QuizID != null)
+            {
+                ViewData["QuizID"] = ViewBag.QuizID;
+                return View(db.QUESTIONs.ToList().Where(q => q.QUI_ID == ViewBag.QuestionID));
+            }
+
+            ViewBag.QuizID = id;
+            ViewData["QuizID"] = id;
+            return View(db.QUESTIONs.ToList().Where(q => q.QUI_ID == id));
+            
 
         }
 
@@ -43,8 +57,9 @@ namespace Site.Controllers
         }
 
         // GET: ManageQuizzes/Create
-        public ActionResult Create()
+        public ActionResult Create(int? qui_ID)
         {
+            ViewData["QuizID"] = qui_ID;
             return View();
         }
         // POST: Create
@@ -52,13 +67,13 @@ namespace Site.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "QUI_ID, QUE_QUESTION, TYPE_ID, QUE_ID, QUESTION_ANSWER")] QUESTION qUESTION)
+        public ActionResult Create([Bind(Include = "QUI_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER")] QUESTION qUESTION)
         {
             if (ModelState.IsValid)
             {
                 db.QUESTIONs.Add(qUESTION);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("../ModifyQuestions/Index", new { id = qUESTION.QUI_ID });
             }
 
             return View(qUESTION);
@@ -90,7 +105,7 @@ namespace Site.Controllers
             {
                 db.Entry(qUESTION).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("../ModifyQuestions/Index", new {id = qUESTION.QUI_ID });
             }
             return View(qUESTION);
         }
@@ -120,7 +135,7 @@ namespace Site.Controllers
             QUESTION qUESTION = db.QUESTIONs.Find(id);
             db.QUESTIONs.Remove(qUESTION);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("../ModifyQuestions/Index", new { id = qUESTION.QUI_ID });
         }
 
         protected override void Dispose(bool disposing)

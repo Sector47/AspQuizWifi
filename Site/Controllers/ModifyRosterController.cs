@@ -13,7 +13,7 @@ namespace Site.Controllers
 {
     public class ModifyRosterController : Controller
     {
-        private Models.DBEntities db = new DBEntities();
+        private DBEntities db = new DBEntities();
         // not instructor msg
         string notInstructor = "You must be logged in as an instructor to view this page.";
         // not logged in msg

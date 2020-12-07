@@ -26,10 +26,9 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Yes, Delete Question" class="btn buttonStyle" /> |
-            @Html.ActionLink("Back to List", "Index")
-            @Html.ActionLink("Delete Quiz", "Delete", "ModifyQuizzes")
-        </div>
+<div class="form-actions no-color">
+    <input type="submit" value="Yes, Delete Question" class="btn buttonStyle" /> |
+    @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new { id = Model.QUI_ID })
+</div>
     }
 </div>

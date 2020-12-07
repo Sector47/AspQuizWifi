@@ -28,8 +28,8 @@ namespace Site.Models
         public virtual COURSE COURSE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GRADE> GRADEs { get; set; }
-        public virtual QUIZ QUIZ { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESPONSE> RESPONSEs { get; set; }
+        public virtual QUIZ QUIZ { get; set; }
     }
 }

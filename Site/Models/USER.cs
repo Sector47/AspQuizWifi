@@ -19,7 +19,7 @@ namespace Site.Models
         {
             this.GRADEs = new HashSet<GRADE>();
             this.RESPONSEs = new HashSet<RESPONSE>();
-            this.COURSEs = new HashSet<COURSE>();
+            this.ROSTERs = new HashSet<ROSTER>();
         }
     
         public string F_NAME { get; set; }
@@ -35,6 +35,6 @@ namespace Site.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESPONSE> RESPONSEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<COURSE> COURSEs { get; set; }
+        public virtual ICollection<ROSTER> ROSTERs { get; set; }
     }
 }

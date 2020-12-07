@@ -2,6 +2,16 @@
     ViewData["Title"] = "Quiz";
     // make a count variable to make radio buttons work by incrementing their ids
     int count = 1;
+    bool isInstructor;
+    var sessionVar = HttpContext.Current.Session["User_isInstructor"];
+    if (sessionVar != null)
+    {
+        isInstructor = (bool)sessionVar;
+    }
+    else
+    {
+        isInstructor = false;
+    }
 }
 <h1>@ViewBag.QuizName</h1>
 <!--    foreach QuestionData q in Model(which is an instantiated QuestionData.cs object) we start to build html to display the questions
@@ -42,13 +52,23 @@
             }
 
         }
-        <p class="submit"><input type="submit" value="Submit Quiz" /></p>
+        if (!isInstructor)
+        {
+            <p class="submit"><input type="submit" value="Submit Quiz" /></p>
+        }
+
     }
 }
-else
+else if (Model is Int32)
 {
-    <p>Your score was @Model</p>
+    <p>Your score was @Model out of @ViewBag.PointTotal</p>
+    if(ViewBag.NeedFurtherGrading == 1)
+    {
+            <p>It may need further grading from your instructor come back later.</p>
+    }
 }
+
+
 
 
 

@@ -636,6 +636,28 @@ namespace AdminMobileQuizOverWifi
             return count;
         }
 
+        public int[] getGradeDB(int user_ID, int course_Quiz_ID)
+        {
+            // result is gra_ID, gra_grade, gra_needsgrading
+            int[] result = new int[3];
+            string sql = "SELECT GRA_ID, GRA_GRADE, GRA_NEEDSGRADING FROM GRADE WHERE COURSE_QUI_ID ='" + course_Quiz_ID + "' AND USER_ID = '" + user_ID + "'";
+            try
+            {
+                SqlDataReader dataReader = GetDataReader(sql);
+                while(dataReader.Read())
+                {
+                    result[0] = Convert.ToInt32(dataReader.GetValue(0));
+                    result[1] = Convert.ToInt32(dataReader.GetValue(1));
+                    result[2] = Convert.ToInt32(dataReader.GetValue(2));
+                }
+            }
+            catch (System.Exception e)
+            {
+
+            }
+            return result;
+        }
+
         public string getQuizNameDB(int quiz_ID)
         {
             string result = "";
@@ -688,7 +710,6 @@ namespace AdminMobileQuizOverWifi
         /// <returns> A 2d string array holding the question rows as data.</returns>
         public List<string[]> getQuestionDataDB(int quiz_id)
         {
-            int questionCount = countTableDB("QUESTION");
             List<string[]> results = new List<string[]>();
             string sql = "SELECT QUE_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER FROM QUESTION WHERE QUI_ID = '" + quiz_id+ "'";
             try
@@ -801,10 +822,11 @@ namespace AdminMobileQuizOverWifi
                 }
                 if (type_ID.Contains("FB"))
                 {
-                    // Fill in the blanks can be attempted to auto grade, but the teacher should still look at them
-                    markForInstructorGrading = true;
+                    // Fill in the blanks can be attempted to auto grade, but mark them for grading if they don't match.
                     if (response == correctAnswer)
                         grade++;
+                    else
+                        markForInstructorGrading = true;
                 }
                 if (type_ID.Contains("MCC"))
                 {
@@ -814,7 +836,7 @@ namespace AdminMobileQuizOverWifi
                     {
                         if (response.Contains(c) && c != ',')
                             grade++;
-                        else
+                        else if(c != ',')
                             grade--;
                     }
                 }

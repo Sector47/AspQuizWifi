@@ -114,10 +114,11 @@ namespace Site.Controllers
         {
             // When loading a quiz we need to pass through the question data including question descriptions and possible answers
             DatabaseCreator databaseCreator = new DatabaseCreator();
-
+            int pointTotal = 0;
             // Make our list to hold our questiondata objects we will create
             List<QuestionData> questionDataList = new List<QuestionData>();
             // Grab the string 2d arrays of the questions and answers for the given quizID
+            //SELECT QUE_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER FROM QUESTION WHERE QUI_ID =
             List<string[]> questionList = databaseCreator.getQuestionDataDB(quizID);
             // for getting answer data we need to know all the questionIDs for that quiz, so we make a list of them to pass through.
             List<int> questionIDList = databaseCreator.getQuestionIDsDB(quizID);
@@ -141,9 +142,11 @@ namespace Site.Controllers
                         tempDescriptionList.Add(a[2]);
                     }
                 }
+                
+
 
                 // Create our questionData object and add it to the QuestionDataList if it isn't null
-                    questionDataList.Add(new QuestionData
+                questionDataList.Add(new QuestionData
                     {
                         que_ID = q[0],
                         que_question = q[1],
@@ -151,13 +154,39 @@ namespace Site.Controllers
                         ans_IDList = tempAns_IDList,
                         descriptionList = tempDescriptionList
                     });
+                if (q[2].Contains("MCC"))
+                {
+                    // Count starts at 1 as we always expect and answer to exist
+                    // answers are structured as a,b,d so we count commas and add them to the original value of 1 and we get our total point value for mcc questions
+                    int count = 1;
+                    foreach(char c in q[3])
+                    {
+                        if (c == ',')
+                            count++;
+                    }
+                    pointTotal += count;
+                }
+                else
+                    pointTotal++;
             }
 
+
+            ViewBag.PointTotal = pointTotal;
             ViewBag.QuizName = databaseCreator.getQuizNameDB(quizID);
             ViewBag.Quiz_ID = quizID;
+            // Check if current user has completed the quiz already.
+            int courseQuizID = databaseCreator.getCourseQuizIDDB(quizID, getLoggedInUserID());
+            if (databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[0] != 0)
+            {
+                ViewBag.Completed = true;
+                ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[2];
+                return View("Quiz", databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[1]);
+            }
+
             // pass our new question data object to the quiz view.
             return View("Quiz", questionDataList);
         }
+
 
         // Using the cookie for UserName we retrieve that userID
         public int getLoggedInUserID()
@@ -233,6 +262,7 @@ namespace Site.Controllers
             // TODO calculate grade
             // TODO update grade table
             ViewBag.Grade = grade;
+            ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()))[2];
             return View("Quiz", grade);
         }
 

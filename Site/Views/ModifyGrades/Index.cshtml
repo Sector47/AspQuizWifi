@@ -1,0 +1,56 @@
+﻿@using System.Globalization
+@using Site.Models
+@using System.Web.Mvc
+@using System.Web.Mvc.Html
+
+@model IEnumerable<GRADE>
+
+@{
+    ViewBag.Title = "Grades";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Grades</h2>
+
+<table class="coursetable">
+    <tr>
+        <th>Student</th>
+        <th>Course</th>
+        <th>Quiz</th>
+        <th>Grade</th>
+        <th>Status</th>
+        <th>Adjust Quiz Grade</th>
+        <th>Notification</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        string gradeID = @Html.DisplayTextFor(modelItem => item.GRA_ID).ToString();
+        string userID = @Html.DisplayTextFor(modelItem => item.USER_ID).ToString();
+        string courseQuiID = @Html.DisplayTextFor(modelItem => item.COURSE_QUI_ID).ToString();
+        string gradeGrade = @Html.DisplayTextFor(modelItem => item.GRA_GRADE).ToString();
+        string needsGrading = @Html.DisplayTextFor(modelItem => item.GRA_NEEDSGRADING).ToString();
+        int grade = int.Parse(@Html.DisplayTextFor(modelItem => item.GRA_GRADE).ToString());
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.USER.F_NAME) @Html.DisplayFor(modelItem => item.USER.L_NAME)</td>
+            <td>@Html.DisplayFor(modelItem => item.COURSE_QUIZ.COURSE.COU_NAME)</td>
+            <td>@Html.DisplayFor(modelItem => item.COURSE_QUIZ.QUIZ.QUI_NAME) </td>
+            <td>@Html.DisplayFor(modelItem => item.GRA_GRADE)</td>
+            <td>
+                @if (needsGrading.Equals("True"))
+                {@Html.ActionLink("Needs Grading", "Grade", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = (grade), nid = needsGrading })}
+            </td>
+            <td>
+
+                @Html.ActionLink("Add Point", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = (grade + 1), nid = needsGrading }) |
+                @Html.ActionLink("Remove Point", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = (grade - 1), nid = needsGrading })
+            </td>
+            <td>
+                @Html.ActionLink("Add", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = grade, nid = "True" }) |
+                @Html.ActionLink("Remove", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = grade, nid = "False" })
+            </td>
+
+    </tr>
+}
+
+</table>

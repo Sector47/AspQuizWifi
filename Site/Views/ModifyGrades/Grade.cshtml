@@ -1,0 +1,57 @@
+﻿@using System.Globalization
+@using Site.Models
+@using System.Web.Mvc
+@using System.Web.Mvc.Html
+
+@model IEnumerable<Site.Models.RESPONSE>
+
+@{
+    TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+    ViewBag.Title = "Grade Quiz";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string gradeID = ViewData["GradeID"].ToString();
+    string userID = ViewData["UserID"].ToString();
+    string courseQuiID = ViewData["CourseQuiID"].ToString();
+    int grade = int.Parse(ViewData["Grade"].ToString());
+    string displayGrade = ViewData["Grade"].ToString();
+    string needsGrading = ViewData["NeedsGrading"].ToString();
+
+}
+<table class="coursetable">
+    <div>Quiz Point Total: @displayGrade</div>
+    <tr>
+        <th>Question ID</th>
+        <th>Question</th>
+        <th>Student Response</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        string QuestionType = @Html.DisplayFor(modelItem => item.QUESTION.TYPE_ID).ToString();
+        userID = @Html.DisplayFor(modelItem => item.USER_ID).ToString();
+        courseQuiID = @Html.DisplayFor(modelItem => item.COURSE_QUI_ID).ToString();
+        <tr>
+            @if (QuestionType.Contains("SA") || QuestionType.Contains("FB"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.QUE_ID).ToString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QUESTION.QUE_QUESTION).ToString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.COMMENTS).ToString()
+                </td>
+            }
+        </tr>
+
+    }
+</table>
+<div>
+    @Html.ActionLink("Add Point", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = (grade + 1), nid = needsGrading, onGradePage = "true" }) |
+    @Html.ActionLink("Remove Point", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = (grade - 1), nid = needsGrading, onGradePage = "true" }) 
+    </div>
+<div>
+    @Html.ActionLink("Remove Notification", "Edit", new { graid = gradeID, uid = userID, cqid = courseQuiID, ggid = grade, nid = "False", onGradePage = "true" })
+</div>
+<div>@Html.ActionLink("Back to List", "Index")</div>

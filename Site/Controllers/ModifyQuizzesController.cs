@@ -28,19 +28,6 @@ namespace Site.Controllers
            
         }
 
-        // Check if the current user is an instructor.
-        public bool isInstructor()
-        {
-            DatabaseCreator databaseCreator = new DatabaseCreator();
-            return databaseCreator.isInstructorDB(getLoggedInUserID());
-        }
-
-        public int getLoggedInUserID()
-        {
-            DatabaseCreator databaseCreator = new DatabaseCreator();
-            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
-        }
-
         // GET: ManageQuizzes/Create
         public ActionResult Create()
         {
@@ -94,7 +81,6 @@ namespace Site.Controllers
             return View(qUIZ);
         }
 
-
         // GET: /Edit/5
         public ActionResult Delete(int? id)
         {
@@ -131,5 +117,27 @@ namespace Site.Controllers
             base.Dispose(disposing);
         }
 
+        public bool isInstructor()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.isInstructorDB(getLoggedInUserID());
+        }
+
+        // Gets logged in user's ID
+        public int getLoggedInUserID()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
+        }
+
+        public bool loggedIn()
+        {
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
     }
 }

@@ -19,7 +19,6 @@ namespace Site.Controllers
 
         // not instructor msg
         string notInstructor = "You must be logged in as an instructor to view this page.";
-
         // not logged in msg
         string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
 

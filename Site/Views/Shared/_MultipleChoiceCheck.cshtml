@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     // shuffled list of the provided answer list.
     // Put our list of answers into a strongly typed list
     List<int> tempList = Model.ans_IDList;
@@ -24,14 +24,16 @@
 }
 <div>
     <div class="question">@Model.que_question</div>
-    @for (int i = 0; i < orderedAnswers.Count; i++)
-    {        
-<div>
-    <!--Convert.ToChar(i + 65) converts the numeric value to an alphabetic value. ToChar(1 + 65) == a - for the value we want to start at 1 so we add 66-->
-    <label>
-        <input type="checkbox" name="@Model.que_ID" id="@orderedAnswers[i]" value="@Convert.ToChar(tempList.IndexOf(orderedAnswers[i]) + 65)" />
-        @Convert.ToChar(i + 65)) @orderedDescriptions[i]
-    </label>
-</div>
-    }
+    <div class="answer">
+        @for (int i = 0; i < orderedAnswers.Count; i++)
+        {
+            <div>
+            <!--Convert.ToChar(i + 65) converts the numeric value to an alphabetic value. ToChar(1 + 65) == a - for the value we want to start at 1 so we add 66-->
+            <label>
+                <input type="checkbox" name="@Model.que_ID" id="@orderedAnswers[i]" value="@Convert.ToChar(tempList.IndexOf(orderedAnswers[i]) + 65)" />
+                @Convert.ToChar(i + 65)) @orderedDescriptions[i]
+            </label>
+            </div>
+        }
+    </div>
 </div>

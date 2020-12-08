@@ -133,8 +133,6 @@ namespace Site.Controllers
                     }
                 }
 
-
-
                 // Create our questionData object and add it to the QuestionDataList if it isn't null
                 questionDataList.Add(new QuestionData
                 {
@@ -159,7 +157,6 @@ namespace Site.Controllers
                 else
                     pointTotal++;
             }
-
 
             ViewBag.PointTotal = pointTotal;
             ViewBag.QuizName = databaseCreator.getQuizNameDB(quizID);
@@ -230,7 +227,7 @@ namespace Site.Controllers
             }
             // if not logged in, return to the login view with viewdata of an error
             // TODO Parse the type of error based on the sql return value.
-            ViewBag.Error = "There was an error";
+            ViewBag.Error = "Unable to log in. Please try again.";
             return View("LogIn");
         }
 

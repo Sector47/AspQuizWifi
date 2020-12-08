@@ -33,17 +33,23 @@
                 @Html.ValidationMessageFor(model => model.QUI_NOTES, "", new { @class = "text-danger" })
             </div>
         </div>
-        
+
         <div class="form-group">
             <div>
-                <input type="submit" value="Save" class="btn buttonStyle" />
+                <input type="submit" value="Save" class="" />
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-    @Html.ActionLink("Create Question", "Create", "ModifyQuestions")
-    @Html.ActionLink("Edit Questions", "Index", "ModifyQuestions")
-</div>
+<ul>
+    <li>
+        @Html.ActionLink("Back to List", "Index")
+    </li>
+    <li>
+        @Html.ActionLink("Create Question", "Create", "ModifyQuestions")
+    </li>
+    <li>
+        @Html.ActionLink("Edit Questions", "Index", "ModifyQuestions")
+    </li>
+</ul>

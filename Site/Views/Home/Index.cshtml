@@ -1,9 +1,9 @@
-﻿@{ ViewData["Title"] = "Home Page"; }
+﻿@{ ViewData["Title"] = "Home"; }
 
 <div class="text-center">
     @if(System.Web.HttpContext.Current.Session["UserSessionID"] != null && System.Web.HttpContext.Current.Session["UserSessionID"].ToString() != "")
     {
-        <h3>Welcome to Mobile Quiz Over Wi-Fi, @System.Web.HttpContext.Current.Session["UserName"]</h3>
+        <h2>Welcome to Mobile Quiz Over Wi-Fi, @System.Web.HttpContext.Current.Session["UserName"]</h2>
 
         <ul>
             <li><a href="@Url.Action("Quizzes", "Home", null)">View Quizzes</a></li>
@@ -16,7 +16,7 @@
     }
     else
     {
-        <h3>Welcome to Mobile Quiz Over Wifi.</h3>
+        <h2>Welcome to Mobile Quiz Over Wifi.</h2>
         <p>You are not logged in.</p>
         <a href="@Url.Action("LogIn", "Home", null)">Log In</a>
     }

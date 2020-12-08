@@ -13,7 +13,7 @@
         isInstructor = false;
     }
 }
-<h1>@ViewBag.QuizName</h1>
+<h2>@ViewBag.QuizName</h2>
 <!--    foreach QuestionData q in Model(which is an instantiated QuestionData.cs object) we start to build html to display the questions
         TODO Make this page display a single question instead of all of them. Have a button for next question/ previous question appropriate based on if it is the first/last question. Have a submit button that sends the ResponseList of responses to the controller.
 
@@ -30,7 +30,7 @@
         {
             if (q.que_ID != null)
             {
-                <p>Question @count / @Model.Count</p>
+                <p class="quizcount">Question @count of @Model.Count</p>
                 if (q.type_ID.Contains("MCR"))
                 {
                     @Html.Partial("_MultipleChoiceRadio", q as Site.Models.QuestionData);
@@ -66,6 +66,10 @@ else if (Model is Int32)
     {
             <p>It may need further grading from your instructor come back later.</p>
     }
+}
+else if (Model is bool)
+{
+    <p>This quiz is not yet available.</p>
 }
 
 

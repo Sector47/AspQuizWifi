@@ -133,8 +133,6 @@ namespace Site.Controllers
                     }
                 }
 
-
-
                 // Create our questionData object and add it to the QuestionDataList if it isn't null
                 questionDataList.Add(new QuestionData
                 {
@@ -146,7 +144,7 @@ namespace Site.Controllers
                 });
                 if (q[2].Contains("MCC"))
                 {
-                    // Count starts at 1 as we always expect and answer to exist
+                    // Count starts at 1 as we always expect an answer to exist for a mcc question
                     // answers are structured as a,b,d so we count commas and add them to the original value of 1 and we get our total point value for mcc questions
                     int count = 1;
                     foreach (char c in q[3])
@@ -160,7 +158,6 @@ namespace Site.Controllers
                     pointTotal++;
             }
 
-
             ViewBag.PointTotal = pointTotal;
             ViewBag.QuizName = databaseCreator.getQuizNameDB(quizID);
             ViewBag.Quiz_ID = quizID;
@@ -171,6 +168,11 @@ namespace Site.Controllers
                 ViewBag.Completed = true;
                 ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[2];
                 return View("Quiz", databaseCreator.getGradeDB(getLoggedInUserID(), courseQuizID)[1]);
+            }
+
+            if (questionDataList.Count == 0)
+            {
+                return View("Quiz", false);
             }
 
             // pass our new question data object to the quiz view.
@@ -230,7 +232,7 @@ namespace Site.Controllers
             }
             // if not logged in, return to the login view with viewdata of an error
             // TODO Parse the type of error based on the sql return value.
-            ViewBag.Error = "There was an error";
+            ViewBag.Error = "Unable to log in. Please try again.";
             return View("LogIn");
         }
 

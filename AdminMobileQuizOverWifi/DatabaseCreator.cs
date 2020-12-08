@@ -180,9 +180,9 @@ namespace AdminMobileQuizOverWifi
         public string readDB()
         {
             // Create an output string to display our data with
-            string output = "This is the current data in LOGIN table\n\nUsername - Password - IsAdmin\n";
+            string output = "This is the current data in LOGIN table\n\nUsername - Password - Fname - Lname - IsAdmin\n";
             // Connect to database using data connection TODO Make all of these database connection opennings to a method
-            string sql = "SELECT F_NAME, L_NAME, USERNAME, PASSWORD, IS_INSTRUCTOR, SESSION_ID FROM USERS";
+            string sql = "SELECT USERNAME, PASSWORD, F_NAME, L_NAME, IS_INSTRUCTOR, SESSION_ID FROM USERS";
             // DEV Create our sql query string for displaying the LOGIN table
             try
             {
@@ -193,26 +193,12 @@ namespace AdminMobileQuizOverWifi
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    output = output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2) + dataReader.GetValue(4) + " - " + dataReader.GetValue(5) + "\n";
+                    output = output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2) + dataReader.GetValue(3) + " - " + dataReader.GetValue(4) + dataReader.GetValue(5) + "\n";
                 }
             }
             catch (System.Exception e)
             {
-                // if unable to connect or tables don't exist it should be caught and gone through sqlite instead
-                // TODO check config for bool. Possibly checkbox on local application
-                // SQLite read of db
-                SQLiteConnection sqliteConnection;
-                sqliteConnection = new SQLiteConnection(dbLocationLocal);
-                sqliteConnection.Open();
-
-                SQLiteCommand liteCmd = sqliteConnection.CreateCommand();
-                liteCmd.CommandText = sql;
-
-                SQLiteDataReader liteCmdReader = liteCmd.ExecuteReader();
-                while (liteCmdReader.Read())
-                {
-                    output = output + liteCmdReader.GetValue(0) + " - " + liteCmdReader.GetValue(1) + " - " + liteCmdReader.GetValue(2) + "\n";
-                }
+                return e.ToString();
             }
 
             return output;
@@ -226,19 +212,24 @@ namespace AdminMobileQuizOverWifi
         /// <param name="username"> The username to be added</param>
         /// <param name="password"> The password to be added</param>
         /// <returns> TODO Remove Return Statements and make it void, or make it return a string with the system exception. </returns>
-        public string addUserDB(string sql, string username, string password)
+        public string addUserDB(string username, string password, string fName, string lName, bool isInstructor)
         {
             // TODO check for vaild entry ie: no spaces in username/password, not too long or short etc...
-            // First check if username already exists.
+            if (username.Length > 25 || username.Contains(" "))
+                return "Username must be shorter than 25 characters and contain no spaces";
+            if (password.Length > 25 || password.Contains(" "))
+                return "Password must be shorter than 25 characters and contain no spaces";
+            if (fName.Length > 15 || fName.Contains(" "))
+                return "First name must be shorter than 15 characters and contain no spaces";
+            if (lName.Length > 15 || lName.Contains(" "))
+                return "Last name must be shorter than 25 characters and contain no spaces";
+
+            // Check if username already exists.
             string sqlSelect = "SELECT USERNAME FROM USERS WHERE USERNAME = '" + username + "'";
             bool alreadyExists = false;
             try
             {
-                SqlConnection databaseConnection;
-                databaseConnection = new SqlConnection(dbLocationNetwork);
-                databaseConnection.Open();
-                SqlCommand command = new SqlCommand(sqlSelect, databaseConnection);
-                SqlDataReader dataReader = command.ExecuteReader();
+                SqlDataReader dataReader = GetDataReader(sqlSelect);
                 // In order to check for existing usernames we use a datareader to loop through sql select statement results TODO turn this into a sql query, I already wrote this before i thought to use sql to ask for existing rows
                 // If it already exists we return null, else we add it to the table
                 while (dataReader.Read())
@@ -248,56 +239,26 @@ namespace AdminMobileQuizOverWifi
                         alreadyExists = true;
                     }
                 }
-
+                dataReader.Close();
                 if (alreadyExists)
                 {
-                    return null;
+                    return "A user with that name already exits.";
                 }
-                else
-                {
-                    databaseConnection.Close();
-                    databaseConnection = new SqlConnection(dbLocationNetwork);
-                    databaseConnection.Open();
-                    command = new SqlCommand(sql, databaseConnection);
-                    command.ExecuteNonQuery();
-                    readDB();
-                }
-                return null;
+                // build our sql command
+                string sql = "INSERT INTO USERS (USERNAME, PASSWORD, F_NAME, L_NAME, IS_INSTRUCTOR) VALUES ('" + username + "','" + password + "','" + fName + "','" + lName + "','" + isInstructor + "')";
+
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                command.ExecuteNonQuery();
+                databaseConnection.Close();
+                return "The User: " + username + " was successfully added to the database";
+
             }
             catch (System.Exception e)
             {
-                // if can't connect we go to sqlite
-                // TODO make this catch only expected exceptions and instead check config file
-                SQLiteConnection sqliteConnection;
-                // Connect to database using data connection
-                sqliteConnection = new SQLiteConnection(dbLocationLocal);
-                sqliteConnection.Open();
-                SQLiteCommand liteCmd = sqliteConnection.CreateCommand();
-                liteCmd.CommandText = sqlSelect;
-                SQLiteDataReader liteCmdReader = liteCmd.ExecuteReader();
-
-                // In order to check for existing usernames we use a datareader to loop through sql select statement results TODO turn this into a sql query, I already wrote this before i thought to use sql to ask for existing rows
-                // If it already exists we return null, else we add it to the table
-                while (liteCmdReader.Read())
-                {
-                    if (liteCmdReader.GetValue(0).ToString().ToLower() == username.ToLower())
-                    {
-                        alreadyExists = true;
-                    }
-                }
-
-                if (alreadyExists)
-                {
-                    return null;
-                }
-                else
-                {
-                    liteCmd = sqliteConnection.CreateCommand();
-                    liteCmd.CommandText = sql;
-                    liteCmd.ExecuteNonQuery();
-                    readDB();
-                }
-                return null;
+                return e.ToString(); ;
             }
         }
 

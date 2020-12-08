@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Globalization;
 using System.Linq;
 
 namespace Site.Controllers
@@ -18,7 +19,6 @@ namespace Site.Controllers
 
         // not instructor msg
         string notInstructor = "You must be logged in as an instructor to view this page.";
-
         // not logged in msg
         string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
 
@@ -51,8 +51,10 @@ namespace Site.Controllers
             {
                 if (isInstructor())
                 {
+                    Users model = new Users();
+
                     ViewBag.Permission = true;
-                    return View();
+                    return View(model);
                 }
                 else
                 {
@@ -71,13 +73,31 @@ namespace Site.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "F_NAME, L_NAME, IS_INSTRUCTOR, USERNAME, PASSWORD")] USER user)
+        public ActionResult Create([Bind(Include = "FirstName, LastName, IsInstructor, Username, Password")] Users user)
         {
             if (ModelState.IsValid)
             {
-                db.USERS.Add(user);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                string first = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(user.FirstName.ToLower());
+                string last = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(user.LastName.ToLower());
+                string username = user.Username.ToLower();
+
+                USER userItem = new USER();
+                userItem.F_NAME = first;
+                userItem.L_NAME = last;
+                userItem.USERNAME = username;
+                userItem.PASSWORD = user.Password;
+                userItem.IS_INSTRUCTOR = user.IsInstructor;
+
+                try
+                {
+                    db.USERS.Add(userItem);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.Msg = "Unable to add. Double check data and retry.";
+                }
             }
             return View(user);
         }
@@ -97,7 +117,14 @@ namespace Site.Controllers
                     {
                         return HttpNotFound();
                     }
-                    return View(user);
+                    Users userModel = new Users();
+                    userModel.UserID = user.USER_ID;
+                    userModel.FirstName = user.F_NAME;
+                    userModel.LastName = user.L_NAME;
+                    userModel.Username = user.USERNAME;
+                    userModel.IsInstructor = user.IS_INSTRUCTOR;
+                    userModel.Password = user.PASSWORD;
+                    return View(userModel);
                 }
                 else
                 {
@@ -114,13 +141,33 @@ namespace Site.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "USER_ID, F_NAME, L_NAME, IS_INSTRUCTOR, USERNAME, PASSWORD")] USER user)
+        public ActionResult Edit([Bind(Include = "UserID, FirstName, LastName, IsInstructor, UserName, Password")] Users user)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+
+                string first = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(user.FirstName.ToLower());
+                string last = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(user.LastName.ToLower());
+                string username = user.Username.ToLower();
+
+                USER userItem = new USER();
+                userItem.USER_ID = user.UserID;
+                userItem.F_NAME = first;
+                userItem.L_NAME = last;
+                userItem.USERNAME = username;
+                userItem.PASSWORD = user.Password;
+                userItem.IS_INSTRUCTOR = user.IsInstructor;
+
+                try
+                {
+                    db.Entry(userItem).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.Msg = "Unable to update. The data may be invalid or already exists.";
+                }              
             }
             return View(user);
         }
@@ -154,8 +201,6 @@ namespace Site.Controllers
                 ViewBag.PermissionMsg = notLoggedIn;
                 return View();
             }
-
-
         }
 
         [HttpPost, ActionName("Delete")]

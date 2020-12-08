@@ -194,6 +194,7 @@
     <Compile Include="Models\USER.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -255,9 +256,6 @@
     <Content Include="Views\Shared\_Quiz.cshtml" />
     <Content Include="Views\Home\Quiz.cshtml" />
     <Content Include="Views\ModifyUsers\Index.cshtml" />
-    <Content Include="Views\Home\ModifyCourses.cshtml" />
-    <Content Include="Views\Home\ModifyGrades.cshtml" />
-    <Content Include="Views\Home\ModifyQuizzes.cshtml" />
     <Content Include="Views\ModifyCourses\Index.cshtml" />
     <Content Include="Views\ModifyCourses\Create.cshtml" />
     <Content Include="Views\ModifyCourses\Delete.cshtml" />
@@ -277,11 +275,12 @@
     <Content Include="Views\ModifyRoster\Index.cshtml" />
     <Content Include="Views\ModifyRoster\Create.cshtml" />
     <Content Include="Views\ModifyRoster\Delete.cshtml" />
-    <Content Include="Views\Home\LoggedOut.cshtml" />
     <Content Include="Views\ModifyAnswers\Index.cshtml" />
     <Content Include="Views\ModifyAnswers\Create.cshtml" />
     <Content Include="Views\ModifyAnswers\Edit.cshtml" />
     <Content Include="Views\ModifyAnswers\Delete.cshtml" />
+    <Content Include="Views\Home\LoggedOut.cshtml" />
+    <Content Include="Views\Home\Modify.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -14,38 +14,58 @@ namespace Site.Controllers
     {
         // connection to DB Entity Framework
         private DBEntities db = new DBEntities();
+        // not instructor msg
+        string notInstructor = "You must be logged in as an instructor to view this page.";
+        // not logged in msg
+        string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
 
         // GET: ModifyQuizzes
         public ActionResult Index()
         {
-            if (isInstructor())
+            if (loggedIn())
             {
-                var qUIZs = db.QUIZs.Include(q => q.QUI_NAME);
-                return View(db.QUIZs.ToList());
+                if (isInstructor())
+                {
+                    var qUIZs = db.QUIZs.Include(q => q.QUI_NAME);
+                    return View(db.QUIZs.ToList());
+                }
+                else
+                {
+                    ViewBag.NotPermitted = notInstructor;
+                    return View();
+                }
             }
-            ViewData["Title"] = "You must be logged in as an instructor to view the Modify Quizzes page";
-            return View("../Home/LogIn");
-           
-        }
-
-        // Check if the current user is an instructor.
-        public bool isInstructor()
-        {
-            DatabaseCreator databaseCreator = new DatabaseCreator();
-            return databaseCreator.isInstructorDB(getLoggedInUserID());
-        }
-
-        public int getLoggedInUserID()
-        {
-            DatabaseCreator databaseCreator = new DatabaseCreator();
-            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
+            else
+            {
+                ViewBag.NotPermitted = notLoggedIn;
+                return View();
+            }
         }
 
         // GET: ManageQuizzes/Create
         public ActionResult Create()
         {
-            return View();
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Permission = false;
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Permission = false;
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
         }
+
         // POST: Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -66,16 +86,32 @@ namespace Site.Controllers
         // GET: /Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (loggedIn())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    QUIZ qUIZ = db.QUIZs.Find(id);
+                    if (qUIZ == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(qUIZ);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
             }
-            QUIZ qUIZ = db.QUIZs.Find(id);
-            if (qUIZ == null)
+            else
             {
-                return HttpNotFound();
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
             }
-            return View(qUIZ);
         }
 
         // POST: /Edit/5
@@ -94,21 +130,36 @@ namespace Site.Controllers
             return View(qUIZ);
         }
 
-
         // GET: /Edit/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (loggedIn())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
 
-            QUIZ qUIZ = db.QUIZs.Find(id);
-            if (qUIZ == null)
-            {
-                return HttpNotFound();
+                    QUIZ qUIZ = db.QUIZs.Find(id);
+                    if (qUIZ == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(qUIZ);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
             }
-            return View(qUIZ);
+            else
+            {
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
         }
 
         // POST: /Delete/5
@@ -131,5 +182,27 @@ namespace Site.Controllers
             base.Dispose(disposing);
         }
 
+        public bool isInstructor()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.isInstructorDB(getLoggedInUserID());
+        }
+
+        // Gets logged in user's ID
+        public int getLoggedInUserID()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
+        }
+
+        public bool loggedIn()
+        {
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
     }
 }

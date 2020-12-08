@@ -3,56 +3,64 @@
 @model Site.Models.QUESTION
 
 @{
-    ViewData["Title"] = "ModifyQuestions";
+    ViewData["Title"] = "Create Question";
 }
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+    // checks permission
+    if (ViewBag.Permission == false)
+    {
+        // not instructor, no permission, show proper message
+        <h2>@ViewBag.PermissionMsg</h2>
+    }
+    else
+    {
+<h2>Add Question to Quiz #@ViewBag.QuizID</h2>
 
-<h2>Add Question @ViewBag.QuizID , @ViewData["QuizID"]</h2>
+        using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <input id="QUI_ID" name="QUI_ID" type="hidden" value="@ViewBag.QuizID">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.QUE_QUESTION, "Question:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.QUE_QUESTION, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.QUE_QUESTION, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-<div class="form-horizontal">
-    <input id="QUI_ID" name="QUI_ID" type="hidden" value="@ViewBag.QuizID">
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.QUE_QUESTION, "Question:", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.QUE_QUESTION, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.QUE_QUESTION, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TYPE_ID, "Type:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.TYPE_ID, new SelectList(Enum.GetValues(typeof(ANS_TYPE))))
+                        @Html.ValidationMessageFor(model => model.TYPE_ID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.TYPE_ID, "Type:", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(model => model.TYPE_ID, new SelectList(Enum.GetValues(typeof(ANS_TYPE))))
-            @Html.ValidationMessageFor(model => model.TYPE_ID, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                <div class="form-group">
+                    @Html.ActionLink("Add Answers", "Create", "ModifyAnswers")
+                    <div class="col-md-10">
+                        @Html.LabelFor(model => model.QUESTION_ANSWER, "Correct Answer:", htmlAttributes: new {@class = "control-label col-md-2"})
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.QUESTION_ANSWER, new {htmlAttributes = new {@class = "form-control"}})
+                            @Html.ValidationMessageFor(model => model.QUESTION_ANSWER, "", new {@class = "text-danger"})
+                        </div>
+                    </div>
+                </div>
 
-    <div class="form-group">
-        @Html.ActionLink("Add Answers", "Create", "ModifyAnswers")
-        <div class="col-md-10">
-            @Html.LabelFor(model => model.QUESTION_ANSWER, "Correct Answer:", htmlAttributes: new {@class = "control-label col-md-2"})
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.QUESTION_ANSWER, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.QUESTION_ANSWER, "", new {@class = "text-danger"})
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
             </div>
+        }
+        <div>
+            @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new { id = ViewBag.QuizID })
         </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
-        </div>
-    </div>
-</div>
+    }
 }
-<div>
-    @Html.ActionLink("Back to List", "../Index")
-</div>
+

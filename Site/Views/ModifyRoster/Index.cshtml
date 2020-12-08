@@ -3,7 +3,7 @@
 
 @{ if (Model != null)
     {
-        <h2>Rosters</h2>
+        <h2>Course/Student Roster</h2>
         <div>
             <ul>
                 <li>@Html.ActionLink("Add Roster", "Create", "ModifyRoster")</li>
@@ -12,8 +12,8 @@
 
         <table class="coursetable">
             <tr>
-                <th>Roster ID</th>
-                <th>Course Name</th>
+                <th>Course</th>
+                <th>Student Name</th>
                 <th>Student Username</th>
                 <th></th>
             </tr>
@@ -23,10 +23,14 @@
                 <tr>
                     <!--<td>@Html.DisplayFor(modelItem => roster.ROSTER_ID)</td>-->
                     <td>@Html.DisplayFor(modelItem => roster.COURSE.COU_NAME)</td>
-                    <td>@Html.DisplayFor(modelItem => roster.USER.USERNAME)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => roster.USER.L_NAME), @Html.DisplayFor(modelItem => roster.USER.F_NAME)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => roster.USER.USERNAME)
+                    </td>
 
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = roster.ROSTER_ID }) |
                         @Html.ActionLink("Delete", "Delete", new { id = roster.ROSTER_ID })
                     </td>
                 </tr>

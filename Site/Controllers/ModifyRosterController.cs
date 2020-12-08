@@ -26,7 +26,8 @@ namespace Site.Controllers
             {
                 if (isInstructor())
                 {
-                    var rosters = db.ROSTERs.Include(r => r.USER).Include(r => r.COURSE);
+                    var rosters = db.ROSTERs.Include(r => r.COURSE).Include(r => r.USER);
+                    rosters = rosters.OrderBy(r => r.COURSE.COU_NAME);
                     return View(rosters.ToList());
                 }
                 else
@@ -52,6 +53,7 @@ namespace Site.Controllers
                     ViewBag.Permission = true;
                     ViewBag.COURSE_ID = new SelectList(db.COURSEs, "COURSE_ID", "COU_NAME");
                     ViewBag.USER_ID = new SelectList(db.USERS, "USER_ID", "USERNAME");
+                  
                     return View();
                 }
                 else
@@ -73,11 +75,24 @@ namespace Site.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "COURSE_ID, USER_ID")] ROSTER roster)
         {
+
+            ROSTER R = roster;
+
             if (ModelState.IsValid)
-            {
-                db.ROSTERs.Add(roster);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+            {  
+                try
+                {
+                    db.ROSTERs.Add(roster);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.Msg = "Unable to add. The student is already in this course.";
+                   
+                }
+
+               
             }
 
             ViewBag.COURSE_ID = new SelectList(db.COURSEs, "COURSE_ID", "COU_NAME", roster.COURSE_ID);

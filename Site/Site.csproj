@@ -173,21 +173,6 @@
     <Compile Include="Models\GRADE.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MobileQuizWifiEntityFramework.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MobileQuizWifiEntityFramework.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MobileQuizWifiEntityFramework.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MobileQuizWifiEntityFramework.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MobileQuizWifiEntityFramework.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Models\QUESTION.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -225,25 +210,8 @@
       <DependentUpon>DBModel.edmx</DependentUpon>
       <LastGenOutput>DBModel.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\MobileQuizWifiEntityFramework.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
-      <LastGenOutput>MobileQuizWifiEntityFramework.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\MobileQuizWifiEntityFramework.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
-      <LastGenOutput>MobileQuizWifiEntityFramework.cs</LastGenOutput>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\MobileQuizWifiEntityFramework.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MobileQuizWifiEntityFramework.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\MobileQuizWifiEntityFramework.edmx.diagram">
-      <DependentUpon>MobileQuizWifiEntityFramework.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\DBModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DBModel.Designer.cs</LastGenOutput>

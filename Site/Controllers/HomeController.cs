@@ -10,7 +10,9 @@ namespace Site.Controllers
     {
         // connection to DB Entity Framework
         private DBEntities db = new DBEntities();
-        private string msg = "You must be logged in as an instructor to view this page.";
+        private string msgStu = "You must be logged in as an instructor to view this page.";
+        private string msgLog = "You must be logged in to view this page.";
+
         public ActionResult Index()
         {
             return View();
@@ -18,17 +20,25 @@ namespace Site.Controllers
 
         public ActionResult Modify()
         {
-            if (isInstructor())
+            if(loggedIn())
             {
-                return View();
+                if (isInstructor())
+                {
+                    return View();
+                }
+                else
+                {
+                    ViewBag.IsInstructor = false;
+                    ViewBag.Msg = msgStu;
+                    return View();
+                }
             }
             else
             {
                 ViewBag.IsInstructor = false;
-                ViewBag.Msg = msg;
+                ViewBag.Msg = msgLog;
                 return View();
             }
-
         }
 
         public ActionResult Quizzes()

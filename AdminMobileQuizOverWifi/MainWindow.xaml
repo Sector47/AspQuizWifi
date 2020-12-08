@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdminMobileQuizOverWifi"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TextBox x:Name="UserNameTextBox" HorizontalAlignment="Left" Margin="292,92,0,0" Text="Insert Username here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus"/>
-        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Margin="292,115,0,0" Text="Insert Password here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus"/>
-        <Button x:Name="RegisterButton" Content="Register" HorizontalAlignment="Left" Margin="292,154,0,0" VerticalAlignment="Top" Width="120" Click="RegisterButton_Click"/>
-        <CheckBox x:Name="AdminCheckbox" Content="Is Admin" HorizontalAlignment="Left" Margin="292,138,0,0" VerticalAlignment="Top"/>
-
+        Title="MainWindow" Height="250" Width="600">
+    <Grid Margin="0,0,2,-21">
+        <TextBox x:Name="UserNameTextBox" HorizontalAlignment="Left" Margin="170,36,0,0" Text="Insert Username here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" Height="18"/>
+        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Margin="310,36,0,0" Text="Insert Password here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" Height="18"/>
+        <TextBox x:Name="FNameTextBox" HorizontalAlignment="Left" Margin="170,69,0,0" Text="Insert First Name here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" Height="18"/>
+        <TextBox x:Name="LNameTextBox" HorizontalAlignment="Left" Margin="310,69,0,0" Text="Insert Last Name here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" Height="18"/>
+        <CheckBox x:Name="InstructorStatusCheckbox" Content="Is Instructor Account" HorizontalAlignment="Left" Margin="233,105,0,0" VerticalAlignment="Top" Width="134"/>
+        <Button x:Name="RegisterButton" Content="Register" HorizontalAlignment="Left" Margin="233,125,0,0" VerticalAlignment="Top" Width="134" Click="RegisterButton_Click"/>
     </Grid>
 </Window>

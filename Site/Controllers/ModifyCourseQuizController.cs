@@ -32,11 +32,11 @@ namespace Site.Controllers
                         Value = a.QUI_ID.ToString()
                     });
 
-                    model.AllCourseOptions = db.COURSEs.ToList().Select(b => new SelectListItem
-                    {
-                        Text = b.COU_NAME,
-                        Value = b.COURSE_ID.ToString()
-                    });
+            model.AllCourseOptions = db.COURSEs.ToList().Select(b => new SelectListItem
+            {
+                Text = b.COU_NAME + "  (Year: " + b.COU_YEAR + ", Sem: " + b.COU_SEM + ")",
+                Value = b.COURSE_ID.ToString()
+            });
 
                     return View(model);
                 }
@@ -59,14 +59,12 @@ namespace Site.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public ActionResult Index([Bind(Include = "QUI_ID, COURSE_ID, COURSE_QUI_ID")] COURSE_QUIZ cOURSE_QUIZ)
-        public ActionResult Index(COURSE_QUIZ cOURSE_QUIZ)
+                public ActionResult Index(COURSE_QUIZ cOURSE_QUIZ)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && cOURSE_QUIZ.QuizSelected != null && cOURSE_QUIZ.CourseSelected != null)
             {
                 int uQueID = int.Parse(cOURSE_QUIZ.QuizSelected);
                 int uCouID = int.Parse(cOURSE_QUIZ.CourseSelected);
-                //int uCouQueID = 1;
 
                 COURSE_QUIZ cq = new COURSE_QUIZ()
                 {
@@ -78,8 +76,7 @@ namespace Site.Controllers
 
                 return RedirectToAction("../ModifyQuizzes/Index");
             }
-
-            return View(cOURSE_QUIZ);
+            return RedirectToAction("Index");
         }
 
         // Check if the current user is an instructor.

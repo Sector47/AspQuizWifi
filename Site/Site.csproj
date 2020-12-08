@@ -140,6 +140,7 @@
     <Compile Include="Controllers\ModifyAnswersController.cs" />
     <Compile Include="Controllers\ModifyCourseQuizController.cs" />
     <Compile Include="Controllers\ModifyCoursesController.cs" />
+    <Compile Include="Controllers\ModifyGradesController.cs" />
     <Compile Include="Controllers\ModifyQuestionsController.cs" />
     <Compile Include="Controllers\ModifyQuizzesController.cs" />
     <Compile Include="Controllers\ModifyRosterController.cs" />
@@ -281,6 +282,9 @@
     <Content Include="Views\ModifyAnswers\Delete.cshtml" />
     <Content Include="Views\Home\LoggedOut.cshtml" />
     <Content Include="Views\Home\Modify.cshtml" />
+    <Content Include="Views\ModifyGrades\Index.cshtml" />
+    <Content Include="Views\ModifyGrades\Edit.cshtml" />
+    <Content Include="Views\ModifyGrades\Grade.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

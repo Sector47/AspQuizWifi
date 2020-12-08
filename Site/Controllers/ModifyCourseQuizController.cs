@@ -55,7 +55,7 @@ namespace Site.Controllers
                 db.COURSE_QUIZ.Add(cq);
                 db.SaveChanges();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("../ModifyQuizzes/Index");
             }
 
             return View(cOURSE_QUIZ);

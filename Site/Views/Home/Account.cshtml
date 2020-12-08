@@ -2,7 +2,7 @@
 
 <h2>Account</h2>
 
-<h3>Change Password</h3>
+<h4>Change Password:</h4>
 @using (Html.BeginForm("ChangePassword", "Home", FormMethod.Post))
 {
     <form id="PasswordChange" method="post">
@@ -16,7 +16,7 @@
 
 @if (Model)
 {
-    <h3>Additional Account Features:</h3>
+    <h4>Additional Account Features:</h4>
     <ul>
         <li>@Html.ActionLink("Modify", "Modify", "Home")</li>
     </ul>

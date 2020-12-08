@@ -9,9 +9,7 @@
 
 <h2>Remove Quiz</h2>
 
-<h2>Confirm Quiz Delete</h2>
-
-<h3>Are you sure you want to delete this Quiz?</h3>
+<h3>Confirm Quiz Delete: <span class="warning">Are you sure you want to delete this Quiz?</span></h3>
 
 <div>
     <hr />
@@ -26,7 +24,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Yes, Delete Quiz" class="btn buttonStyle" /> |
+            <input type="submit" value="Yes, Delete Quiz" class="" /> |
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

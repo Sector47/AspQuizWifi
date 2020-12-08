@@ -37,28 +37,17 @@ namespace AdminMobileQuizOverWifi
             // create our sql query string using the text from the textboxes.
             string username = UserNameTextBox.Text;
             string password = PasswordTextBox.Text;
-            string sql = "";
-            // create our sql based on whether admin checkbox is checked
-            if (AdminCheckbox.IsChecked.HasValue && AdminCheckbox.IsChecked.Value)
+            string fName = FNameTextBox.Text;
+            string lName = LNameTextBox.Text;
+            bool isInstructor = false;
+            // check if the isinstructor box is checked.
+            if (InstructorStatusCheckbox.IsChecked.HasValue && InstructorStatusCheckbox.IsChecked.Value)
             {
-                sql = "INSERT INTO USERS (USERNAME, PASSWORD, IS_INSTRUCTOR) VALUES('" + username + "', '" + password + "', 1)";
+                isInstructor = true;
             }
-            else
-            {
-                sql = "INSERT INTO USERS (USERNAME, PASSWORD, IS_INSTRUCTOR) VALUES('" + username + "', '" + password + "', 0)";
-            }
-
-
-
-
             // Create an instance of our databasecreator class
-            DatabaseCreator creator = new DatabaseCreator();
-            // DEV show messsage box with before Select * from LOGIN
-            MessageBox.Show("Before \n" + creator.readDB());
-            // call the addUserDB method to have the DatabaseCreator class deal with adding our new user to the database
-            creator.addUserDB(sql, username, password);
-            // DEV show message box with after Select * from LOGIN
-            MessageBox.Show("After \n" + creator.readDB());
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            MessageBox.Show(databaseCreator.addUserDB(username, password, fName, lName, isInstructor));
         }
 
         // On focus, empty the text box and remove the gotfocus handler

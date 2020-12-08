@@ -27,7 +27,7 @@
             <div>
                 <!--Convert.ToChar(i + 65) converts the numeric value to an alphabetic value. ToChar(1 + 65) == a - for the value we want to start at 1 so we add 66-->
                 <label>
-                    <input type="radio" name="@Model.que_ID" id="@orderedAnswers[i]" value="@Convert.ToChar(tempList.IndexOf(orderedAnswers[i]) + 65)" />
+                    <input type="radio" name="@Model.que_ID" id="@orderedAnswers[i]" value="@Convert.ToChar(tempList.IndexOf(orderedAnswers[i]) + 65)" required/>
                     @Convert.ToChar(i + 65)) @orderedDescriptions[i]
                 </label>
             </div>

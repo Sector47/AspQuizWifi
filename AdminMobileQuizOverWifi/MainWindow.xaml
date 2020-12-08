@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdminMobileQuizOverWifi"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="600">
+        Title="Mobile Quiz Over Wifi Account Creation" Height="250" Width="600">
     <Grid Margin="0,0,2,-21">
         <TextBox x:Name="UserNameTextBox" HorizontalAlignment="Left" Margin="170,36,0,0" Text="Insert Username here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" Height="18"/>
         <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Margin="310,36,0,0" Text="Insert Password here" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" Height="18"/>

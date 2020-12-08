@@ -7,14 +7,14 @@
 {
     <form id="PasswordChange" method="post">
         <p>@ViewBag.PasswordChange</p>
-        <p><label>Current Password:</label> <input name="CurrentPassword" type="password"></p>
-        <p><label>New Password:</label> <input name="NewPassword" type="text"></p>
-        <p><label>Confirm New Password:</label><input name="ConfirmNewPassword" type="text"></p>
+        <p><label>Current Password:</label> <input name="CurrentPassword" type="password" maxlength="25"  placeholder="Current password here" required></p>
+        <p><label>New Password:</label> <input name="NewPassword" type="text" maxlength="25"  placeholder="New password here" required></p>
+        <p><label>Confirm New Password:</label><input name="ConfirmNewPassword" type="text" maxlength="25"  placeholder="New password here to confirm" required></p>
         <p class="submit"><input type="submit" value="Change Password" />
     </form>
 }
 
-@if (Model)
+@if (Model is bool && Model)
 {
     <h4>Additional Account Features:</h4>
     <ul>

@@ -211,6 +211,10 @@ namespace Site.Controllers
         [HttpPost]
         public ActionResult LogIn(string username, string password)
         {
+            // Quick and dirty sanitize of entry fields
+            username = username.Replace("'", "''");
+            password = password.Replace("'", "''");
+
             // Get the browser's generated sesssion id
             string session = HttpContext.Session.SessionID;
             // Create our asp database object to send through login attempt
@@ -246,7 +250,9 @@ namespace Site.Controllers
 
             foreach (int i in questionList)
             {
-                responseList.Add(Request.Form[i.ToString()]);
+                // Quick and dirty sanitize 
+                string responseString = Request.Form[i.ToString()].Replace("'", "''");
+                responseList.Add(responseString);
             }
 
             int grade = databaseCreator.gradeQuizDB(qui_ID, responseList, getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()));
@@ -264,20 +270,24 @@ namespace Site.Controllers
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
 
+            // Quick and dirty sanitize
+            currentPassword = currentPassword.Replace("'", "''");
+            newPassword = newPassword.Replace("'", "''");
+            confirmNewPassword = confirmNewPassword.Replace("'", "''");
+
             // Make sure they entered a password in current password and that is their current password in the db for the given user id
             if (currentPassword != "" && !databaseCreator.CheckPasswordDB(getLoggedInUserID(), currentPassword))
             {
                 ViewBag.PasswordChange = "Your current password was incorrect.";
-                return View("Account");
+                return View("Account", isInstructor());
             }
             // If the password is empty we tell them it can't be blank
             else if (currentPassword == "")
             {
                 ViewBag.PasswordChange = "Current password cannot be blank";
-                return View("Account");
+                return View("Account", isInstructor());
             }
             // If their password was correct then we start to verify the new password
-            // TODO verify the length is fine and that no special characters exist.
             else
             {
                 // Check that neither are blank
@@ -296,23 +306,23 @@ namespace Site.Controllers
                         else
                         {
                             ViewBag.PasswordChange = "Your new password cannot be the same as your current password.";
-                            return View("Account");
+                            return View("Account", isInstructor());
                         }
                     }
                     else
                     {
                         ViewBag.PasswordChange = "Your new password and confirmation did not match.";
-                        return View("Account");
+                        return View("Account", isInstructor());
                     }
                 }
                 else
                 {
                     ViewBag.PasswordChange = "Your new password or confirmation cannot be blank.";
-                    return View("Account");
+                    return View("Account", isInstructor());
                 }
             }
             // return to account page after, The ViewBag.PasswordChange will hold the message depending on whether it was succesful or not.
-            return View("Account");
+            return View("Account", isInstructor());
         }
     }
 }

@@ -274,14 +274,6 @@ namespace AdminMobileQuizOverWifi
             string sql = "SELECT USERNAME, PASSWORD FROM USERS WHERE USERNAME = '" + username + "'";
             try
             {
-                // attempt to connect to our database
-                //SqlConnection databaseConnection;
-                //databaseConnection = new SqlConnection(dbLocationNetwork);
-                //databaseConnection.Open();
-
-                // build our sql command                
-                //SqlCommand command = new SqlCommand(sql, databaseConnection);
-
                 // read the results
                 SqlDataReader dataReader = GetDataReader(sql);
 
@@ -308,27 +300,6 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-                // if can't connect we go to sqlite
-                // TODO make this catch only expected exceptions and instead check config file
-                SQLiteConnection sqliteConnection;
-                // Connect to database using data connection
-                sqliteConnection = new SQLiteConnection(dbLocationLocal);
-                sqliteConnection.Open();
-                SQLiteCommand liteCmd = sqliteConnection.CreateCommand();
-                liteCmd.CommandText = sql;
-                SQLiteDataReader liteCmdReader = liteCmd.ExecuteReader();
-
-                // In order to check for existing usernames we use a datareader to loop through sql select statement results TODO turn this into a sql query, I already wrote this before i thought to use sql to ask for existing rows
-                // If it already exists we return null, else we add it to the table
-                while (liteCmdReader.Read())
-                {
-                    // check if password matches saved password
-                    if (liteCmdReader.GetValue(1).ToString() == password)
-                    {
-                        return true;
-                    }
-                }
-
                 return false;
             }
         }
@@ -342,9 +313,27 @@ namespace AdminMobileQuizOverWifi
         /// <returns>A boolean that verifys whether the password matched or not</returns>
         public bool CheckPasswordDB(int user_ID ,string currentPassword)
         {
-            // TODO
-            return true;
-            return false;
+            string sql = "SELECT PASSWORD FROM USERS WHERE USER_ID = '" + user_ID + "';";
+            try
+            {
+                // read the results
+                SqlConnection databaseConnection;
+                databaseConnection = new SqlConnection(dbLocationNetwork);
+                databaseConnection.Open();
+                SqlCommand command = new SqlCommand(sql, databaseConnection);
+                if (command.ExecuteScalar().ToString() == currentPassword)
+                {
+                    databaseConnection.Close();
+                    return true;
+                }
+                    
+
+                return false;
+            }
+            catch (System.Exception e)
+            {
+                return false;
+            }
         }
 
         /// <summary>

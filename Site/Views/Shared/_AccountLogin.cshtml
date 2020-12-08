@@ -1,7 +1,7 @@
 ﻿@using (Html.BeginForm("LogIn", "Home", FormMethod.Post))
 {
         <p>@ViewBag.Error</p>
-        <p><label>Username:</label> <input name="Username" type="text">  </p>
-        <p><label>Password:</label> <input name="Password" type="password">  </p>
+        <p><label>Username:</label> <input name="Username" type="text" maxlength="25"  placeholder="Enter your username here" required>  </p>
+        <p><label>Password:</label> <input name="Password" type="password" maxlength="25"  placeholder="Enter your password here" required>  </p>
         <p class="submit"><input type="submit" value="Log In" /></p>
 }

@@ -13,7 +13,7 @@
 <h2>Questions</h2>
 <div>
     <ul>
-        <li>@Html.ActionLink("Add Question", "Create", "ModifyQuestions")</li>
+        <li>@Html.ActionLink("Add Question", "Create", new {qui_ID = ViewBag.QuizID })</li>
     </ul>
 </div>
 
@@ -34,10 +34,13 @@
             <td>@Html.DisplayFor(modelItem => item.QUESTION_ANSWER)</td>
             <td>@Html.DisplayFor(modelItem => item.TYPE_ID)</td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {id = item.QUE_ID}) |
-                @Html.ActionLink("Delete", "Delete", new {id = item.QUE_ID})
+                @Html.ActionLink("Edit", "Edit", new {id = item.QUE_ID, qui_ID = item.QUI_ID}) |
+                @Html.ActionLink("Delete", "Delete", new {id = item.QUE_ID, qui_ID = item.QUI_ID })
             </td>
         </tr>
     }
 
 </table>
+<div>
+    @Html.ActionLink("Back to Quizzes", "../ModifyQuizzes/Index")
+</div>

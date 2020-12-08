@@ -23,10 +23,11 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Yes, Delete Question" class="" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
+<div class="form-actions no-color">
+    <input type="submit" value="Yes, Delete Question" class="" /> |
+    @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new { id = Model.QUI_ID })
+</div>
     }
 </div>
+
+

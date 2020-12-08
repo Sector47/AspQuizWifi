@@ -31,7 +31,7 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.QUI_ID }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.QUI_ID }) | 
-                @Html.ActionLink("Edit Question", "Index", "ModifyQuestions")
+                @Html.ActionLink("Edit Question", "../ModifyQuestions/Index", new { id = item.QUI_ID })
 
             </td>
         </tr>

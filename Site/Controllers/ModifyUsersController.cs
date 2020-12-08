@@ -143,8 +143,6 @@ namespace Site.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "UserID, FirstName, LastName, IsInstructor, UserName, Password")] Users user)
         {
-
-
             if (ModelState.IsValid)
             {
 

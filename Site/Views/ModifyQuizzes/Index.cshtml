@@ -28,17 +28,17 @@
 
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.QUI_NAME)</td>
-                    <td>@Html.DisplayFor(modelItem => item.QUI_NOTES)</td>
-                    <td>@Html.DisplayFor(modelItem => item.QUI_ID)</td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.QUI_ID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.QUI_ID }) |
-                        @Html.ActionLink("Edit Question", "../ModifyQuestions/Index", new { id = item.QUI_ID })
+                  <tr>
+                      <td>@Html.DisplayFor(modelItem => item.QUI_NAME)</td>
+                      <td>@Html.DisplayFor(modelItem => item.QUI_NOTES)</td>
+                      <td>@Html.DisplayFor(modelItem => item.QUI_ID)</td>
+                      <td>
+                          @Html.ActionLink("Edit", "Edit", new { id = item.QUI_ID }) |
+                          @Html.ActionLink("Delete", "Delete", new { id = item.QUI_ID }) | 
+                          @Html.ActionLink("Edit Questions", "../ModifyQuestions/Index", new { id = item.QUI_ID })
 
-                    </td>
-                </tr>
+                      </td>
+                  </tr>
             }
         </table>
 

@@ -1,0 +1,49 @@
+﻿@using System.Activities.Statements
+@using Site.Models
+@model Site.Models.ANSWER
+
+@{
+    ViewData["Title"] = "ModifyAnswers";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Update Answers</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.ANS_ID)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DESCRIPTION, "Description:", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DESCRIPTION, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DESCRIPTION, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.CORRECT_ANS, "CORRECT ANSWER:", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.CORRECT_ANS, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.CORRECT_ANS, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+<div>
+    @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = Model.QUE_ID })
+    @Html.ActionLink("Delete Answer", "Delete", new { id = Model.QUE_ID })
+</div>

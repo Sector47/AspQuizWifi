@@ -1,0 +1,33 @@
+﻿@model Site.Models.ANSWER
+
+@{
+    ViewData["Title"] = "ModifyAnswers";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Remove Answer</h2>
+
+<h2>Confirm Answer Delete</h2>
+
+<h3>Are you sure you want to delete this Answer?</h3>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Answer ID: @Html.DisplayFor(model => model.ANS_ID)</dt>
+        <dt>Description: @Html.DisplayFor(model => model.DESCRIPTION)</dt>
+        <dt>Correct Answer: @Html.DisplayFor(model => model.CORRECT_ANS)</dt>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Yes, Delete Question" class="btn buttonStyle" /> |
+            @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = Model.QUE_ID })
+        </div>
+    }
+</div>

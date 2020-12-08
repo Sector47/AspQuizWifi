@@ -75,8 +75,6 @@ namespace Site.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "FirstName, LastName, IsInstructor, Username, Password")] Users user)
         {
-
-           // CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLower());
             if (ModelState.IsValid)
             {
                 string first = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(user.FirstName.ToLower());
@@ -101,7 +99,6 @@ namespace Site.Controllers
                     ViewBag.Msg = "Unable to add. Double check data and retry.";
                 }
             }
-
             return View(user);
         }
 
@@ -206,8 +203,6 @@ namespace Site.Controllers
                 ViewBag.PermissionMsg = notLoggedIn;
                 return View();
             }
-
-
         }
 
         [HttpPost, ActionName("Delete")]

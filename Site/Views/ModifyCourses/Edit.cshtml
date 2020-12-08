@@ -4,68 +4,75 @@
 }
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    // checks for a model
+    if (Model != null)
+    {
+        <h2>Update Course</h2>
+
+        using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.COURSE_ID)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.COU_NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.COU_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.COU_NAME, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.COU_SEM, "Semester:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.COU_SEM, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.COU_SEM, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.COU_YEAR, "Year:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.COU_YEAR, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.COU_YEAR, "", new { @class = "text-danger" }) YYYY
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.COU_START_DATE, "Start Date:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.COU_START_DATE, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.COU_START_DATE, "", new { @class = "text-danger" })  YYYY-MM-DD
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.COU_END_DATE, "End Date:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.COU_END_DATE, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.COU_END_DATE, "", new { @class = "text-danger" }) YYYY-MM-DD
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div>
+                        <input type="submit" value="Save" class="" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+    else
+    {
+        // no model = not an instructor, display permission error message
+        <h2>@ViewBag.PermissionMsg</h2>
+    }
 }
-
-<h2>Update Course</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.COURSE_ID)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.COU_NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.COU_NAME, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.COU_NAME, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.COU_SEM, "Semester:", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.COU_SEM, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.COU_SEM, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.COU_YEAR, "Year:", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.COU_YEAR, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.COU_YEAR, "", new { @class = "text-danger" }) YYYY
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.COU_START_DATE, "Start Date:", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.COU_START_DATE, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.COU_START_DATE, "", new { @class = "text-danger" })  YYYY-MM-DD
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.COU_END_DATE, "End Date:", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.COU_END_DATE, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.COU_END_DATE, "", new { @class = "text-danger" }) YYYY-MM-DD
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div>
-                <input type="submit" value="Save" class="" />
-            </div>
-        </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>

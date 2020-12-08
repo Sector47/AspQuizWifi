@@ -15,18 +15,60 @@ namespace Site.Controllers
     {
         // connection to DB Entity Framework
         private DBEntities db = new DBEntities();
+        // not instructor msg
+        string notInstructor = "You must be logged in as an instructor to view this page.";
+        // not logged in msg
+        string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
 
         // GET: ModifyCourses
         public ActionResult Index()
         {
-            var cOURSEs = db.COURSEs;
-            return View(db.COURSEs.ToList());
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+
+                    var cOURSEs = db.COURSEs;
+                    return View(db.COURSEs.ToList());
+                }
+                else
+                {
+                    ViewBag.NotPermitted = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.NotPermitted = notLoggedIn;
+                return View();
+            }
         }
 
         // GET: ManageCourses/Create
         public ActionResult Create()
         {
-            return View();
+            if (loggedIn())
+            {
+                if (isInstructor())
+                {
+                    ViewBag.Permission = true;
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Permission = false;
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Permission = false;
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
+
+
         }
         // POST: Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -48,16 +90,32 @@ namespace Site.Controllers
         // GET: /Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (loggedIn())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    COURSE cOURSE = db.COURSEs.Find(id);
+                    if (cOURSE == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(cOURSE);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
             }
-            COURSE cOURSE = db.COURSEs.Find(id);
-            if (cOURSE == null)
+            else
             {
-                return HttpNotFound();
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
             }
-            return View(cOURSE);
         }
 
         // POST: /Edit/5
@@ -80,17 +138,33 @@ namespace Site.Controllers
         // GET: /Edit/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (loggedIn())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+                if (isInstructor())
+                {
+                    if (id == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
 
-            COURSE cOURSE = db.COURSEs.Find(id);
-            if (cOURSE == null)
-            {
-                return HttpNotFound();
+                    COURSE cOURSE = db.COURSEs.Find(id);
+                    if (cOURSE == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(cOURSE);
+                }
+                else
+                {
+                    ViewBag.PermissionMsg = notInstructor;
+                    return View();
+                }
             }
-            return View(cOURSE);
+            else
+            {
+                ViewBag.PermissionMsg = notLoggedIn;
+                return View();
+            }
         }
 
         // POST: /Delete/5

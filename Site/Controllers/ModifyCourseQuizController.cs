@@ -12,6 +12,7 @@ namespace Site.Controllers
 {
     public class ModifyCourseQuizController : Controller
     {
+        // Respresents the connection to the Database Entities used in this project.
         private DBEntities db = new DBEntities();
         Models.COURSE_QUIZ model = new Models.COURSE_QUIZ();
         // not instructor msg
@@ -54,28 +55,36 @@ namespace Site.Controllers
                   
         }
 
-        // POST: Create
+        // POST: Create a relationship between the a course and quiz.
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
                 public ActionResult Index(COURSE_QUIZ cOURSE_QUIZ)
         {
+            // Check to see the the model is valid amd the used made a proper selection to create a relationship.
             if (ModelState.IsValid && cOURSE_QUIZ.QuizSelected != null && cOURSE_QUIZ.CourseSelected != null)
             {
+                // Holds user's quiz selections.
                 int uQueID = int.Parse(cOURSE_QUIZ.QuizSelected);
                 int uCouID = int.Parse(cOURSE_QUIZ.CourseSelected);
 
+                // Empty course_quiz model
                 COURSE_QUIZ cq = new COURSE_QUIZ()
                 {
+                    // Assigns the user values to the table.
                     QUI_ID = uQueID,
                     COURSE_ID = uCouID,
                 };
+
+                // Add to table and saves.
                 db.COURSE_QUIZ.Add(cq);
                 db.SaveChanges();
 
+                // Redirect to the index to allow the user to make another choice.
                 return RedirectToAction("../ModifyQuizzes/Index");
             }
+            // Model or selections were not valid, redirects user back to index.
             return RedirectToAction("Index");
         }
 

@@ -23,22 +23,25 @@ namespace Site.Controllers
         // GET: ModifyCourses
         public ActionResult Index()
         {
+            // Check if user is logged in as an instructor.
             if (loggedIn())
             {
                 if (isInstructor())
                 {
-
+                    // Represents alls the courses and returns it as a list object.
                     var cOURSEs = db.COURSEs;
                     return View(db.COURSEs.ToList());
                 }
                 else
                 {
+                    // Returns a message warning user the action is not permitted.
                     ViewBag.NotPermitted = notInstructor;
                     return View();
                 }
             }
             else
             {
+                // Returns a message warning user the action is not permitted.
                 ViewBag.NotPermitted = notLoggedIn;
                 return View();
             }
@@ -47,6 +50,7 @@ namespace Site.Controllers
         // GET: ManageCourses/Create
         public ActionResult Create()
         {
+            // Check if user is logged in as an instructor.
             if (loggedIn())
             {
                 if (isInstructor())
@@ -90,6 +94,7 @@ namespace Site.Controllers
         // GET: /Edit/5
         public ActionResult Edit(int? id)
         {
+            // Check if user is logged in as an instructor.
             if (loggedIn())
             {
                 if (isInstructor())
@@ -138,6 +143,7 @@ namespace Site.Controllers
         // GET: /Edit/5
         public ActionResult Delete(int? id)
         {
+            // Check if user is logged in as an instructor.
             if (loggedIn())
             {
                 if (isInstructor())
@@ -187,6 +193,7 @@ namespace Site.Controllers
             base.Dispose(disposing);
         }
 
+        // Holds user's instructor status.
         public bool isInstructor()
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
@@ -200,6 +207,7 @@ namespace Site.Controllers
             return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
         }
 
+        // Holds Logged in status.
         public bool loggedIn()
         {
             if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")

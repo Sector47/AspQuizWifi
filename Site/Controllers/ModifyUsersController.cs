@@ -286,6 +286,5 @@ namespace Site.Controllers
             else
                 return false;
         }
-
     }
 }

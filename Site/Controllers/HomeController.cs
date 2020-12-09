@@ -246,15 +246,20 @@ namespace Site.Controllers
 
 
 
-        // Using the cookie for UserName we retrieve that userID
+        /// <summary>
+        /// Gets the logged in user id from the session cookie
+        /// </summary>
+        /// <returns> int of the user id</returns>
         public int getLoggedInUserID()
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
             return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
         }
 
-        // return true or false depending on if the user is logged in. We check this by seeing if the cookie for session id is empty or null.
-        // TODO make this confirm against the server if that session id was not timed out yet.
+        /// <summary>
+        /// returns a bool if the user is logged in
+        /// </summary>
+        /// <returns> bool of whether the user is logged in</returns>
         public bool loggedIn()
         {
             if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
@@ -265,7 +270,10 @@ namespace Site.Controllers
                 return false;
         }
 
-        // Check if the current user is an instructor.
+        /// <summary>
+        /// Checks if current user is an instructor
+        /// </summary>
+        /// <returns> a bool of whether they are an instructor. </returns>
         public bool isInstructor()
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();
@@ -273,7 +281,13 @@ namespace Site.Controllers
         }
 
 
-        // LOGIN 
+
+        /// <summary>
+        /// Logs in a user with given username and password
+        /// </summary>
+        /// <param name="username">username to be passed for login attempt</param>
+        /// <param name="password">password to be passed for login attempt</param>
+        /// <returns> A view depending on if they were successfully logged in or not</returns>
         [HttpPost]
         public ActionResult LogIn(string username, string password)
         {
@@ -306,6 +320,11 @@ namespace Site.Controllers
             return View("LogIn");
         }
 
+        /// <summary>
+        /// Submit quiz will submit the given quiz using the form the user directed from
+        /// </summary>
+        /// <param name="qui_ID">quiz id that is being submitted</param>
+        /// <returns> a view of their grade on the quiz</returns>
         [HttpPost]
         public ActionResult SubmitQuiz(int qui_ID)
         {
@@ -331,8 +350,14 @@ namespace Site.Controllers
             return View("Quiz", grade);
         }
 
-        // Change the password of the current user. 
-        // TODO Overloaded method to allower userid entry as well to be used by instructor on the config page.
+
+        /// <summary>
+        /// changes password of currently logged in user
+        /// </summary>
+        /// <param name="currentPassword">Current password of the user</param>
+        /// <param name="newPassword"> new password of the user</param>
+        /// <param name="confirmNewPassword"> their confirmation of the new password</param>
+        /// <returns> a view of the account page with a message depending on the successfulness of their attempt to change password</returns>
         public ActionResult ChangePassword(string currentPassword, string newPassword, string confirmNewPassword)
         {
             DatabaseCreator databaseCreator = new DatabaseCreator();

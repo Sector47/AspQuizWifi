@@ -97,12 +97,20 @@ namespace Site.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.QUESTIONs.Add(qUESTION);
-                db.SaveChanges();
-                return RedirectToAction("../ModifyQuestions/Index", new { id = qUESTION.QUI_ID });
+                try
+                {
+                    db.QUESTIONs.Add(qUESTION);
+                    db.SaveChanges();
+                    return RedirectToAction("../ModifyQuestions/Index", new { id = qUESTION.QUI_ID });
+                }
+                catch
+                {
+                    ViewBag.Msg = "Unable to add. Double check data and retry.";
+                }
             }
 
-            return View(qUESTION);
+            return View(qUESTION);           
+
         }
 
         // GET: /Edit/5
@@ -146,10 +154,19 @@ namespace Site.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(qUESTION).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("../ModifyQuestions/Index", new {id = qUESTION.QUI_ID });
+                try
+                {
+                    db.Entry(qUESTION).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("../ModifyQuestions/Index", new { id = qUESTION.QUI_ID });
+                }
+                catch
+                {
+                    ViewBag.Msg = "Unable to update. The data may be invalid or already exists.";
+                }
             }
+            
+            
             return View(qUESTION);
         }
 

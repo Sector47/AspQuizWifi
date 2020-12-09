@@ -11,7 +11,7 @@
 }
 
 <h2>Update Answers</h2>
-
+<h3>@ViewBag.Msg</h3>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -45,5 +45,4 @@
 }
 <div>
     @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = Model.QUE_ID })
-    @Html.ActionLink("Delete Answer", "Delete", new { id = Model.QUE_ID })
 </div>

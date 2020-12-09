@@ -133,7 +133,14 @@ namespace Site.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(cOURSE).State = EntityState.Modified;
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewBag.PermissionMsg = "Something when wrong. Can not make changes to course.";
+                }
                 return RedirectToAction("Index");
             }
             return View(cOURSE);
@@ -180,7 +187,14 @@ namespace Site.Controllers
         {
             COURSE cOURSE = db.COURSEs.Find(id);
             db.COURSEs.Remove(cOURSE);
-            db.SaveChanges();
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ViewBag.PermissionMsg = "Cannot delete course. Check roster and user relationships to course.";
+            }
             return RedirectToAction("Index");
         }
 

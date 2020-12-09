@@ -19,33 +19,24 @@ using System.Data.SQLite;
 
 namespace AdminMobileQuizOverWifi
 {
+    /// <summary>
+    /// The database creator class holds the methods used to directly connect and work with our database. 
+    /// This was used as I didn't know how to work with entity framework. Having seen the entity framework code used by others, I should have just learned how to use it. -JD
+    /// </summary>
     public class DatabaseCreator
     {
-        // String location of the database locally
-        ////
-        //// This will probably be removed, if we have time we can reimplement a local db alternative.
-        ////
-        private string dbLocationLocal = ""; // For local replace "" with  "Data Source = C:\\Users\\       USERNAME HERE           \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
-        // Below code will be used if we use a config file
-        // "Data Source = " + System.IO.Path.Combine(
-        //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        //@"MobileQuizOverWifi\MobileQuiz.db");
-        // TODO instead of making the dblocationlocal on startup each time, we make it once add it to a config file and then read the config file. This allows asp.net to get the user appdata folder as it is logged in as system/applicationpool and not the user.
-        // DEV "Data Source = C:\\Users\\      Username goes here    \\AppData\\Roaming\\MobileQuizOverWifi\\MobileQuiz.db";
-
-
         // String location of the database server
         private string dbLocationNetwork = "Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";// For local db make this empty "" and make dbLocationLocal not with your username
 
         /// <summary>
-        /// This method will create our initial database if it can't find any tables on the connected database(SELECT * FROM information_schema.tables)
+        /// This method will create our initial database using the generated script from sql server management software if it can't find any tables on the connected database(SELECT * FROM information_schema.tables)
         /// </summary>
         public void initDatabase()
         {
             // TODO check for a SQL Server at this location, if not use sqllite
             SqlConnection databaseConnection;
-            SQLiteConnection sqliteConnection;
-            
+            int count = 0;
+
             SqlCommand command;
             try
             {
@@ -59,17 +50,10 @@ namespace AdminMobileQuizOverWifi
                 // read the results
                 SqlDataReader dataReader = command.ExecuteReader();
 
-                int count = 0;
                 while (dataReader.Read())
                 {
-                    //count number of tables
                     count++;
-                    // check if tables already exist, right now we assume they are correct tables
-                    // TODO check for the tables we expect
-                    string s = dataReader.GetValue(2).ToString();
 
-                    // DEV output to console each table name
-                    System.Diagnostics.Debug.WriteLine(s);
                 }
                 // if able to connect to database without issues we can start modifiying it.
                 sql = "CREATE TABLE Logins (User_Name VARCHAR(50) NOT NULL PRIMARY KEY," +
@@ -81,39 +65,7 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-                sqliteConnection = new SQLiteConnection(dbLocationLocal);
-                // if database can't connect we use sqllite instead
-                try
-                {
-                    //Create Directory at CurrentUser\AppData\Roaming\MobileQuizOverWifi  if it doesn't already exist
-                    string dbDirectory = System.IO.Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        @"MobileQuizOverWifi");
-                    if (!Directory.Exists(dbDirectory))
-                    {
-                        Directory.CreateDirectory(dbDirectory);
-                    }
-
-                    sqliteConnection.Open();
-                    Console.WriteLine(sqliteConnection.ConnectionString);
-                    var SqLitePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"RegisterMobileQuizOverWifi\MobileQuizDb.db"));
-                    Console.WriteLine(SqLitePath);
-                    string sql = "CREATE TABLE User (USER_ID INT NOT NULL PRIMARY KEY," +
-                                "F_NAME VARCHAR(255) NOT NULL, L_NAME VARCHAR(255) NOT NULL, USERNAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(25) NOT NULL," +
-                                "SESSION_ID CHAR(24) NULL, IS_INSTRUCTOR BIT NOT NULL);";
-                    SQLiteCommand liteCmd = sqliteConnection.CreateCommand();
-                    liteCmd.CommandText = sql;
-                    liteCmd.ExecuteNonQuery();
-
-                }
-                catch (System.Exception sqlE)
-                {
-                    // this just makes sure we don't crash when database already exists
-                    // TODO catch specific exceptions
-                }
-
-
-                // TODO update config file as well
+                // Don't crash
             }
             finally
             {
@@ -129,11 +81,6 @@ namespace AdminMobileQuizOverWifi
                 {
 
                 }
-                sqliteConnection = new SQLiteConnection(dbLocationLocal);
-                if (sqliteConnection.State == ConnectionState.Open)
-                {
-                    sqliteConnection.Close();
-                }
             }
 
             // Attempt to add our tables to the created network database if they don't already exist
@@ -144,9 +91,7 @@ namespace AdminMobileQuizOverWifi
                 databaseConnection.Open();
                 // Create our sql string and pass it through to the database as a query
                 // TODO this is where we could add our sql for the initial creation of all of our tables.
-                string sql = "CREATE TABLE User (USER_ID INT NOT NULL PRIMARY KEY," +
-                                "F_NAME VARCHAR(255) NOT NULL, L_NAME VARCHAR(255) NOT NULL, USERNAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(25) NOT NULL," +
-                                "SESSION_ID CHAR(24) NULL, IS_INSTRUCTOR BIT NOT NULL);";
+                string sql = "USE [dbdev26] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[ANSWER]( 	[QUE_ID] [int] NOT NULL, 	[DESCRIPTION] [varchar](max) NOT NULL, 	[CORRECT_ANS] [bit] NOT NULL, 	[ANS_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[ANS_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[COURSE]( 	[COU_NAME] [varchar](45) NOT NULL, 	[COU_SEM] [varchar](45) NULL, 	[COU_YEAR] [int] NULL, 	[COU_START_DATE] [date] NULL, 	[COU_END_DATE] [date] NULL, 	[COURSE_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[COURSE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[COURSE_QUIZ]( 	[QUI_ID] [int] NOT NULL, 	[COURSE_ID] [int] NOT NULL, 	[COURSE_QUI_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[COURSE_QUI_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],  CONSTRAINT [UNIQUE_COURSE_QUIZ] UNIQUE NONCLUSTERED  ( 	[COURSE_ID] ASC, 	[QUI_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[GRADE]( 	[GRA_ID] [int] IDENTITY(1,1) NOT NULL, 	[USER_ID] [int] NOT NULL, 	[COURSE_QUI_ID] [int] NOT NULL, 	[GRA_GRADE] [int] NOT NULL, 	[GRA_NEEDSGRADING] [bit] NOT NULL,  CONSTRAINT [PK__GRADE__23772D18D6D82861] PRIMARY KEY CLUSTERED  ( 	[GRA_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[QUESTION]( 	[QUI_ID] [int] NOT NULL, 	[QUE_QUESTION] [varchar](max) NOT NULL, 	[TYPE_ID] [nvarchar](50) NOT NULL, 	[QUE_ID] [int] IDENTITY(1,1) NOT NULL, 	[QUESTION_ANSWER] [varchar](max) NULL, PRIMARY KEY CLUSTERED  ( 	[QUE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[QUIZ]( 	[QUI_NAME] [varchar](45) NULL, 	[QUI_NOTES] [varchar](200) NULL, 	[QUI_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[QUI_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[RESPONSE]( 	[QUE_ID] [int] NOT NULL, 	[COMMENTS] [varchar](max) NULL, 	[USER_ID] [int] NOT NULL, 	[COURSE_QUI_ID] [int] NOT NULL, 	[RESPONSE_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[RESPONSE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[ROSTER]( 	[USER_ID] [int] NOT NULL, 	[COURSE_ID] [int] NOT NULL, 	[ROSTER_ID] [int] IDENTITY(1,1) NOT NULL,  CONSTRAINT [PK__ROSTER__F3BEEBFFFF9E8AE6] PRIMARY KEY CLUSTERED  ( 	[ROSTER_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],  CONSTRAINT [UNIQUE_ROSTER] UNIQUE NONCLUSTERED  ( 	[USER_ID] ASC, 	[COURSE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[TYPE]( 	[TYPE_ID] [nvarchar](50) NOT NULL, 	[TYPE_NAME] [nvarchar](200) NOT NULL,  CONSTRAINT [PK_TYPE] PRIMARY KEY CLUSTERED  ( 	[TYPE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[USERS]( 	[F_NAME] [varchar](15) NULL, 	[L_NAME] [varchar](25) NULL, 	[IS_INSTRUCTOR] [bit] NOT NULL, 	[USERNAME] [varchar](25) NOT NULL, 	[PASSWORD] [varchar](25) NOT NULL, 	[SESSION_ID] [varchar](25) NULL, 	[USER_ID] [int] IDENTITY(8,1) NOT NULL,  CONSTRAINT [PK__USER__F3BEEBFF8742512C] PRIMARY KEY CLUSTERED  ( 	[USER_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],  CONSTRAINT [unique_username] UNIQUE NONCLUSTERED  ( 	[USERNAME] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO ALTER TABLE [dbo].[ANSWER]  WITH CHECK ADD FOREIGN KEY([QUE_ID]) REFERENCES [dbo].[QUESTION] ([QUE_ID]) GO ALTER TABLE [dbo].[COURSE_QUIZ]  WITH CHECK ADD  CONSTRAINT [FK_COURSE_QUIZ_COURSE] FOREIGN KEY([COURSE_ID]) REFERENCES [dbo].[COURSE] ([COURSE_ID]) GO ALTER TABLE [dbo].[COURSE_QUIZ] CHECK CONSTRAINT [FK_COURSE_QUIZ_COURSE] GO ALTER TABLE [dbo].[COURSE_QUIZ]  WITH CHECK ADD  CONSTRAINT [FK_COURSE_QUIZ_QUIZ] FOREIGN KEY([QUI_ID]) REFERENCES [dbo].[QUIZ] ([QUI_ID]) GO ALTER TABLE [dbo].[COURSE_QUIZ] CHECK CONSTRAINT [FK_COURSE_QUIZ_QUIZ] GO ALTER TABLE [dbo].[GRADE]  WITH CHECK ADD FOREIGN KEY([COURSE_QUI_ID]) REFERENCES [dbo].[COURSE_QUIZ] ([COURSE_QUI_ID]) GO ALTER TABLE [dbo].[GRADE]  WITH CHECK ADD  CONSTRAINT [USER_ID] FOREIGN KEY([USER_ID]) REFERENCES [dbo].[USERS] ([USER_ID]) GO ALTER TABLE [dbo].[GRADE] CHECK CONSTRAINT [USER_ID] GO ALTER TABLE [dbo].[QUESTION]  WITH CHECK ADD  CONSTRAINT [FK_QUESTION_TYP] FOREIGN KEY([TYPE_ID]) REFERENCES [dbo].[TYPE] ([TYPE_ID]) GO ALTER TABLE [dbo].[QUESTION] CHECK CONSTRAINT [FK_QUESTION_TYP] GO ALTER TABLE [dbo].[QUESTION]  WITH CHECK ADD  CONSTRAINT [FK_QUI_QUE] FOREIGN KEY([QUI_ID]) REFERENCES [dbo].[QUIZ] ([QUI_ID]) GO ALTER TABLE [dbo].[QUESTION] CHECK CONSTRAINT [FK_QUI_QUE] GO ALTER TABLE [dbo].[RESPONSE]  WITH CHECK ADD FOREIGN KEY([COURSE_QUI_ID]) REFERENCES [dbo].[COURSE_QUIZ] ([COURSE_QUI_ID]) GO ALTER TABLE [dbo].[RESPONSE]  WITH CHECK ADD FOREIGN KEY([QUE_ID]) REFERENCES [dbo].[QUESTION] ([QUE_ID]) GO ALTER TABLE [dbo].[RESPONSE]  WITH CHECK ADD  CONSTRAINT [fk_user_Response] FOREIGN KEY([USER_ID]) REFERENCES [dbo].[USERS] ([USER_ID]) GO ALTER TABLE [dbo].[RESPONSE] CHECK CONSTRAINT [fk_user_Response] GO ALTER TABLE [dbo].[ROSTER]  WITH CHECK ADD  CONSTRAINT [FK__ROSTER__COURSE_I__4959E263] FOREIGN KEY([COURSE_ID]) REFERENCES [dbo].[COURSE] ([COURSE_ID]) GO ALTER TABLE [dbo].[ROSTER] CHECK CONSTRAINT [FK__ROSTER__COURSE_I__4959E263] GO ALTER TABLE [dbo].[ROSTER]  WITH CHECK ADD  CONSTRAINT [FK_ROSTER_USERS] FOREIGN KEY([USER_ID]) REFERENCES [dbo].[USERS] ([USER_ID]) GO ALTER TABLE [dbo].[ROSTER] CHECK CONSTRAINT [FK_ROSTER_USERS] GO ";
                 command = new SqlCommand(sql, databaseConnection);
                 command.ExecuteNonQuery();
                 // DEV? Display confirmation message that tables were added succesfully
@@ -175,8 +120,10 @@ namespace AdminMobileQuizOverWifi
             }
         }
 
-        // REMOVE readDB just returns an output string of the information in the USERS table. This is used by the local program to display changes after adding a user.
-        // it is no longer necessary to have and was just an easy way to test database changes.
+        /// <summary>
+        /// Returns all of the users in the database, used to display confirmation that the user was added for the local app user creator
+        /// </summary>
+        /// <returns></returns>
         public string readDB()
         {
             // Create an output string to display our data with
@@ -186,32 +133,29 @@ namespace AdminMobileQuizOverWifi
             // DEV Create our sql query string for displaying the LOGIN table
             try
             {
-                SqlConnection databaseConnection;
-                databaseConnection = new SqlConnection(dbLocationNetwork);
-                databaseConnection.Open();
-                SqlCommand command = new SqlCommand(sql, databaseConnection);
-                SqlDataReader dataReader = command.ExecuteReader();
+                SqlDataReader dataReader = GetDataReader(sql);
                 while (dataReader.Read())
                 {
                     output = output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2) + dataReader.GetValue(3) + " - " + dataReader.GetValue(4) + dataReader.GetValue(5) + "\n";
                 }
+                dataReader.Close();
             }
             catch (System.Exception e)
             {
                 return e.ToString();
             }
-
             return output;
         }
 
         /// <summary>
-        /// This method will take a username and password, Optionally f_name, l_name, etc and add them to the users table. TODO The string sql should be moved from mainwindowxaml.cs to this method to allow
-        /// the asp.net to also utilize this method
+        /// This method will take a username and password, f_name, l_name, isInstructor bool and add them to the users table. 
         /// </summary>
-        /// <param name="sql">the sql query of INSERT INTO USERS (USERNAME,.... this should be moved from mainwindowxaml.cs to here</param>
-        /// <param name="username"> The username to be added</param>
-        /// <param name="password"> The password to be added</param>
-        /// <returns> TODO Remove Return Statements and make it void, or make it return a string with the system exception. </returns>
+        /// <param name="username">The username to be entered</param>
+        /// <param name="password">The password to b e entered</param>
+        /// <param name="fName">fName to be entered</param>
+        /// <param name="lName">lName to be enterd</param>
+        /// <param name="isInstructor">A bool to flag whether a user being added is an instructor account.</param>
+        /// <returns> A string value of any exceptions that occured</returns>
         public string addUserDB(string username, string password, string fName, string lName, bool isInstructor)
         {
             // TODO check for vaild entry ie: no spaces in username/password, not too long or short etc...
@@ -247,6 +191,7 @@ namespace AdminMobileQuizOverWifi
                 // build our sql command
                 string sql = "INSERT INTO USERS (USERNAME, PASSWORD, F_NAME, L_NAME, IS_INSTRUCTOR) VALUES ('" + username + "','" + password + "','" + fName + "','" + lName + "','" + isInstructor + "')";
 
+                // insert into our tables
                 SqlConnection databaseConnection;
                 databaseConnection = new SqlConnection(dbLocationNetwork);
                 databaseConnection.Open();
@@ -280,7 +225,6 @@ namespace AdminMobileQuizOverWifi
                 while (dataReader.Read())
                 {
                     // First we check if password matches saved password
-                    // TODO check if it matches encrypted hash instead of passing the password through.
                     if (dataReader.GetValue(1).ToString() == password)
                     {
                         // Since password matched, we can update their loginstatus
@@ -306,7 +250,6 @@ namespace AdminMobileQuizOverWifi
 
         /// <summary>
         /// Will check if the user_id password matches the one stored. 
-        /// TODO once this is finished change loginDB to use this method instead and require user_id
         /// </summary>
         /// <param name="user_ID"> The id of the user that we are checking if the password matches for</param>
         /// <param name="currentPassword"> The password we are checking against the stored value</param>
@@ -376,7 +319,7 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-                // TODO use local database
+
             }
         }
 
@@ -494,7 +437,6 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-                // TODO use local database
             }
             return count;
         }
@@ -523,7 +465,7 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-
+                // Maybe we got more than one user, or no users.
             }
             return 0;
         }
@@ -581,11 +523,16 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-                // TODO use local database
             }
             return count;
         }
 
+        /// <summary>
+        /// This gets a int array of grade id, grade/points earned, and a bit flag of whether it needs additional grading.
+        /// </summary>
+        /// <param name="user_ID">The user_id to be getting the grade for</param>
+        /// <param name="course_Quiz_ID"> The course_qui_ID of the grade to be retrieved</param>
+        /// <returns> An int array containing gra_id, gra_grade, gra_needsGrading</returns>
         public int[] getGradeDB(int user_ID, int course_Quiz_ID)
         {
             // result is gra_ID, gra_grade, gra_needsgrading
@@ -594,6 +541,7 @@ namespace AdminMobileQuizOverWifi
             try
             {
                 SqlDataReader dataReader = GetDataReader(sql);
+                // We do a while loop to make sure values exist. We assume that they can only have one grade per course_quiz_id so this should only go through once but if there are multiple rows it will return the last row read.
                 while(dataReader.Read())
                 {
                     result[0] = Convert.ToInt32(dataReader.GetValue(0));
@@ -608,6 +556,11 @@ namespace AdminMobileQuizOverWifi
             return result;
         }
 
+        /// <summary>
+        /// Thie gets the quizName for a given quiz ID
+        /// </summary>
+        /// <param name="quiz_ID"></param>
+        /// <returns></returns>
         public string getQuizNameDB(int quiz_ID)
         {
             string result = "";
@@ -654,10 +607,10 @@ namespace AdminMobileQuizOverWifi
         }
 
         /// <summary>
-        /// Gets a 2d string array of the rows of questions for a given quiz_id
+        /// Gets a list of string arrays of the rows of questions for a given quiz_id
         /// </summary>
         /// <param name="quiz_id"> The id of the quiz to be searched for the question data</param>
-        /// <returns> A 2d string array holding the question rows as data.</returns>
+        /// <returns> A list of string arrays holding the question rows as data.</returns>
         public List<string[]> getQuestionDataDB(int quiz_id)
         {
             List<string[]> results = new List<string[]>();
@@ -717,6 +670,11 @@ namespace AdminMobileQuizOverWifi
             return results;
         }
 
+        /// <summary>
+        /// gets a list of the correct answer strings for a given quiz_id
+        /// </summary>
+        /// <param name="quiz_ID">The quiz_ID of the quiz we want the answers for</param>
+        /// <returns> A list of the correct answer strings for a given quiz</returns>
         public List<string> getAnswersDB(int quiz_ID)
         {
 
@@ -741,6 +699,14 @@ namespace AdminMobileQuizOverWifi
             return results;
         }
 
+        /// <summary>
+        /// This method is called when a user submits a quiz and attempts to automatically grade the quiz and return the point value they got. It will also flag the grade for further review if it contained a short answer question or a fill in the blank question that did not match the saved answer(to check for spelling errors or alternatively worded answers)
+        /// </summary>
+        /// <param name="quiz_ID">The quiz_Id of the quiz being graded</param>
+        /// <param name="responseList">The list of responses the user is submitting for grading</param>
+        /// <param name="user_ID"> The user who is submitting their quiz</param>
+        /// <param name="course_Quiz_ID"> the course_quiz_id of the given quiz</param>
+        /// <returns> An integer of the point value they received from the automatic grading. </returns>
         public int gradeQuizDB(int quiz_ID, List<string> responseList, int user_ID, int course_Quiz_ID)
         {
             bool markForInstructorGrading = false;
@@ -748,7 +714,6 @@ namespace AdminMobileQuizOverWifi
             List<string[]> questionList = getQuestionDataDB(quiz_ID);
             // List of {Que_ID, Response}
             List<string[]> responseQuestionList = new List<string[]>();
-            List<string> answerList = getAnswersDB(quiz_ID);
             string type_ID;
             string correctAnswer;
 
@@ -760,6 +725,9 @@ namespace AdminMobileQuizOverWifi
                 type_ID = q[2];
                 correctAnswer = q[3];
 
+                // Depending on the question type we will attempt to grade differently
+                // Short answer and fill in the blank are stored as normal strings of the answer, short answer doesn't need to be stored as this should be manually graded and will be different for each user.
+                // Multiple Choice Radio and Multiple Choice Check questions will be compared against a answer stored like (a,b) or (a). 
                 if (type_ID.Contains("MCR"))
                 {
                     if (response == correctAnswer)
@@ -781,25 +749,38 @@ namespace AdminMobileQuizOverWifi
                 if (type_ID.Contains("MCC"))
                 {
                     // Since multiple choice allows partial credit we will add a point for every correct char existing and subtract for every incorrect attempt(Example: Answer is ab, response was abc they would get 2 points - 1 points for a total of 1)
-                    // It is like checking if two strings are anagrams except their can't be duplicate characters so we don't need to remove the char from the charArray(string) we are checking against
-                    foreach (char c in correctAnswer)
+                    // It is like checking if two strings are anagrams except there can't be duplicate characters so we don't need to remove the char from the charArray(string) we are checking against
+                    foreach (char c in response)
                     {
-                        if (response.Contains(c) && c != ',')
+                        // So if the response char is not a comma we see if the correctAnswer contained it 
+                        //Example(Correctanswer = a,b,c response= a,b) would give a grade total for this section of 2 points of 3 possible. If they had answered a,b,d they would get 1 point as d would not have been in the correct answer and they will be penalised for putting a incorrect answer.
+                        if (correctAnswer.Contains(c) && c != ',')
                             grade++;
                         else if(c != ',')
                             grade--;
                     }
                 }
-
+                // Each response is stored and will be sent to the response table.
                 responseQuestionList.Add(new string[] { que_ID, response });
                 i++;
             }
 
+            // Users can't have negative grades, but they can lose points for putting in incorrect mcc responses so we floor the grade to 0.
+            if (grade < 0)
+                grade = 0;
+
+            // After grades are done we can add the data to the response table and the grade table
             AddResponseDB(user_ID, course_Quiz_ID, responseQuestionList);
             AddGradeDB( user_ID, course_Quiz_ID, grade ,markForInstructorGrading);
             return grade;
         }
 
+        /// <summary>
+        /// Adds a list of responses to the response table
+        /// </summary>
+        /// <param name="user_ID">The user who submitted the responses</param>
+        /// <param name="course_Quiz_ID"> The course_quiz the response was for</param>
+        /// <param name="responseQuestionList"> an array containing each response and the que_id it was a response to</param>
         public void AddResponseDB(int user_ID, int course_Quiz_ID, List<string[]> responseQuestionList)
         {
 
@@ -827,8 +808,16 @@ namespace AdminMobileQuizOverWifi
             }
         }
 
+        /// <summary>
+        /// Adds our grade total to the grade table as well as marking the grade for review if needed
+        /// </summary>
+        /// <param name="user_ID"> The user the grade is for </param>
+        /// <param name="course_Quiz_ID"> The course_quiz the grade is for </param>
+        /// <param name="grade"> The grade value they received </param>
+        /// <param name="markForGrading"> A bool marking whether the grade needs to be checked by an instructor</param>
         public void AddGradeDB(int user_ID, int course_Quiz_ID, int grade, bool markForGrading)
         {
+            // convert our bool into a bit if needed.
             int mark = 0;
             if (markForGrading)
                 mark = 1;
@@ -852,9 +841,9 @@ namespace AdminMobileQuizOverWifi
         /// <summary>
         /// Gets the course_quizID for a given user's given quiz
         /// </summary>
-        /// <param name="qui_ID">The quiz id that we are gettting the course_Quiz for</param>
+        /// <param name="quiz_ID">The quiz id that we are gettting the course_Quiz for</param>
         /// <param name="user_ID">The user Id that will determine the specific course_quiz</param>
-        /// <returns></returns>
+        /// <returns> An int of of course_quiz for the given user and quiz</returns>
         public int getCourseQuizIDDB(int quiz_ID, int user_ID)
         {
             int result = 0;

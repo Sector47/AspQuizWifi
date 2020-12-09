@@ -15,7 +15,15 @@
     }
     else
     {
-<h2>Add Question to Quiz #@ViewBag.QuizID</h2>
+        if (Model != null && Model.QUI_ID.ToString() != null)
+        {
+            <h2>Add Question to Quiz #@Model.QUI_ID</h2>
+        }
+        else
+        {
+            <h2>Add Question to Quiz #@ViewBag.QuizID</h2>
+        }
+        <h3>@ViewBag.Msg</h3>
 
         using (Html.BeginForm())
         {
@@ -39,13 +47,15 @@
                         @Html.ValidationMessageFor(model => model.TYPE_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
+                <h2>Note: Correct answer here is what is used to grade the quiz, the correct answer in the answer itself is unnecessary and is unused for now.</h2>
+                <p>For MCC and MCR questions the correct answer is formatted: a,b,c and so on where a means the first answer added was the correct answer.</p>
+                <p>You can verify which answer was added first as they will be listed in order on the edit answer page for this question.</p>
                 <div class="form-group">
                     <div class="col-md-10">
-                        @Html.LabelFor(model => model.QUESTION_ANSWER, "Correct Answer:", htmlAttributes: new {@class = "control-label col-md-2"})
+                        @Html.LabelFor(model => model.QUESTION_ANSWER, "Correct Answer:", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.QUESTION_ANSWER, new {htmlAttributes = new {@class = "form-control"}})
-                            @Html.ValidationMessageFor(model => model.QUESTION_ANSWER, "", new {@class = "text-danger"})
+                            @Html.EditorFor(model => model.QUESTION_ANSWER, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.QUESTION_ANSWER, "", new { @class = "text-danger" })
                         </div>
                     </div>
                 </div>
@@ -58,7 +68,14 @@
             </div>
         }
         <div>
-            @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new { id = ViewBag.QuizID })
+            @if (Model != null && Model.QUI_ID.ToString() != null)
+            {
+                @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new { id = Model.QUI_ID })
+            }
+            else
+            {
+                @Html.ActionLink("Back to List", "../ModifyQuestions/Index", new { id = ViewBag.QuizID })
+            }
         </div>
     }
 }

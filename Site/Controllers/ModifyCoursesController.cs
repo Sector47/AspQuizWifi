@@ -168,7 +168,7 @@ namespace Site.Controllers
         }
 
         // POST: /Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {

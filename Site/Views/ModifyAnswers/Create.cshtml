@@ -11,6 +11,7 @@
 }
 
 <h2>Add Answer</h2>
+<h3>@ViewBag.Msg</h3>
 
 @using (Html.BeginForm())
 {
@@ -43,5 +44,13 @@
     </div>
 }
 <div>
-    @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = ViewBag.QuestionID })
+    @if (Model != null && Model.QUE_ID.ToString() != null)
+    {
+        @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = Model.QUE_ID })
+    }
+    else
+    {
+        @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = ViewBag.QuestionID })
+    }
+
 </div>

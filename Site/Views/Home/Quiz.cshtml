@@ -25,7 +25,7 @@
 {
     using (Html.BeginForm("SubmitQuiz", "Home", new { qui_ID = ViewBag.Quiz_ID }, FormMethod.Post))
     {
-
+        // Foreach question in the model that is a questionData object we grab the partial matching the type_id
         foreach (var q in Model)
         {
             if (q.que_ID != null)
@@ -52,11 +52,11 @@
             }
 
         }
+        // if it is instructor they don't need a submit button
         if (!isInstructor)
         {
             <p class="submit"><input type="submit" value="Submit Quiz" /></p>
         }
-
     }
 }
 else if (Model is Int32)

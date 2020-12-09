@@ -15,6 +15,7 @@
     else
     {
         <h2>Add to Roster</h2>
+        <h3 class="warning">Warning. This step is not reversable from within the web application. In order to delete this relation and any data connected you will need a database administrator!</h3>
 
         <h3>@ViewBag.Msg</h3>
         using (Html.BeginForm())
@@ -35,7 +36,7 @@
                     @Html.LabelFor(model => model.USER_ID, "Student Username:", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.DropDownList("USER_ID", null, htmlAttributes: new { @class = "form-control" })
- 
+
                         @Html.ValidationMessageFor(model => model.USER_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>

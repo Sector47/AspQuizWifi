@@ -13,11 +13,19 @@ namespace Site.Controllers
         private string msgStu = "You must be logged in as an instructor to view this page.";
         private string msgLog = "You must be logged in to view this page.";
 
+        /// <summary>
+        /// The index/ home page
+        /// </summary>
+        /// <returns> The index page view</returns>
         public ActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// The modify page where links to modify quizzes, courses, users, grades, questions, answers, and roster can be found.
+        /// </summary>
+        /// <returns> The modify page view</returns>
         public ActionResult Modify()
         {
             if(loggedIn())
@@ -28,6 +36,7 @@ namespace Site.Controllers
                 }
                 else
                 {
+                    // if they aren't an instructor display a message that they must be an instructor. This only comes up if directly navigating to the page as the links are hidden if not an instructor.
                     ViewBag.IsInstructor = false;
                     ViewBag.Msg = msgStu;
                     return View();
@@ -35,12 +44,17 @@ namespace Site.Controllers
             }
             else
             {
+                // If they aren't logged in we also make sure the system doesn't think they are an instructor. We then return them with a message that they must login to view this page.
                 ViewBag.IsInstructor = false;
                 ViewBag.Msg = msgLog;
                 return View();
             }
         }
 
+        /// <summary>
+        /// Will display quizzes for the given user, and all quizzes if it is an instructor.
+        /// </summary>
+        /// <returns>Returns the quizzes view which contains the quiz partials for the quizzes tied to the current user.</returns>
         public ActionResult Quizzes()
         {
             // Check if the user is logged in
@@ -66,6 +80,10 @@ namespace Site.Controllers
             return View("LogIn");
         }
 
+        /// <summary>
+        /// The account page view contains the form for changing password. Instructors will also have a link to the modify pages view in here.
+        /// </summary>
+        /// <returns> The Account page view</returns>
         public ActionResult Account()
         {
             // Check if the user is logged in
@@ -81,13 +99,20 @@ namespace Site.Controllers
             return View("LogIn");
         }
 
+        /// <summary>
+        /// The login view containing the login partial
+        /// </summary>
+        /// <returns> The login page view</returns>
         public ActionResult LogIn()
         {
             ViewData["Title"] = "Log In";
             return View();
         }
 
-        // Method to logout the current session's user
+        /// <summary>
+        /// Logouts out the current user
+        /// </summary>
+        /// <returns> A view of the login page with a message of logged out.</returns>
         public ActionResult LogOut()
         {
             // Clear the sessionid stored on the database
@@ -100,6 +125,11 @@ namespace Site.Controllers
             return View("LoggedOut");
         }
 
+        /// <summary>
+        /// Will give the quiz view for a given quiz id
+        /// </summary>
+        /// <param name="quizID"> the quiz id of the requested quiz page</param>
+        /// <returns> The quiz view for the given quiz id</returns>
         public ActionResult GoToQuiz(int quizID)
         {
             // When loading a quiz we need to pass through the question data including question descriptions and possible answers
@@ -178,6 +208,42 @@ namespace Site.Controllers
             // pass our new question data object to the quiz view.
             return View("Quiz", questionDataList);
         }
+
+        /// <summary>
+        /// Will give the possible points for a given quiz
+        /// </summary>
+        /// <param name="quizID">quizId to get the point total of</param>
+        /// <returns> Int of the total points</returns>
+        public int GetPointTotal(int quizID)
+        {
+            // When loading a quiz we need to pass through the question data including question descriptions and possible answers
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            int pointTotal = 0;
+            //SELECT QUE_ID, QUE_QUESTION, TYPE_ID, QUESTION_ANSWER FROM QUESTION WHERE QUI_ID =
+            List<string[]> questionList = databaseCreator.getQuestionDataDB(quizID);
+
+            //Loop through our question data and add up possible points
+            foreach (string[] q in questionList)
+            {                
+                if (q[2].Contains("MCC"))
+                {
+                    // Count starts at 1 as we always expect an answer to exist for a mcc question
+                    // answers are structured as a,b,d so we count commas and add them to the original value of 1 and we get our total point value for mcc questions
+                    int count = 1;
+                    foreach (char c in q[3])
+                    {
+                        if (c == ',')
+                            count++;
+                    }
+                    pointTotal += count;
+                }
+                else
+                    pointTotal++;
+            }
+
+            return pointTotal;
+        }
+
 
 
         // Using the cookie for UserName we retrieve that userID
@@ -261,6 +327,7 @@ namespace Site.Controllers
             // TODO update grade table
             ViewBag.Grade = grade;
             ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()))[2];
+            ViewBag.PointTotal = GetPointTotal(qui_ID);
             return View("Quiz", grade);
         }
 

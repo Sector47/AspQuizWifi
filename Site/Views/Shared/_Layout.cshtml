@@ -17,7 +17,14 @@
                             <a class="logo" href="@Url.Action("Index", "Home", null)">MOBILE QUIZ<br /><span class="logosmall">over wi-fi</span></a>
                         </li>
                         <li>
-                            <a class="buttonli" href="@Url.Action("Quizzes", "Home", null)">Quizzes</a>
+                            @if (System.Web.HttpContext.Current.Session["UserSessionID"] != null && System.Web.HttpContext.Current.Session["User_isInstructor"].ToString() == "True")
+                            {
+                                <a class="buttonli" href="@Url.Action("Quizzes", "Home", null)">Preview Quizzes</a>
+                            }
+                            else
+                            {
+                                <a class="buttonli" href="@Url.Action("Quizzes", "Home", null)">Quizzes</a>
+                            }
                         </li>
                         <li>
                             <a class="buttonli" href="@Url.Action("Account", "Home", null)">Account</a>
@@ -34,7 +41,6 @@
                             }
 
                             <li class="rightflex">
-                                <!--TODO remove UserID display, this is just used for DEV-->
                                 Logged in as: <span class="name">@System.Web.HttpContext.Current.Session["UserName"]<br /></span>
                                 <a href="@Url.Action("LogOut", "Home", null)">Log Out</a>
                             </li>

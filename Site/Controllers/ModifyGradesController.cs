@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using System.Net;
 using Site.Models;
+using AdminMobileQuizOverWifi;
 
 namespace Site.Controllers
 {
@@ -13,34 +14,85 @@ namespace Site.Controllers
     {
         // connection to DB Entity Framework
         private DBEntities db = new DBEntities();
+         // not instructor msg
+        string notInstructor = "You must be logged in as an instructor to view this page.";
+        // not logged in msg
+        string notLoggedIn = "You are not logged in and do not have the correct permissions to view this page.";
 
         // GET: ModifyGrades
         public ActionResult Index()
         {
-            var gRADEs = db.GRADEs.Include(u => u.USER);
-            return View(gRADEs.ToList());
+             if (loggedIn())
+            {
+                // user is logged in
+                if (isInstructor())
+                {
+                    // user is instructor, return view with data
+                    var gRADEs = db.GRADEs.Include(u => u.USER);
+                    return View(gRADEs.ToList());
+                }
+                else
+                {
+                    // user is student, send permisison msg
+                    ViewBag.NotPermitted = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                // user not logged in, send permission msg
+                ViewBag.NotPermitted = notLoggedIn;
+                return View();
+            }
         }
 
         // Populates model with row data from the response table.
         // Filtered to only show a specific quiz.
         public ActionResult Grade(string graid, string uid, string cqid, string ggid, string nid, string onGradePage)
         {
-            // Holds selected grade information.
-            int userID = int.Parse(uid);
-            int courseQuiID = int.Parse(cqid);
+            if (loggedIn())
+            {
+                // user is logged in
+                if (isInstructor())
+                {
+                   if(graid == null || uid == null ||cqid == null || nid == null)
+                    {
+                        // data that came in was null ,not okay
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
 
-            // Holds responses specific to the selected quiz.
-            var rESPONSes = (db.RESPONSEs.Where(r => (r.COURSE_QUI_ID == courseQuiID && (r.USER_ID == userID))));
+                    // Holds selected grade information.
+                    int userID = int.Parse(uid);
+                    int courseQuiID = int.Parse(cqid);
 
-            // Holds data to be passed to the Grade table. 
-            ViewData["GradeID"] = graid;
-            ViewData["UserID"] = uid;
-            ViewData["CourseQuiID"] = cqid;
-            ViewData["Grade"] = ggid;
-            ViewData["NeedsGrading"] = nid;
+                    // Holds responses specific to the selected quiz.
+                    var rESPONSes = (db.RESPONSEs.Where(r => (r.COURSE_QUI_ID == courseQuiID && (r.USER_ID == userID))));
 
-            // Returns view with a quiz's responses in an IEnumerable model.
-            return View(rESPONSes);
+                    // Holds data to be passed to the Grade table. 
+                    ViewData["GradeID"] = graid;
+                    ViewData["UserID"] = uid;
+                    ViewData["CourseQuiID"] = cqid;
+                    ViewData["Grade"] = ggid;
+                    ViewData["NeedsGrading"] = nid;
+
+                    // Returns view with a quiz's responses in an IEnumerable model.
+                    return View(rESPONSes);
+                }
+                else
+                {
+                    // user is student, send permisison msg
+                    ViewBag.NotPermitted = notInstructor;
+                    return View();
+                }
+            }
+            else
+            {
+                // user not logged in, send permission msg
+                ViewBag.NotPermitted = notLoggedIn;
+                return View();
+            }
+
+                   
         }
 
         // Action to Update the Grade table with changes to quiz grade.
@@ -98,6 +150,31 @@ namespace Site.Controllers
                 return RedirectToAction("Index");
             }
             return View();
+        }
+        
+        // Check if the current user is an instructor.
+        public bool isInstructor()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.isInstructorDB(getLoggedInUserID());
+        }
+
+        // Gets logged in user's ID
+        public int getLoggedInUserID()
+        {
+            DatabaseCreator databaseCreator = new DatabaseCreator();
+            return databaseCreator.getUserIDDB(HttpContext.Session["UserName"].ToString());
+        }
+    
+        // checks if user is logged in
+        public bool loggedIn()
+        {
+            if (HttpContext.Session["UserSessionID"] != null && HttpContext.Session["UserSessionID"].ToString() != "")
+            {
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

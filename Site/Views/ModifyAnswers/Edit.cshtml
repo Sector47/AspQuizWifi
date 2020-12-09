@@ -44,5 +44,12 @@
 </div>
 }
 <div>
-    @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = Model.QUE_ID })
+    @if (Model != null && Model.QUE_ID.ToString() != null)
+    {
+        @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = Model.QUE_ID })
+    }
+    else
+    {
+        @Html.ActionLink("Back to List", "../ModifyAnswers/Index", new { id = ViewBag.QuestionID })
+    }    
 </div>

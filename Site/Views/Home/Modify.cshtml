@@ -1,16 +1,19 @@
 ﻿
 @{
     ViewBag.Title = "Modify";
+    // This is the base modify page that leads to all the other modify links
 }
 
 <h2>Modify</h2>
 
 @{ if (ViewBag.IsInstructor == false)
     {
+        // User is not instructor, receive instead of the view
         <h2>@ViewBag.Msg</h2>
     }
     else
     {
+        // User is instructor, display the modify links
         <ul>
             <li>@Html.ActionLink("Modify Courses", "Index", "ModifyCourses")</li>
             <li>@Html.ActionLink("Modify Grades", "Index", "ModifyGrades")</li>

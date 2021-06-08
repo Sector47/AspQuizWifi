@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdminMobileQuizOverWifi.Properties {
+namespace Site.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

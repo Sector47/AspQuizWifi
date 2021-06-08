@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdminMobileQuizOverWifi.Properties
-{
-
-
+namespace AdminMobileQuizOverWifi.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,52 +19,63 @@ namespace AdminMobileQuizOverWifi.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources
-    {
-
+    public class Resources {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources()
-        {
+        internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if ((resourceMan == null))
-                {
+        public static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AdminMobileQuizOverWifi.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        public static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to -- --------------------------------------------------
+        ///-- Dropping existing FOREIGN KEY constraints
+        ///-- --------------------------------------------------
+        ///
+        ///IF OBJECT_ID(N&apos;[dbo].[FK__ANSWER__QUE_ID__5006DFF2]&apos;, &apos;F&apos;) IS NOT NULL
+        ///    ALTER TABLE [dbo].[ANSWER] DROP CONSTRAINT [FK__ANSWER__QUE_ID__5006DFF2];
+        ///GO
+        ///IF OBJECT_ID(N&apos;[dbo].[FK__GRADE__COURSE_QU__5F492382]&apos;, &apos;F&apos;) IS NOT NULL
+        ///    ALTER TABLE [dbo].[GRADE] DROP CONSTRAINT [FK__GRADE__COURSE_QU__5F492382];
+        ///GO
+        ///IF OBJECT_ID(N&apos;[dbo].[FK__RESPONSE__COU [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string initDB {
+            get {
+                return ResourceManager.GetString("initDB", resourceCulture);
             }
         }
     }

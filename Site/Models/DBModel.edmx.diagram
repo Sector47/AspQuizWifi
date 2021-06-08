@@ -13,7 +13,7 @@
         <EntityTypeShape EntityType="DBModel.QUIZ" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DBModel.RESPONSE" Width="1.5" PointX="8.25" PointY="10" IsExpanded="true" />
         <EntityTypeShape EntityType="DBModel.ROSTER" Width="1.5" PointX="8.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DBModel.TYPE" Width="1.5" PointX="3.75" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.TYPE" Width="1.5" PointX="4.125" PointY="12" IsExpanded="true" />
         <EntityTypeShape EntityType="DBModel.USER" Width="1.5" PointX="6" PointY="2.875" IsExpanded="true" />
         <AssociationConnector Association="DBModel.FK__ANSWER__QUE_ID__5006DFF2" ManuallyRouted="false" />
         <AssociationConnector Association="DBModel.FK__ROSTER__COURSE_I__4959E263" ManuallyRouted="false" />

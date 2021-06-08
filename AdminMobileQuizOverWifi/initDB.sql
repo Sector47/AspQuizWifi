@@ -1,4 +1,12 @@
-﻿-- --------------------------------------------------
+﻿
+SET QUOTED_IDENTIFIER OFF;
+GO
+USE [aspQuizOverWifiDEVdb];
+GO
+IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
+GO
+
+-- --------------------------------------------------
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
@@ -78,8 +86,8 @@ GO
 -- Creating all tables
 -- --------------------------------------------------
 
--- Creating table 'ANSWERs'
-CREATE TABLE [dbo].[ANSWERs] (
+-- Creating table 'ANSWER'
+CREATE TABLE [dbo].[ANSWER] (
     [QUE_ID] int  NOT NULL,
     [DESCRIPTION] varchar(max)  NOT NULL,
     [CORRECT_ANS] bit  NOT NULL,
@@ -87,8 +95,8 @@ CREATE TABLE [dbo].[ANSWERs] (
 );
 GO
 
--- Creating table 'COURSEs'
-CREATE TABLE [dbo].[COURSEs] (
+-- Creating table 'COURSE'
+CREATE TABLE [dbo].[COURSE] (
     [COU_NAME] varchar(45)  NOT NULL,
     [COU_SEM] varchar(45)  NULL,
     [COU_YEAR] int  NULL,
@@ -106,8 +114,8 @@ CREATE TABLE [dbo].[COURSE_QUIZ] (
 );
 GO
 
--- Creating table 'GRADEs'
-CREATE TABLE [dbo].[GRADEs] (
+-- Creating table 'GRADE'
+CREATE TABLE [dbo].[GRADE] (
     [GRA_ID] int IDENTITY(1,1) NOT NULL,
     [USER_ID] int  NOT NULL,
     [COURSE_QUI_ID] int  NOT NULL,
@@ -116,8 +124,8 @@ CREATE TABLE [dbo].[GRADEs] (
 );
 GO
 
--- Creating table 'QUESTIONs'
-CREATE TABLE [dbo].[QUESTIONs] (
+-- Creating table 'QUESTION'
+CREATE TABLE [dbo].[QUESTION] (
     [QUI_ID] int  NOT NULL,
     [QUE_QUESTION] varchar(max)  NOT NULL,
     [TYPE_ID] nvarchar(50)  NOT NULL,
@@ -126,16 +134,16 @@ CREATE TABLE [dbo].[QUESTIONs] (
 );
 GO
 
--- Creating table 'QUIZs'
-CREATE TABLE [dbo].[QUIZs] (
+-- Creating table 'QUIZ'
+CREATE TABLE [dbo].[QUIZ] (
     [QUI_NAME] varchar(45)  NULL,
     [QUI_NOTES] varchar(200)  NULL,
     [QUI_ID] int IDENTITY(1,1) NOT NULL
 );
 GO
 
--- Creating table 'RESPONSEs'
-CREATE TABLE [dbo].[RESPONSEs] (
+-- Creating table 'RESPONSE'
+CREATE TABLE [dbo].[RESPONSE] (
     [QUE_ID] int  NOT NULL,
     [COMMENTS] varchar(max)  NULL,
     [USER_ID] int  NOT NULL,
@@ -144,16 +152,16 @@ CREATE TABLE [dbo].[RESPONSEs] (
 );
 GO
 
--- Creating table 'ROSTERs'
-CREATE TABLE [dbo].[ROSTERs] (
+-- Creating table 'ROSTER'
+CREATE TABLE [dbo].[ROSTER] (
     [USER_ID] int  NOT NULL,
     [COURSE_ID] int  NOT NULL,
     [ROSTER_ID] int IDENTITY(1,1) NOT NULL
 );
 GO
 
--- Creating table 'TYPEs'
-CREATE TABLE [dbo].[TYPEs] (
+-- Creating table 'TYPE'
+CREATE TABLE [dbo].[TYPE] (
     [TYPE_ID] nvarchar(50)  NOT NULL,
     [TYPE_NAME] nvarchar(200)  NOT NULL
 );
@@ -175,15 +183,15 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
--- Creating primary key on [ANS_ID] in table 'ANSWERs'
-ALTER TABLE [dbo].[ANSWERs]
-ADD CONSTRAINT [PK_ANSWERs]
+-- Creating primary key on [ANS_ID] in table 'ANSWER'
+ALTER TABLE [dbo].[ANSWER]
+ADD CONSTRAINT [PK_ANSWER]
     PRIMARY KEY CLUSTERED ([ANS_ID] ASC);
 GO
 
--- Creating primary key on [COURSE_ID] in table 'COURSEs'
-ALTER TABLE [dbo].[COURSEs]
-ADD CONSTRAINT [PK_COURSEs]
+-- Creating primary key on [COURSE_ID] in table 'COURSE'
+ALTER TABLE [dbo].[COURSE]
+ADD CONSTRAINT [PK_COURSE]
     PRIMARY KEY CLUSTERED ([COURSE_ID] ASC);
 GO
 
@@ -193,39 +201,39 @@ ADD CONSTRAINT [PK_COURSE_QUIZ]
     PRIMARY KEY CLUSTERED ([COURSE_QUI_ID] ASC);
 GO
 
--- Creating primary key on [GRA_ID] in table 'GRADEs'
-ALTER TABLE [dbo].[GRADEs]
-ADD CONSTRAINT [PK_GRADEs]
+-- Creating primary key on [GRA_ID] in table 'GRADE'
+ALTER TABLE [dbo].[GRADE]
+ADD CONSTRAINT [PK_GRADE]
     PRIMARY KEY CLUSTERED ([GRA_ID] ASC);
 GO
 
--- Creating primary key on [QUE_ID] in table 'QUESTIONs'
-ALTER TABLE [dbo].[QUESTIONs]
-ADD CONSTRAINT [PK_QUESTIONs]
+-- Creating primary key on [QUE_ID] in table 'QUESTION'
+ALTER TABLE [dbo].[QUESTION]
+ADD CONSTRAINT [PK_QUESTION]
     PRIMARY KEY CLUSTERED ([QUE_ID] ASC);
 GO
 
--- Creating primary key on [QUI_ID] in table 'QUIZs'
-ALTER TABLE [dbo].[QUIZs]
-ADD CONSTRAINT [PK_QUIZs]
+-- Creating primary key on [QUI_ID] in table 'QUIZ'
+ALTER TABLE [dbo].[QUIZ]
+ADD CONSTRAINT [PK_QUIZ]
     PRIMARY KEY CLUSTERED ([QUI_ID] ASC);
 GO
 
--- Creating primary key on [RESPONSE_ID] in table 'RESPONSEs'
-ALTER TABLE [dbo].[RESPONSEs]
-ADD CONSTRAINT [PK_RESPONSEs]
+-- Creating primary key on [RESPONSE_ID] in table 'RESPONSE'
+ALTER TABLE [dbo].[RESPONSE]
+ADD CONSTRAINT [PK_RESPONSE]
     PRIMARY KEY CLUSTERED ([RESPONSE_ID] ASC);
 GO
 
--- Creating primary key on [ROSTER_ID] in table 'ROSTERs'
-ALTER TABLE [dbo].[ROSTERs]
-ADD CONSTRAINT [PK_ROSTERs]
+-- Creating primary key on [ROSTER_ID] in table 'ROSTER'
+ALTER TABLE [dbo].[ROSTER]
+ADD CONSTRAINT [PK_ROSTER]
     PRIMARY KEY CLUSTERED ([ROSTER_ID] ASC);
 GO
 
--- Creating primary key on [TYPE_ID] in table 'TYPEs'
-ALTER TABLE [dbo].[TYPEs]
-ADD CONSTRAINT [PK_TYPEs]
+-- Creating primary key on [TYPE_ID] in table 'TYPE'
+ALTER TABLE [dbo].[TYPE]
+ADD CONSTRAINT [PK_TYPE]
     PRIMARY KEY CLUSTERED ([TYPE_ID] ASC);
 GO
 
@@ -239,33 +247,33 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on [QUE_ID] in table 'ANSWERs'
-ALTER TABLE [dbo].[ANSWERs]
+-- Creating foreign key on [QUE_ID] in table 'ANSWER'
+ALTER TABLE [dbo].[ANSWER]
 ADD CONSTRAINT [FK__ANSWER__QUE_ID__5006DFF2]
     FOREIGN KEY ([QUE_ID])
-    REFERENCES [dbo].[QUESTIONs]
+    REFERENCES [dbo].[QUESTION]
         ([QUE_ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK__ANSWER__QUE_ID__5006DFF2'
 CREATE INDEX [IX_FK__ANSWER__QUE_ID__5006DFF2]
-ON [dbo].[ANSWERs]
+ON [dbo].[ANSWER]
     ([QUE_ID]);
 GO
 
--- Creating foreign key on [COURSE_ID] in table 'ROSTERs'
-ALTER TABLE [dbo].[ROSTERs]
+-- Creating foreign key on [COURSE_ID] in table 'ROSTER'
+ALTER TABLE [dbo].[ROSTER]
 ADD CONSTRAINT [FK__ROSTER__COURSE_I__4959E263]
     FOREIGN KEY ([COURSE_ID])
-    REFERENCES [dbo].[COURSEs]
+    REFERENCES [dbo].[COURSE]
         ([COURSE_ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK__ROSTER__COURSE_I__4959E263'
 CREATE INDEX [IX_FK__ROSTER__COURSE_I__4959E263]
-ON [dbo].[ROSTERs]
+ON [dbo].[ROSTER]
     ([COURSE_ID]);
 GO
 
@@ -273,7 +281,7 @@ GO
 ALTER TABLE [dbo].[COURSE_QUIZ]
 ADD CONSTRAINT [FK_COURSE_QUIZ_COURSE]
     FOREIGN KEY ([COURSE_ID])
-    REFERENCES [dbo].[COURSEs]
+    REFERENCES [dbo].[COURSE]
         ([COURSE_ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
@@ -284,8 +292,8 @@ ON [dbo].[COURSE_QUIZ]
     ([COURSE_ID]);
 GO
 
--- Creating foreign key on [COURSE_QUI_ID] in table 'GRADEs'
-ALTER TABLE [dbo].[GRADEs]
+-- Creating foreign key on [COURSE_QUI_ID] in table 'GRADE'
+ALTER TABLE [dbo].[GRADE]
 ADD CONSTRAINT [FK__GRADE__COURSE_QU__5F492382]
     FOREIGN KEY ([COURSE_QUI_ID])
     REFERENCES [dbo].[COURSE_QUIZ]
@@ -295,12 +303,12 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK__GRADE__COURSE_QU__5F492382'
 CREATE INDEX [IX_FK__GRADE__COURSE_QU__5F492382]
-ON [dbo].[GRADEs]
+ON [dbo].[GRADE]
     ([COURSE_QUI_ID]);
 GO
 
--- Creating foreign key on [COURSE_QUI_ID] in table 'RESPONSEs'
-ALTER TABLE [dbo].[RESPONSEs]
+-- Creating foreign key on [COURSE_QUI_ID] in table 'RESPONSE'
+ALTER TABLE [dbo].[RESPONSE]
 ADD CONSTRAINT [FK__RESPONSE__COURSE__603D47BB]
     FOREIGN KEY ([COURSE_QUI_ID])
     REFERENCES [dbo].[COURSE_QUIZ]
@@ -310,7 +318,7 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK__RESPONSE__COURSE__603D47BB'
 CREATE INDEX [IX_FK__RESPONSE__COURSE__603D47BB]
-ON [dbo].[RESPONSEs]
+ON [dbo].[RESPONSE]
     ([COURSE_QUI_ID]);
 GO
 
@@ -318,7 +326,7 @@ GO
 ALTER TABLE [dbo].[COURSE_QUIZ]
 ADD CONSTRAINT [FK_COURSE_QUIZ_QUIZ]
     FOREIGN KEY ([QUI_ID])
-    REFERENCES [dbo].[QUIZs]
+    REFERENCES [dbo].[QUIZ]
         ([QUI_ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
@@ -329,8 +337,8 @@ ON [dbo].[COURSE_QUIZ]
     ([QUI_ID]);
 GO
 
--- Creating foreign key on [USER_ID] in table 'GRADEs'
-ALTER TABLE [dbo].[GRADEs]
+-- Creating foreign key on [USER_ID] in table 'GRADE'
+ALTER TABLE [dbo].[GRADE]
 ADD CONSTRAINT [FK_USER_ID]
     FOREIGN KEY ([USER_ID])
     REFERENCES [dbo].[USERS]
@@ -340,57 +348,43 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_USER_ID'
 CREATE INDEX [IX_FK_USER_ID]
-ON [dbo].[GRADEs]
+ON [dbo].[GRADE]
     ([USER_ID]);
 GO
 
--- Creating foreign key on [QUE_ID] in table 'RESPONSEs'
-ALTER TABLE [dbo].[RESPONSEs]
+-- Creating foreign key on [QUE_ID] in table 'RESPONSE'
+ALTER TABLE [dbo].[RESPONSE]
 ADD CONSTRAINT [FK__RESPONSE__QUE_ID__50FB042B]
     FOREIGN KEY ([QUE_ID])
-    REFERENCES [dbo].[QUESTIONs]
+    REFERENCES [dbo].[QUESTION]
         ([QUE_ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK__RESPONSE__QUE_ID__50FB042B'
 CREATE INDEX [IX_FK__RESPONSE__QUE_ID__50FB042B]
-ON [dbo].[RESPONSEs]
+ON [dbo].[RESPONSE]
     ([QUE_ID]);
 GO
 
--- Creating foreign key on [TYPE_ID] in table 'QUESTIONs'
-ALTER TABLE [dbo].[QUESTIONs]
-ADD CONSTRAINT [FK_QUESTION_TYP]
-    FOREIGN KEY ([TYPE_ID])
-    REFERENCES [dbo].[TYPEs]
-        ([TYPE_ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
 
--- Creating non-clustered index for FOREIGN KEY 'FK_QUESTION_TYP'
-CREATE INDEX [IX_FK_QUESTION_TYP]
-ON [dbo].[QUESTIONs]
-    ([TYPE_ID]);
-GO
-
--- Creating foreign key on [QUI_ID] in table 'QUESTIONs'
-ALTER TABLE [dbo].[QUESTIONs]
+-- Creating foreign key on [QUI_ID] in table 'QUESTION'
+ALTER TABLE [dbo].[QUESTION]
 ADD CONSTRAINT [FK_QUI_QUE]
     FOREIGN KEY ([QUI_ID])
-    REFERENCES [dbo].[QUIZs]
+    REFERENCES [dbo].[QUIZ]
         ([QUI_ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_QUI_QUE'
 CREATE INDEX [IX_FK_QUI_QUE]
-ON [dbo].[QUESTIONs]
+ON [dbo].[QUESTION]
     ([QUI_ID]);
 GO
 
--- Creating foreign key on [USER_ID] in table 'RESPONSEs'
-ALTER TABLE [dbo].[RESPONSEs]
+-- Creating foreign key on [USER_ID] in table 'RESPONSE'
+ALTER TABLE [dbo].[RESPONSE]
 ADD CONSTRAINT [fk_user_Response]
     FOREIGN KEY ([USER_ID])
     REFERENCES [dbo].[USERS]
@@ -400,12 +394,12 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'fk_user_Response'
 CREATE INDEX [IX_fk_user_Response]
-ON [dbo].[RESPONSEs]
+ON [dbo].[RESPONSE]
     ([USER_ID]);
 GO
 
--- Creating foreign key on [USER_ID] in table 'ROSTERs'
-ALTER TABLE [dbo].[ROSTERs]
+-- Creating foreign key on [USER_ID] in table 'ROSTER'
+ALTER TABLE [dbo].[ROSTER]
 ADD CONSTRAINT [FK_ROSTER_USERS]
     FOREIGN KEY ([USER_ID])
     REFERENCES [dbo].[USERS]
@@ -415,7 +409,7 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ROSTER_USERS'
 CREATE INDEX [IX_FK_ROSTER_USERS]
-ON [dbo].[ROSTERs]
+ON [dbo].[ROSTER]
     ([USER_ID]);
 GO
 

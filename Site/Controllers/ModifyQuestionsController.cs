@@ -103,7 +103,7 @@ namespace Site.Controllers
                     db.SaveChanges();
                     return RedirectToAction("../ModifyQuestions/Index", new { id = qUESTION.QUI_ID });
                 }
-                catch
+                catch (Exception e)
                 {
                     ViewBag.Msg = "Unable to add. Double check data and retry.";
                 }

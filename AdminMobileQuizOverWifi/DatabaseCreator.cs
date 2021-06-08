@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using System.Windows;
-using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
 
 
 namespace AdminMobileQuizOverWifi
@@ -18,7 +20,7 @@ namespace AdminMobileQuizOverWifi
     {
         // String location of the database server
         //aspQuizOverWifiDEVdb
-        private string dbLocationNetwork = ConfigurationManager.ConnectionStrings["aspQuizOverWifiDEVConnectionString"].ConnectionString;// For local db make this empty "" and make dbLocationLocal not with your username
+        private string dbLocationNetwork = System.Configuration.ConfigurationManager.ConnectionStrings["aspQuizOverWifiDEVConnectionString"].ConnectionString;// For local db make this empty "" and make dbLocationLocal not with your username
 
         /// <summary>
         /// This method will create our initial database using the generated script from sql server management software if it can't find any tables on the connected database(SELECT * FROM information_schema.tables)
@@ -47,10 +49,21 @@ namespace AdminMobileQuizOverWifi
                     count++;
 
                 }
+                if(count < 1)
+                {
+                    // connect to the new database and create our tables if they don't exist
+                    databaseConnection = new SqlConnection(dbLocationNetwork);
+                    databaseConnection.Open();
+
+                    Server server = new Server(new ServerConnection(databaseConnection));
+                    server.ConnectionContext.ExecuteNonQuery(Properties.Resources.initDB);
+
+                    // Create our sql string and pass it through to the database as a query
+                    // TODO this is where we could add our sql for the initial creation of all of our tables.
+                    // DEV? Display confirmation message that tables were added succesfully
+                    MessageBox.Show("Tables Added Successfully", "DatabaseCreation", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 // if able to connect to database without issues we can start modifiying it.
-                sql = "CREATE TABLE Logins (User_Name VARCHAR(50) NOT NULL PRIMARY KEY," +
-                                "Password VARCHAR(50) NOT NULL, isAdmin BIT NOT NULL," +
-                                "sessionid CHAR(24))";
 
                 System.Diagnostics.Debug.WriteLine("database exists");
                 databaseConnection.Close();
@@ -60,8 +73,17 @@ namespace AdminMobileQuizOverWifi
                 // Create our database instead.
                 try
                 {
+                    // connect to the new database and create our tables if they don't exist
                     databaseConnection = new SqlConnection(dbLocationNetwork);
-                    command = new SqlCommand(Properties.Resources.initDB, databaseConnection);
+                    databaseConnection.Open();
+
+                    Server server = new Server(new ServerConnection(databaseConnection));
+                    server.ConnectionContext.ExecuteNonQuery(Properties.Resources.initDB);
+
+                    // Create our sql string and pass it through to the database as a query
+                    // TODO this is where we could add our sql for the initial creation of all of our tables.
+                    // DEV? Display confirmation message that tables were added succesfully
+                    MessageBox.Show("Tables Added Successfully", "DatabaseCreation", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (System.Exception er)
                 {
@@ -87,16 +109,7 @@ namespace AdminMobileQuizOverWifi
             // Attempt to add our tables to the created network database if they don't already exist
             try
             {
-                // connect to the new database and create our tables if they don't exist
-                databaseConnection = new SqlConnection(dbLocationNetwork);
-                databaseConnection.Open();
-                // Create our sql string and pass it through to the database as a query
-                // TODO this is where we could add our sql for the initial creation of all of our tables.
-                string sql = "USE [dbdev26] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[ANSWER]( 	[QUE_ID] [int] NOT NULL, 	[DESCRIPTION] [varchar](max) NOT NULL, 	[CORRECT_ANS] [bit] NOT NULL, 	[ANS_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[ANS_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[COURSE]( 	[COU_NAME] [varchar](45) NOT NULL, 	[COU_SEM] [varchar](45) NULL, 	[COU_YEAR] [int] NULL, 	[COU_START_DATE] [date] NULL, 	[COU_END_DATE] [date] NULL, 	[COURSE_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[COURSE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[COURSE_QUIZ]( 	[QUI_ID] [int] NOT NULL, 	[COURSE_ID] [int] NOT NULL, 	[COURSE_QUI_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[COURSE_QUI_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],  CONSTRAINT [UNIQUE_COURSE_QUIZ] UNIQUE NONCLUSTERED  ( 	[COURSE_ID] ASC, 	[QUI_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[GRADE]( 	[GRA_ID] [int] IDENTITY(1,1) NOT NULL, 	[USER_ID] [int] NOT NULL, 	[COURSE_QUI_ID] [int] NOT NULL, 	[GRA_GRADE] [int] NOT NULL, 	[GRA_NEEDSGRADING] [bit] NOT NULL,  CONSTRAINT [PK__GRADE__23772D18D6D82861] PRIMARY KEY CLUSTERED  ( 	[GRA_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[QUESTION]( 	[QUI_ID] [int] NOT NULL, 	[QUE_QUESTION] [varchar](max) NOT NULL, 	[TYPE_ID] [nvarchar](50) NOT NULL, 	[QUE_ID] [int] IDENTITY(1,1) NOT NULL, 	[QUESTION_ANSWER] [varchar](max) NULL, PRIMARY KEY CLUSTERED  ( 	[QUE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[QUIZ]( 	[QUI_NAME] [varchar](45) NULL, 	[QUI_NOTES] [varchar](200) NULL, 	[QUI_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[QUI_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[RESPONSE]( 	[QUE_ID] [int] NOT NULL, 	[COMMENTS] [varchar](max) NULL, 	[USER_ID] [int] NOT NULL, 	[COURSE_QUI_ID] [int] NOT NULL, 	[RESPONSE_ID] [int] IDENTITY(1,1) NOT NULL, PRIMARY KEY CLUSTERED  ( 	[RESPONSE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[ROSTER]( 	[USER_ID] [int] NOT NULL, 	[COURSE_ID] [int] NOT NULL, 	[ROSTER_ID] [int] IDENTITY(1,1) NOT NULL,  CONSTRAINT [PK__ROSTER__F3BEEBFFFF9E8AE6] PRIMARY KEY CLUSTERED  ( 	[ROSTER_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],  CONSTRAINT [UNIQUE_ROSTER] UNIQUE NONCLUSTERED  ( 	[USER_ID] ASC, 	[COURSE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[TYPE]( 	[TYPE_ID] [nvarchar](50) NOT NULL, 	[TYPE_NAME] [nvarchar](200) NOT NULL,  CONSTRAINT [PK_TYPE] PRIMARY KEY CLUSTERED  ( 	[TYPE_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO  SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO CREATE TABLE [dbo].[USERS]( 	[F_NAME] [varchar](15) NULL, 	[L_NAME] [varchar](25) NULL, 	[IS_INSTRUCTOR] [bit] NOT NULL, 	[USERNAME] [varchar](25) NOT NULL, 	[PASSWORD] [varchar](25) NOT NULL, 	[SESSION_ID] [varchar](25) NULL, 	[USER_ID] [int] IDENTITY(8,1) NOT NULL,  CONSTRAINT [PK__USER__F3BEEBFF8742512C] PRIMARY KEY CLUSTERED  ( 	[USER_ID] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],  CONSTRAINT [unique_username] UNIQUE NONCLUSTERED  ( 	[USERNAME] ASC )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY] ) ON [PRIMARY] GO ALTER TABLE [dbo].[ANSWER]  WITH CHECK ADD FOREIGN KEY([QUE_ID]) REFERENCES [dbo].[QUESTION] ([QUE_ID]) GO ALTER TABLE [dbo].[COURSE_QUIZ]  WITH CHECK ADD  CONSTRAINT [FK_COURSE_QUIZ_COURSE] FOREIGN KEY([COURSE_ID]) REFERENCES [dbo].[COURSE] ([COURSE_ID]) GO ALTER TABLE [dbo].[COURSE_QUIZ] CHECK CONSTRAINT [FK_COURSE_QUIZ_COURSE] GO ALTER TABLE [dbo].[COURSE_QUIZ]  WITH CHECK ADD  CONSTRAINT [FK_COURSE_QUIZ_QUIZ] FOREIGN KEY([QUI_ID]) REFERENCES [dbo].[QUIZ] ([QUI_ID]) GO ALTER TABLE [dbo].[COURSE_QUIZ] CHECK CONSTRAINT [FK_COURSE_QUIZ_QUIZ] GO ALTER TABLE [dbo].[GRADE]  WITH CHECK ADD FOREIGN KEY([COURSE_QUI_ID]) REFERENCES [dbo].[COURSE_QUIZ] ([COURSE_QUI_ID]) GO ALTER TABLE [dbo].[GRADE]  WITH CHECK ADD  CONSTRAINT [USER_ID] FOREIGN KEY([USER_ID]) REFERENCES [dbo].[USERS] ([USER_ID]) GO ALTER TABLE [dbo].[GRADE] CHECK CONSTRAINT [USER_ID] GO ALTER TABLE [dbo].[QUESTION]  WITH CHECK ADD  CONSTRAINT [FK_QUESTION_TYP] FOREIGN KEY([TYPE_ID]) REFERENCES [dbo].[TYPE] ([TYPE_ID]) GO ALTER TABLE [dbo].[QUESTION] CHECK CONSTRAINT [FK_QUESTION_TYP] GO ALTER TABLE [dbo].[QUESTION]  WITH CHECK ADD  CONSTRAINT [FK_QUI_QUE] FOREIGN KEY([QUI_ID]) REFERENCES [dbo].[QUIZ] ([QUI_ID]) GO ALTER TABLE [dbo].[QUESTION] CHECK CONSTRAINT [FK_QUI_QUE] GO ALTER TABLE [dbo].[RESPONSE]  WITH CHECK ADD FOREIGN KEY([COURSE_QUI_ID]) REFERENCES [dbo].[COURSE_QUIZ] ([COURSE_QUI_ID]) GO ALTER TABLE [dbo].[RESPONSE]  WITH CHECK ADD FOREIGN KEY([QUE_ID]) REFERENCES [dbo].[QUESTION] ([QUE_ID]) GO ALTER TABLE [dbo].[RESPONSE]  WITH CHECK ADD  CONSTRAINT [fk_user_Response] FOREIGN KEY([USER_ID]) REFERENCES [dbo].[USERS] ([USER_ID]) GO ALTER TABLE [dbo].[RESPONSE] CHECK CONSTRAINT [fk_user_Response] GO ALTER TABLE [dbo].[ROSTER]  WITH CHECK ADD  CONSTRAINT [FK__ROSTER__COURSE_I__4959E263] FOREIGN KEY([COURSE_ID]) REFERENCES [dbo].[COURSE] ([COURSE_ID]) GO ALTER TABLE [dbo].[ROSTER] CHECK CONSTRAINT [FK__ROSTER__COURSE_I__4959E263] GO ALTER TABLE [dbo].[ROSTER]  WITH CHECK ADD  CONSTRAINT [FK_ROSTER_USERS] FOREIGN KEY([USER_ID]) REFERENCES [dbo].[USERS] ([USER_ID]) GO ALTER TABLE [dbo].[ROSTER] CHECK CONSTRAINT [FK_ROSTER_USERS] GO ";
-                command = new SqlCommand(sql, databaseConnection);
-                command.ExecuteNonQuery();
-                // DEV? Display confirmation message that tables were added succesfully
-                MessageBox.Show("Tables Added Successfully", "DatabaseCreation", MessageBoxButton.OK, MessageBoxImage.Information);
+                
             }
             catch (System.Exception e)
             {

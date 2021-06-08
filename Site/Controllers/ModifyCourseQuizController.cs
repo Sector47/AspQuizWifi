@@ -60,9 +60,9 @@ namespace Site.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-                public ActionResult Index(COURSE_QUIZ cOURSE_QUIZ)
+        public ActionResult Index(COURSE_QUIZ cOURSE_QUIZ)
         {
-            // Check to see the the model is valid amd the used made a proper selection to create a relationship.
+            // Check to see the the model is valid and they used made a proper selection to create a relationship.
             if (ModelState.IsValid && cOURSE_QUIZ.QuizSelected != null && cOURSE_QUIZ.CourseSelected != null)
             {
                 // Holds user's quiz selections.

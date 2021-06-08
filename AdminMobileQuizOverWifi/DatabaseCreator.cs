@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
-using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 
@@ -26,7 +17,8 @@ namespace AdminMobileQuizOverWifi
     public class DatabaseCreator
     {
         // String location of the database server
-        private string dbLocationNetwork = "Server = bitweb3.nwtc.edu; Database = dbdev26; User Id = dbdev26; Password = 123456;";// For local db make this empty "" and make dbLocationLocal not with your username
+        //aspQuizOverWifiDEVdb
+        private string dbLocationNetwork = ConfigurationManager.ConnectionStrings["aspQuizOverWifiDEVConnectionString"].ConnectionString;// For local db make this empty "" and make dbLocationLocal not with your username
 
         /// <summary>
         /// This method will create our initial database using the generated script from sql server management software if it can't find any tables on the connected database(SELECT * FROM information_schema.tables)
@@ -42,7 +34,7 @@ namespace AdminMobileQuizOverWifi
             {
 
                 databaseConnection = new SqlConnection(dbLocationNetwork);
-                // Check for existing database dbdev26
+                // Check for existing database
                 string sql = "SELECT * FROM information_schema.tables";
                 databaseConnection.Open();
                 command = new SqlCommand(sql, databaseConnection);
@@ -65,7 +57,16 @@ namespace AdminMobileQuizOverWifi
             }
             catch (System.Exception e)
             {
-                // Don't crash
+                // Create our database instead.
+                try
+                {
+                    databaseConnection = new SqlConnection(dbLocationNetwork);
+                    command = new SqlCommand(Properties.Resources.initDB, databaseConnection);
+                }
+                catch (System.Exception er)
+                {
+                    // Failed to create for some reason, go to finally and close connection)
+                }
             }
             finally
             {

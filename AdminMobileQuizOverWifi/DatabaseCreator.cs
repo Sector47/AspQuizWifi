@@ -723,9 +723,16 @@ namespace AdminMobileQuizOverWifi
         /// <returns> An integer of the point value they received from the automatic grading. </returns>
         public int gradeQuizDB(int quiz_ID, List<string> responseList, int user_ID, int course_Quiz_ID)
         {
+            // boolean to indicate whether to notify the instructor that they need to grade the quiz manually
+            // This will be marked true for any short answer questions, fill in the blanks that were not auto graded(exact match)
             bool markForInstructorGrading = false;
+
+            // Our total point value for the end grade, start at 0 and increment as needed.
             int grade = 0;
+
+            // Our list of questions for the given quiz.
             List<string[]> questionList = getQuestionDataDB(quiz_ID);
+
             // List of {Que_ID, Response}
             List<string[]> responseQuestionList = new List<string[]>();
             string type_ID;
@@ -734,9 +741,18 @@ namespace AdminMobileQuizOverWifi
             int i = 0;
             foreach (string[] q in questionList)
             {
-                string response = responseList[i];
+                
+
+                // Our question array has a que id at [0]
                 string que_ID = q[0];                
+
+                // type id at [2] which tells us how to grade it
                 type_ID = q[2];
+
+                // response for the given question, will be converted to lowercase if not short answer
+                string response = responseList[i];
+
+                // and a correct answer at [3]
                 correctAnswer = q[3];
 
                 // Depending on the question type we will attempt to grade differently
@@ -744,7 +760,7 @@ namespace AdminMobileQuizOverWifi
                 // Multiple Choice Radio and Multiple Choice Check questions will be compared against a answer stored like (a,b) or (a). 
                 if (type_ID.Contains("MCR"))
                 {
-                    if (response == correctAnswer)
+                    if (response.ToLower() == correctAnswer)
                         grade++;
                 }
                 if (type_ID.Contains("SA"))
@@ -755,13 +771,14 @@ namespace AdminMobileQuizOverWifi
                 if (type_ID.Contains("FB"))
                 {
                     // Fill in the blanks can be attempted to auto grade, but mark them for grading if they don't match.
-                    if (response == correctAnswer)
+                    if (response.ToLower() == correctAnswer)
                         grade++;
                     else
                         markForInstructorGrading = true;
                 }
                 if (type_ID.Contains("MCC"))
                 {
+                    response = response.ToLower();
                     // Since multiple choice allows partial credit we will add a point for every correct char existing and subtract for every incorrect attempt(Example: Answer is ab, response was abc they would get 2 points - 1 points for a total of 1)
                     // It is like checking if two strings are anagrams except there can't be duplicate characters so we don't need to remove the char from the charArray(string) we are checking against
                     foreach (char c in response)

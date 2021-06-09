@@ -342,8 +342,6 @@ namespace Site.Controllers
 
             int grade = databaseCreator.gradeQuizDB(qui_ID, responseList, getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()));
             //ViewBag.QuizName = databaseCreator.getQuizNameDB(quiz_ID);
-            // TODO calculate grade
-            // TODO update grade table
             ViewBag.Grade = grade;
             ViewBag.NeedFurtherGrading = databaseCreator.getGradeDB(getLoggedInUserID(), databaseCreator.getCourseQuizIDDB(qui_ID, getLoggedInUserID()))[2];
             ViewBag.PointTotal = GetPointTotal(qui_ID);
